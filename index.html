@@ -491,7 +491,20 @@
         <div class="hint">Los tipos de trabajo rellenan tiempos orientativos según tu hoja de láser. Luego los ajustas a mano, porque la realidad siempre decide fastidiar un poco.</div>
       </div>
     </div>
-
+    
+<div class="card">
+  <div class="sec-title">Notas internas</div>
+  <div class="field">
+    <label for="notasInternas">Notas personales</label>
+    <textarea
+      id="notasInternas"
+      class="input-textarea"
+      placeholder="Ej: cliente quiere muestra previa, revisar color, margen ajustado, pendiente confirmar tallas..."
+    ></textarea>
+    <div class="hint">Estas notas son solo para uso interno y no afectan al cálculo.</div>
+  </div>
+</div>
+    
     <div id="resultados" class="results">
       <div class="aviso" id="aviso_dto">Descuento sobre artículo base limitado para mantener el margen mínimo configurado.</div>
       <div class="tramo-badge" id="tramo_badge">Tramo 1–20 ud · 0% dto sobre artículo base</div>
@@ -604,7 +617,7 @@
           <textarea class="input-textarea" id="condiciones_presupuesto">Presupuesto válido durante 30 días.
 Producción sujeta a confirmación de diseño y disponibilidad.
 Para iniciar el pedido se solicitará un anticipo del 50%.
-Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica especial.
+Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen, técnica especial u otra fecha pactada con anterioridad.
 El precio indicado incluye únicamente lo detallado en este presupuesto.</textarea>
           <div class="hint">Estas condiciones se incluyen en el email al cliente y también se mandan al webhook de Make.</div>
         </div>
@@ -625,7 +638,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
           </div>
           <div class="field" style="margin-top:10px">
             <label>Tu email</label>
-            <input type="email" id="mi_email" placeholder="silvia@benditolab.com">
+            <input type="email" id="mi_email" placeholder="presupuestos@benditolab.com">
           </div>
           <button type="button" class="btn-interno" id="btn_email_interno">📊 Enviarme el presupuesto completo</button>
         </div>
@@ -635,7 +648,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       </div>
     </div>
 
-    <p class="footer-note">Archivo único listo para GitHub o Vercel. Lo normal, vamos: una cosa útil por fin.</p>
+    <p class="footer-note">Una calculadora creada por Bendito lab para hacer su vida más facil.</p>
   </div>
 
   <script>
@@ -669,8 +682,8 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       '321dtf': { nombre: '321DTF', ancho_cm: 56, alto_cm: 100, coste_pliego: 10.50, envio: 3.50, envio_gratis_desde: null },
       'dtfbarcelona': { nombre: 'DTF Barcelona', ancho_cm: 60, alto_cm: 100, coste_pliego: 9.15, envio: 6.90, envio_gratis_desde: 50 },
       'tudtf': { nombre: 'TuDTF', ancho_cm: 56, alto_cm: 100, coste_pliego: 10.90, envio: 4.90, envio_gratis_desde: 150 },
-      'dtfrapido': { nombre: 'DTFRápido', ancho_cm: 55, alto_cm: 100, coste_pliego: 9.65, envio: 0, envio_gratis_desde: 0 },
-      'amazon': { nombre: 'Amazon (vinilo)', ancho_cm: 30.5, alto_cm: 300, coste_pliego: 14.20, envio: 0, envio_gratis_desde: 0 },
+      'dtfrapido': { nombre: 'DTFRápido', ancho_cm: 55, alto_cm: 100, coste_pliego: 11.95, envio: 0, envio_gratis_desde: 0 },
+      'amazon': { nombre: 'Amazon (vinilo)', ancho_cm: 30.5, alto_cm: 300, coste_pliego: 14.20, envio: 5.99, envio_gratis_desde: 0 },
       'propio': { nombre: 'Producción propia', ancho_cm: 0, alto_cm: 0, coste_pliego: 0, envio: 0, envio_gratis_desde: 0 },
       'ninguno': { nombre: '—', ancho_cm: 0, alto_cm: 0, coste_pliego: 0, envio: 0, envio_gratis_desde: 0 }
     };
@@ -905,7 +918,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         const l = line.trim();
         if (l) bodyLines.push(`- ${l.replace(/^[-•]\s*/, '')}`);
       });
-      bodyLines.push('', 'Un saludo,', 'Silvia', 'Bendito Lab');
+      bodyLines.push('', 'Si tienes cualquier pregunta no dudes en contactarme, Un abrazo,', 'Silvia', 'Bendito Lab');
 
       return { destino, asunto, body: bodyLines.join('\n') };
     }
@@ -967,7 +980,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         texto_enviado: body
       };
     }
-
+    
     function sendBudgetEmail() {
       const { destino, asunto, body } = buildClientBudgetEmail();
       if (!destino) {
@@ -980,7 +993,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     async function saveBudgetToMake() {
       const statusEl = document.getElementById('save_status');
-      if (!MAKE_WEBHOOK_URL || MAKE_WEBHOOK_URL === 'PEGA_AQUI_TU_WEBHOOK_DE_MAKE') {
+      if (!MAKE_WEBHOOK_URL || MAKE_WEBHOOK_URL === 'https://hook.eu1.make.com/pb8y7wan55b6inhft6mufphkv1j0y76d') {
         alert('Primero pega la URL real del webhook de Make en el código.');
         return;
       }
@@ -1524,8 +1537,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
       return {
         asunto: `[INTERNO] Presupuesto ${cliente} · ${producto} · ${fecha}`,
-        body: lines.join('
-'),
+        body: lines.join('\n'),
       };
     }
 

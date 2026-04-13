@@ -512,7 +512,7 @@
       <div class="metrics">
         <div class="field">
   <label>Nº Presupuesto</label>
-  <input type="text" id="numeroPresupuesto" readonly>
+  <input type="text" id="numeroPresupuesto">
 </div>
         <div class="metric"><div class="ml">Coste total / ud</div><div class="mv" id="r_coste_ud">—</div></div>
         <div class="metric"><div class="ml">Total blancos (pedido)</div><div class="mv teal" id="r_total_blancos">—</div></div>
@@ -1569,7 +1569,12 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     applyLaserPreset();
     updateTecnicaUI();
 
-    function generarNumeroPresupuesto() {
+  function generarNumeroPresupuesto() {
+  const campo = document.getElementById("numeroPresupuesto");
+
+  // Si ya tiene valor, no lo toca
+  if (campo.value) return;
+
   let numero = localStorage.getItem("contadorPresupuestos");
 
   if (!numero) {
@@ -1582,7 +1587,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
   const numeroFormateado = "PRE-" + String(numero).padStart(4, "0");
 
-  document.getElementById("numeroPresupuesto").value = numeroFormateado;
+  campo.value = numeroFormateado;
 }
 
 window.addEventListener("load", () => {

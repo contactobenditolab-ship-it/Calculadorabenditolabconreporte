@@ -52,10 +52,6 @@
       padding: 1.25rem;
       margin-bottom: 1rem;
       box-shadow: var(--shadow-sm);
-      <div class="field">
-  <label>Nº Presupuesto</label>
-  <input type="text" id="numeroPresupuesto" readonly>
-</div>
     }
     .results { background: var(--color-background-secondary); }
     .sec-title { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem; }
@@ -514,6 +510,10 @@
       <div class="tramo-badge" id="tramo_badge">Tramo 1–20 ud · 0% dto sobre artículo base</div>
 
       <div class="metrics">
+        <div class="field">
+  <label>Nº Presupuesto</label>
+  <input type="text" id="numeroPresupuesto" readonly>
+</div>
         <div class="metric"><div class="ml">Coste total / ud</div><div class="mv" id="r_coste_ud">—</div></div>
         <div class="metric"><div class="ml">Total blancos (pedido)</div><div class="mv teal" id="r_total_blancos">—</div></div>
         <div class="metric"><div class="ml">PVP final sin IVA / ud</div><div class="mv green" id="r_pvp_dto_sin">—</div></div>

@@ -1480,6 +1480,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
               margen_real, ben_ud, ben_total, dto_nominal, ti, capped, dto_real_pct,
               envio_blanco_ud, envio_prov_ud, costes_fijos_ud } = pvp;
 
+      const numeroPresupuesto = document.getElementById("numeroPresupuesto")?.value || "";
       const cliente  = document.getElementById('email_cliente').value.trim() || '—';
       const producto = document.getElementById('email_producto').value.trim() || '—';
       const tecnica  = document.getElementById('tecnica').selectedOptions[0]?.textContent || '—';

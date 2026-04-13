@@ -52,6 +52,10 @@
       padding: 1.25rem;
       margin-bottom: 1rem;
       box-shadow: var(--shadow-sm);
+      <div class="field">
+  <label>Nº Presupuesto</label>
+  <input type="text" id="numeroPresupuesto" readonly>
+</div>
     }
     .results { background: var(--color-background-secondary); }
     .sec-title { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem; }
@@ -1564,7 +1568,27 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     populateProveedorSelect();
     applyLaserPreset();
     updateTecnicaUI();
-  
+
+    function generarNumeroPresupuesto() {
+  let numero = localStorage.getItem("contadorPresupuestos");
+
+  if (!numero) {
+    numero = 1;
+  } else {
+    numero = parseInt(numero) + 1;
+  }
+
+  localStorage.setItem("contadorPresupuestos", numero);
+
+  const numeroFormateado = "PRE-" + String(numero).padStart(4, "0");
+
+  document.getElementById("numeroPresupuesto").value = numeroFormateado;
+}
+
+window.addEventListener("load", () => {
+  generarNumeroPresupuesto();
+});
+    
   </script>
 </body>
 </html>

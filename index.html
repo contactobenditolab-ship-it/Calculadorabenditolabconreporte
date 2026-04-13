@@ -888,43 +888,45 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       return extras;
     }
 
-    function buildClientBudgetEmail() {
-      
-      const cliente = document.getElementById('email_cliente').value.trim();
-      const numeroPresupuesto = document.getElementById("numeroPresupuesto")?.value || "";
-      const producto = document.getElementById('email_producto').value.trim();
-      const destino = document.getElementById('email_destino').value.trim();
-      const cantidad = document.getElementById('cantidad').value || '0';
-      const precioUnidad = document.getElementById('r_pvp_dto_con').textContent.trim();
-      const total = document.getElementById('r_total_iva').textContent.trim();
-      const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
-      const extras = buildExtrasLines();
+function enviarPresupuestoCliente() {
 
-      const asunto = `Presupuesto Bendito Lab${cliente ? ' · ' + cliente : ''}${producto ? ' · ' + producto : ''}`;
-      const bodyLines = [
-        `Hola ${cliente || ''},`.trim(),
-        '',
-        'Tu presupuesto ${numeroPresupuesto} ¡Ya esta listo! · Bendito Lab :',
-        '',
-        `Artículo: ${producto || '—'}`,
-        `Cantidad: ${cantidad} uds`,
-        `Precio por unidad: ${precioUnidad}`,
-        `Total presupuesto: ${total}`,
-        ''
-      ];
+  const numeroPresupuesto = document.getElementById("numeroPresupuesto")?.value || "";
+  const emailCliente = document.getElementById("emailCliente")?.value || "";
 
-      if (extras.length) {
-        bodyLines.push('Otros costes incluidos en este presupuesto:');
-        bodyLines.push(...extras);
-        bodyLines.push('');
-      }
+  const articulo = document.getElementById("articulo")?.value || "";
+  const cantidad = document.getElementById("cantidad")?.value || "";
 
-      bodyLines.push('Condiciones:');
-      condiciones.split(/\n+/).forEach(line => {
-        const l = line.trim();
-        if (l) bodyLines.push(`- ${l.replace(/^[-•]\s*/, '')}`);
-      });
-      bodyLines.push('', 'Si tienes cualquier pregunta no dudes en contactarme, Un abrazo,', 'Silvia', 'Bendito Lab');
+  const precioUnidad = document.getElementById("pvpUnidad")?.value || "";
+  const totalPresupuesto = document.getElementById("pvpTotal")?.value || "";
+
+  const subject = `¿Tu presupuesto ${numeroPresupuesto} Ya está aqui! Bendito Lab`;
+
+  const body = `
+Hola,
+
+Tu presupuesto ${numeroPresupuesto} ya está listo · Bendito Lab:
+
+Artículo: ${articulo}
+Cantidad: ${cantidad} uds
+Precio por unidad: ${precioUnidad}
+Total presupuesto: ${totalPresupuesto}
+
+Condiciones:
+- Presupuesto válido durante 30 días.
+- Producción sujeta a confirmación de diseño y disponibilidad.
+- Para iniciar el pedido se solicitará un anticipo del 50%.
+- Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen, técnica especial u otra fecha pactada con anterioridad.
+- El precio indicado incluye únicamente lo detallado en este presupuesto.
+
+Si tienes cualquier pregunta no dudes en contactarme.
+
+Un abrazo,
+Silvia
+Bendito Lab
+`;
+
+  window.location.href = `mailto:${emailCliente}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
       return { destino, asunto, body: bodyLines.join('\n') };
     }

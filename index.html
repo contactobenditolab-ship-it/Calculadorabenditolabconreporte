@@ -889,7 +889,9 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     }
 
     function buildClientBudgetEmail() {
+      
       const cliente = document.getElementById('email_cliente').value.trim();
+      const numeroPresupuesto = document.getElementById("numeroPresupuesto")?.value || "";
       const producto = document.getElementById('email_producto').value.trim();
       const destino = document.getElementById('email_destino').value.trim();
       const cantidad = document.getElementById('cantidad').value || '0';
@@ -902,7 +904,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const bodyLines = [
         `Hola ${cliente || ''},`.trim(),
         '',
-        'Te envío el presupuesto solicitado:',
+        'Tu presupuesto ${numeroPresupuesto} ¡Ya esta listo! · Bendito Lab :',
         '',
         `Artículo: ${producto || '—'}`,
         `Cantidad: ${cantidad} uds`,

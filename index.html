@@ -1,1 +1,2206 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Bendito Lab</title>
+  <meta name="description" content="Calculadora de precios B2B para Bendito Lab">
+  <style>
+    :root {
+      --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --color-text-primary: #111827;
+      --color-text-secondary: #4b5563;
+      --color-text-tertiary: #6b7280;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f8fafc;
+      --color-border-primary: #d1d5db;
+      --color-border-tertiary: #e5e7eb;
+      --border-radius-md: 12px;
+      --border-radius-lg: 18px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 10px 24px rgba(17,24,39,.06);
+    }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--color-text-primary);
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      line-height: 1.4;
+      padding: 24px 16px 40px;
+    }
+
+    .wrap { max-width: 980px; margin: 0 auto; }
+
+    .brand-header {
+      background: #fff;
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: 22px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .brand-copy h1 { font-size: 22px; margin-bottom: 4px; }
+    .brand-copy p { color: var(--color-text-secondary); }
+
+    .card, .margen-config, .results {
+      background: var(--color-background-primary);
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .results { background: var(--color-background-secondary); }
+
+    .sec-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 1rem;
+    }
+
+    .grid2, .grid3, .grid4 {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .grid2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+
+    .field label {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .field input, .field select {
+      width: 100%;
+      font-size: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border-primary);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--color-text-primary);
+    }
+
+    .field input:focus, .field select:focus, textarea.input-textarea:focus {
+      outline: none;
+      border-color: #1D9E75;
+      box-shadow: 0 0 0 3px rgba(29,158,117,.12);
+    }
+
+    .hint { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; }
+    .mini-note { font-size: 11px; color: var(--color-text-tertiary); margin-top: 10px; }
+
+    .slider-row, .margen-slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slider-row { margin-bottom: 12px; }
+
+    .slider-row label, .margen-slider-wrap label {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+
+    .slider-row input[type=range], .margen-slider-wrap input[type=range] { flex: 1; }
+
+    .slider-row .val {
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 64px;
+      text-align: right;
+    }
+
+    .sub-block {
+      margin: 8px 0 12px;
+      padding: 12px;
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border-tertiary);
+    }
+
+    .margen-val {
+      font-size: 22px;
+      font-weight: 700;
+      min-width: 60px;
+      text-align: right;
+    }
+
+    .margen-val.green { color: #1D9E75; }
+    .margen-val.amber { color: #BA7517; }
+
+    .margen-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      margin-top: 4px;
+      padding: 0 2px;
+    }
+
+    .blancos-resumen, .pliegos-box {
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-md);
+      padding: 12px 14px;
+      margin-top: 8px;
+      border: 1px solid var(--color-border-tertiary);
+    }
+
+    .pb-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric {
+      background: var(--color-background-primary);
+      border-radius: var(--border-radius-md);
+      padding: .85rem 1rem;
+      border: 1px solid var(--color-border-tertiary);
+    }
+
+    .metric .ml {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .metric .mv {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .metric .mv.green { color: #1D9E75; }
+    .metric .mv.teal { color: #0F6E56; }
+    .metric .mv.big { font-size: 22px; color: #1D9E75; }
+
+    .brow {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--color-border-tertiary);
+    }
+
+    .brow:last-child { border-bottom: none; }
+
+    .brow .bl {
+      color: var(--color-text-secondary);
+      flex: 1;
+    }
+
+    .brow .bv {
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-align: right;
+    }
+
+    .brow .bv.accent { color: #1D9E75; }
+
+    .btotal {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 0 4px;
+      border-top: 1px solid var(--color-border-primary);
+      margin-top: 4px;
+    }
+
+    .btotal .bv { color: #1D9E75; }
+
+    .btotal-iva {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 10px 12px;
+      background: #E1F5EE;
+      border-radius: var(--border-radius-md);
+      margin-top: 8px;
+    }
+
+    .btotal-iva .bv { color: #085041; }
+
+    .tramo-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: var(--border-radius-md);
+      background: #E1F5EE;
+      color: #085041;
+      margin-bottom: 12px;
+    }
+
+    .tramo-badge.capped {
+      background: #FAEEDA;
+      color: #633806;
+    }
+
+    .aviso {
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: var(--border-radius-md);
+      background: #FAEEDA;
+      color: #633806;
+      margin-bottom: 10px;
+      display: none;
+      border: 1px solid #f3ddb8;
+    }
+
+    .aviso.show { display: block; }
+
+    .dto-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #FAEEDA;
+      color: #633806;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .dto-pill.ok {
+      background: #E1F5EE;
+      color: #085041;
+    }
+
+    .pill-soft {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid var(--color-border-primary);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .check-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin: 10px 0 12px;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .check-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tramos-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--color-border-tertiary);
+    }
+
+    .tramos-table th,
+    .tramos-table td {
+      border-bottom: 1px solid var(--color-border-tertiary);
+      padding: 8px;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .tramos-table th {
+      background: #f8fafc;
+      color: var(--color-text-secondary);
+      font-weight: 700;
+    }
+
+    .tramos-table tr:last-child td { border-bottom: none; }
+
+    .tramos-table input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--color-border-primary);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .bv-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .bv-sub {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      font-weight: 400;
+    }
+
+    .bar-wrap { margin-top: 12px; }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .bar-bg {
+      height: 10px;
+      background: var(--color-border-tertiary);
+      border-radius: 8px;
+      overflow: visible;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 8px;
+      transition: width .3s;
+      background: #1D9E75;
+    }
+
+    .bar-fill.amber { background: #BA7517; }
+
+    .bar-min-line {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: #E24B4A;
+      border-radius: 2px;
+      transition: left .3s;
+    }
+
+    .bar-min-label {
+      position: absolute;
+      top: -18px;
+      font-size: 10px;
+      color: #E24B4A;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .tramo-info {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: var(--color-background-primary);
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border-tertiary);
+      line-height: 1.6;
+    }
+
+    .tramo-info strong { color: var(--color-text-primary); }
+
+    .pliego-preview {
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-lg);
+      padding: 1rem 1.25rem;
+      margin-top: 12px;
+      border: 1px solid var(--color-border-tertiary);
+    }
+
+    .preview-wrap {
+      background: #fff;
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      padding: 12px;
+      margin-bottom: 12px;
+      overflow: auto;
+    }
+
+    #svg_pliego {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      height: auto;
+      background: #f8f8f8;
+      border-radius: 8px;
+    }
+
+    .preview-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 14px;
+    }
+
+    .email-box {
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-lg);
+      padding: 1rem 1.25rem;
+      margin-top: 12px;
+      border: 1px solid var(--color-border-tertiary);
+    }
+
+    .actions-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .btn-primary {
+      appearance: none;
+      border: 0;
+      border-radius: var(--border-radius-md);
+      background: #085041;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover { filter: brightness(1.05); }
+
+    .btn-primary.big {
+      width: 100%;
+      justify-content: center;
+      display: inline-flex;
+      align-items: center;
+      min-height: 48px;
+      font-size: 16px;
+      box-shadow: 0 8px 24px rgba(8,80,65,.18);
+    }
+
+    .btn-secondary {
+      appearance: none;
+      border: 1px solid #0f766e;
+      border-radius: var(--border-radius-md);
+      background: #fff;
+      color: #0f766e;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover { background: #f0fdfa; }
+
+    .status-note {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    textarea.input-textarea {
+      width: 100%;
+      min-height: 120px;
+      font-size: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border-primary);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--color-text-primary);
+      resize: vertical;
+      font-family: var(--font-sans);
+    }
+
+    .interno-sep {
+      height: 1px;
+      background: var(--color-border-tertiary);
+      margin: 16px 0;
+    }
+
+    .interno-box {
+      background: #f0fdf8;
+      border: 1.5px solid #1D9E75;
+      border-radius: var(--border-radius-lg);
+      padding: 14px 16px;
+    }
+
+    .interno-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .interno-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .interno-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #085041;
+    }
+
+    .interno-sub {
+      font-size: 12px;
+      color: #0F6E56;
+      margin-top: 2px;
+    }
+
+    .btn-interno {
+      appearance: none;
+      border: 0;
+      border-radius: var(--border-radius-md);
+      background: #1D9E75;
+      color: #fff;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+    }
+
+    .btn-interno:hover { filter: brightness(1.08); }
+
+    .footer-note {
+      color: var(--color-text-tertiary);
+      font-size: 12px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 820px) {
+      .brand-header { flex-direction: column; align-items: flex-start; }
+      .metrics, .grid2, .grid3, .grid4, .preview-legend { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand-header">
+      <div class="brand-copy">
+        <h1>Calculadora B2B · Bendito Lab</h1>
+        <p>Costes, márgenes y PVP para pedidos de Bendito Lab.</p>
+      </div>
+    </div>
+
+    <div class="margen-config">
+      <div class="sec-title">Margen mínimo garantizado</div>
+      <div class="margen-slider-wrap">
+        <span style="font-size:13px;color:var(--color-text-secondary);white-space:nowrap">50%</span>
+        <input type="range" id="margen_min" min="50" max="80" step="1" value="60">
+        <span style="font-size:13px;color:var(--color-text-secondary);white-space:nowrap">80%</span>
+        <div class="margen-val green" id="margen_val_display">60%</div>
+      </div>
+      <div class="margen-ticks"><span>50%</span><span>55%</span><span>60%</span><span>65%</span><span>70%</span><span>75%</span><span>80%</span></div>
+      <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:8px" id="margen_hint"></div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Artículo base</div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Precio coste artículo proveedor (€/ud sin IVA)</label>
+          <input type="number" id="precio_blanco" value="8.00" step="0.01" min="0">
+        </div>
+        <div class="field">
+          <label>Cantidad (ud)</label>
+          <input type="number" id="cantidad" value="25" step="1" min="1" max="1500">
+        </div>
+      </div>
+
+      <div class="slider-row">
+        <label>Cantidad:</label>
+        <input type="range" id="slider_cant" min="1" max="1500" step="1" value="25">
+        <span class="val" id="slider_out">25 ud</span>
+      </div>
+
+      <div class="sub-block">
+        <div class="sec-title" style="margin-bottom:8px">Descuento de blancos por tramos</div>
+
+        <div class="grid3">
+          <div class="field">
+            <label>Perfil base</label>
+            <select id="perfil_blanco">
+              <option value="toleshop">Toleshop estándar</option>
+              <option value="suave">Descuento suave</option>
+              <option value="sin_descuento">Sin descuento</option>
+              <option value="personalizado">Personalizado</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Descuento manual (%)</label>
+            <input type="number" id="dto_blanco_manual" value="0" step="0.1" min="0" max="100">
+          </div>
+
+          <div class="field">
+            <label>Tramo aplicado</label>
+            <div class="pill-soft" id="tramo_blanco_badge">1–9 ud · 0%</div>
+          </div>
+        </div>
+
+        <div class="check-row">
+          <label><input type="checkbox" id="usar_dto_blanco_auto" checked> Usar descuento automático por tramos</label>
+          <label><input type="checkbox" id="usar_dto_blanco_manual"> Sobrescribir con descuento manual</label>
+        </div>
+
+        <table class="tramos-table">
+          <thead>
+            <tr>
+              <th>Desde</th>
+              <th>Hasta</th>
+              <th>Descuento %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="number" id="tb1_min" value="1" step="1" min="1"></td>
+              <td><input type="number" id="tb1_max" value="9" step="1" min="1"></td>
+              <td><input type="number" id="tb1_dto" value="0" step="0.1" min="0" max="100"></td>
+            </tr>
+            <tr>
+              <td><input type="number" id="tb2_min" value="10" step="1" min="1"></td>
+              <td><input type="number" id="tb2_max" value="24" step="1" min="1"></td>
+              <td><input type="number" id="tb2_dto" value="5" step="0.1" min="0" max="100"></td>
+            </tr>
+            <tr>
+              <td><input type="number" id="tb3_min" value="25" step="1" min="1"></td>
+              <td><input type="number" id="tb3_max" value="49" step="1" min="1"></td>
+              <td><input type="number" id="tb3_dto" value="10" step="0.1" min="0" max="100"></td>
+            </tr>
+            <tr>
+              <td><input type="number" id="tb4_min" value="50" step="1" min="1"></td>
+              <td><input type="number" id="tb4_max" value="99" step="1" min="1"></td>
+              <td><input type="number" id="tb4_dto" value="15" step="0.1" min="0" max="100"></td>
+            </tr>
+            <tr>
+              <td><input type="number" id="tb5_min" value="100" step="1" min="1"></td>
+              <td><input type="number" id="tb5_max" value="999999" step="1" min="1"></td>
+              <td><input type="number" id="tb5_dto" value="20" step="0.1" min="0" max="100"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="mini-note">
+          La calculadora toma el precio tarifa sin IVA, aplica el descuento del tramo del blanco y con ese subtotal sin IVA decide si el envío es gratis. Luego pasa el coste real del proveedor con IVA al cálculo final.
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Packaging (€/ud)</label>
+          <input type="number" id="pack_coste" value="0" step="0.01" min="0">
+          <div class="hint">Bolsa, caja, organza, tarjeta…</div>
+        </div>
+
+        <div class="field">
+          <label>Otros costes fijos (€ total pedido)</label>
+          <input type="number" id="otros_fijos" value="0" step="0.5" min="0">
+          <div class="hint">Diseño, pruebas, muestras, desplazamiento…</div>
+        </div>
+      </div>
+
+      <div class="blancos-resumen">
+        <div class="pb-title">Coste blancos</div>
+        <div class="brow"><span class="bl">Precio tarifa / ud sin IVA</span><span class="bv" id="res_blanco_tarifa_ud">—</span></div>
+        <div class="brow"><span class="bl">Descuento tramo aplicado</span><span class="bv" id="res_blanco_dto">—</span></div>
+        <div class="brow"><span class="bl">Precio final / ud sin IVA</span><span class="bv" id="res_blanco_final_sin">—</span></div>
+        <div class="brow"><span class="bl">Ahorro total blancos sin IVA</span><span class="bv" id="res_blanco_ahorro">—</span></div>
+        <div class="brow"><span class="bl">Coste / ud con IVA</span><span class="bv" id="res_blanco_ud">—</span></div>
+        <div class="brow"><span class="bl">Cantidad</span><span class="bv" id="res_blanco_cant">—</span></div>
+        <div class="brow"><span class="bl">Subtotal blancos sin IVA</span><span class="bv" id="res_blanco_subtotal_sin">—</span></div>
+        <div class="brow"><span class="bl">Subtotal blancos con IVA</span><span class="bv" id="res_blanco_subtotal">—</span></div>
+        <div class="brow"><span class="bl">Envío blancos con IVA</span><span class="bv" id="res_blanco_envio">—</span></div>
+        <div class="brow" style="padding-top:6px"><span class="bl" style="font-weight:700;color:var(--color-text-primary)">Total blancos con IVA</span><span class="bv accent" id="res_blanco_total">—</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Personalización</div>
+
+      <div class="field" style="margin-bottom:12px">
+        <label>Técnica</label>
+        <select id="tecnica">
+          <option value="ninguna">Sin personalizar</option>
+          <option value="dtf_textil" selected>DTF Textil</option>
+          <option value="dtf_oro">DTF Oro</option>
+          <option value="sublimacion">Sublimación</option>
+          <option value="vinilo">Vinilo (plotter)</option>
+          <option value="dtf_uv">DTF UV</option>
+          <option value="bordado">Bordado</option>
+          <option value="laser">Láser / grabado</option>
+        </select>
+      </div>
+
+      <div id="bloque_area" class="sub-block">
+        <div class="grid3">
+          <div class="field"><label>Ancho diseño (cm)</label><input type="number" id="dis_ancho" value="10" step="0.5" min="0.1"></div>
+          <div class="field"><label>Alto diseño (cm)</label><input type="number" id="dis_alto" value="10" step="0.5" min="0.1"></div>
+          <div class="field"><label>Posiciones / ud</label><input type="number" id="posiciones" value="1" step="1" min="1"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label>Proveedor</label>
+            <select id="proveedor_sel"></select>
+          </div>
+          <div id="bloque_vinilo_tipo" class="field" style="display:none">
+            <label>Tipo vinilo</label>
+            <select id="vinilo_tipo">
+              <option value="htv">HTV textil (€15/m²)</option>
+              <option value="adhesivo">Adhesivo (€18/m²)</option>
+              <option value="transfer">Transfer tape (€8/m²)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="bloque_bordado" class="sub-block" style="display:none">
+        <div class="grid4">
+          <div class="field"><label>Puntadas diseño</label><input type="number" id="puntadas" value="5000" step="100" min="100"></div>
+          <div class="field"><label>Nº colores</label><input type="number" id="bord_colores" value="1" step="1" min="1"></div>
+          <div class="field"><label>Posiciones / ud</label><input type="number" id="bord_pos" value="1" step="1" min="1"></div>
+          <div class="field"><label>¿Primer pedido?</label><select id="bord_picaje"><option value="1">Sí</option><option value="0">No</option></select></div>
+        </div>
+
+        <div class="grid4">
+          <div class="field"><label>Coste por puntada (€)</label><input type="number" id="bord_coste_puntada" value="0.0015" step="0.0001" min="0"></div>
+          <div class="field"><label>Manipulación / posición (€)</label><input type="number" id="bord_manipulacion" value="1.25" step="0.01" min="0"></div>
+          <div class="field"><label>Picaje fijo (€)</label><input type="number" id="bord_picaje_coste" value="10" step="0.5" min="0"></div>
+          <div class="field"><label>Extra color adicional (€)</label><input type="number" id="bord_extra_color" value="0.15" step="0.01" min="0"></div>
+        </div>
+
+        <div class="hint">Base preparada con tus supuestos de bordado: 0,0015 €/puntada, 1,25 € manipulación y 10 € de picaje.</div>
+      </div>
+
+      <div id="bloque_laser" class="sub-block" style="display:none">
+        <div class="grid4">
+          <div class="field">
+            <label>Tipo de trabajo</label>
+            <select id="laser_tipo">
+              <option value="grabado_boligrafo">Grabado logo bolígrafo / llavero</option>
+              <option value="grabado_libreta">Grabado libreta / portada cartón</option>
+              <option value="grabado_tabla">Grabado tabla / corcho pequeño</option>
+              <option value="grabado_metal">Grabado metal / acero vectorial</option>
+              <option value="corte_simple">Corte pieza simple (madera)</option>
+              <option value="grabado_superficie">Grabado superficie grande</option>
+              <option value="grabado_premium">Grabado premium complejo</option>
+              <option value="manual">Manual</option>
+            </select>
+          </div>
+          <div class="field"><label>Minutos máquina / ud</label><input type="number" id="laser_maq" value="2" step="0.1" min="0"></div>
+          <div class="field"><label>Minutos manipulación / ud</label><input type="number" id="laser_man" value="4" step="0.1" min="0"></div>
+          <div class="field"><label>Consumible extra / ud (€)</label><input type="number" id="laser_extra_ud" value="0" step="0.01" min="0"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="field"><label>Coste máquina por hora (€)</label><input type="number" id="laser_coste_hora" value="0.63" step="0.01" min="0"></div>
+          <div class="field"><label>Coste hora personal (€)</label><input type="number" id="laser_coste_mo" value="15.00" step="0.1" min="0"></div>
+        </div>
+
+        <div class="hint">Los tipos de trabajo rellenan tiempos orientativos según tu hoja de láser. Luego los ajustas a mano.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Notas internas</div>
+      <div class="field">
+        <label for="notasInternas">Notas personales</label>
+        <textarea
+          id="notasInternas"
+          class="input-textarea"
+          placeholder="Ej: cliente quiere muestra previa, revisar color, margen ajustado, pendiente confirmar tallas..."
+        ></textarea>
+        <div class="hint">Estas notas son solo para uso interno y no afectan al cálculo.</div>
+      </div>
+    </div>
+
+    <div id="resultados" class="results">
+      <div class="aviso" id="aviso_dto">Descuento sobre artículo base limitado para mantener el margen mínimo configurado.</div>
+      <div class="tramo-badge" id="tramo_badge">Tramo 1–20 ud · 0% dto sobre artículo base</div>
+
+      <div class="metrics">
+        <div class="field">
+          <label>Nº Presupuesto</label>
+          <input type="text" id="numeroPresupuesto">
+        </div>
+        <div class="metric"><div class="ml">Coste total / ud</div><div class="mv" id="r_coste_ud">—</div></div>
+        <div class="metric"><div class="ml">Total blancos (pedido)</div><div class="mv teal" id="r_total_blancos">—</div></div>
+        <div class="metric"><div class="ml">PVP final sin IVA / ud</div><div class="mv green" id="r_pvp_dto_sin">—</div></div>
+        <div class="metric"><div class="ml">PVP final con IVA / ud</div><div class="mv green" id="r_pvp_dto_con">—</div></div>
+        <div class="metric"><div class="ml">Beneficio total pedido</div><div class="mv green" id="r_ben_total">—</div></div>
+        <div class="metric"><div class="ml">Total pedido con IVA</div><div class="mv big" id="r_total_iva">—</div></div>
+      </div>
+
+      <div style="margin-bottom:10px">
+        <div class="sec-title" style="margin-bottom:8px">Construcción del precio de venta sin IVA</div>
+        <div class="brow"><span class="bl">Artículo base / ud (precio tarifa)</span><span class="bv" id="b_blanco_sin_dto">—</span></div>
+        <div class="brow">
+          <span class="bl">Descuento sobre artículo base <span class="dto-pill" id="b_dto_pill">0%</span></span>
+          <div class="bv-stack">
+            <span class="bv" id="b_dto_importe">—</span>
+            <span class="bv-sub" id="b_blanco_tras_dto"></span>
+          </div>
+        </div>
+        <div class="brow"><span class="bl">+ Personalización / ud</span><span class="bv" id="b_pers_ud">—</span></div>
+        <div class="brow"><span class="bl">+ Packaging / ud</span><span class="bv" id="b_pack_ud">—</span></div>
+        <div class="brow"><span class="bl">+ Otros costes / ud</span><span class="bv" id="b_otros_ud">—</span></div>
+        <div class="brow"><span class="bl">+ Envío blancos / ud</span><span class="bv" id="b_envio_blanco_ud">—</span></div>
+        <div class="brow"><span class="bl">+ Envío proveedor / ud</span><span class="bv" id="b_envio_prov_ud">—</span></div>
+        <div class="btotal"><span>PVP final sin IVA / ud</span><span class="bv" id="b_pvp_final_sin">—</span></div>
+      </div>
+
+      <div style="margin-bottom:10px">
+        <div class="brow"><span class="bl">IVA 21%</span><span class="bv" id="b_iva">—</span></div>
+        <div class="brow"><span class="bl">PVP final con IVA / ud</span><span class="bv accent" id="b_pvp_final_con">—</span></div>
+        <div class="brow"><span class="bl">Beneficio / ud</span><span class="bv accent" id="b_ben_ud">—</span></div>
+        <div class="brow"><span class="bl">Beneficio total pedido</span><span class="bv accent" id="b_ben_total">—</span></div>
+        <div class="brow"><span class="bl">Ingresos sin IVA (pedido)</span><span class="bv" id="b_ingresos_sin">—</span></div>
+        <div class="btotal-iva"><span>Total pedido con IVA</span><span class="bv" id="b_total_iva">—</span></div>
+      </div>
+
+      <div class="pliegos-box" id="pliegos_box" style="display:none">
+        <div class="pb-title" id="pb_title">Detalle de pliegos</div>
+        <div class="brow"><span class="bl" id="p_l1">Proveedor</span><span class="bv" id="p_proveedor">—</span></div>
+        <div class="brow"><span class="bl" id="p_l2">Tramo precio aplicado</span><span class="bv" id="p_tramo_precio">—</span></div>
+        <div class="brow"><span class="bl" id="p_l3">Dimensiones pliego</span><span class="bv" id="p_dims">—</span></div>
+        <div class="brow"><span class="bl" id="p_l4">Diseños por pliego</span><span class="bv" id="p_dis_pliego">—</span></div>
+        <div class="brow"><span class="bl" id="p_l5">Pliegos necesarios</span><span class="bv" id="p_num">—</span></div>
+        <div class="brow"><span class="bl" id="p_l6">Área pliego</span><span class="bv" id="p_area_pliego">—</span></div>
+        <div class="brow"><span class="bl" id="p_l7">Área usada</span><span class="bv" id="p_area_usada">—</span></div>
+        <div class="brow"><span class="bl" id="p_l8">Área libre</span><span class="bv" id="p_area_libre">—</span></div>
+        <div class="brow"><span class="bl" id="p_l9">Coste / pliego</span><span class="bv" id="p_coste_pliego">—</span></div>
+        <div class="brow"><span class="bl" id="p_l10">Coste total material sin IVA</span><span class="bv" id="p_coste_total_mat_sin">—</span></div>
+        <div class="brow"><span class="bl" id="p_l11">IVA material proveedor</span><span class="bv" id="p_iva_mat_prov">—</span></div>
+        <div class="brow"><span class="bl" id="p_l12">Coste total material con IVA</span><span class="bv" id="p_coste_total_mat">—</span></div>
+        <div class="brow"><span class="bl" id="p_l13">Envío proveedor con IVA</span><span class="bv" id="p_envio_prov">—</span></div>
+        <div class="brow"><span class="bl" id="p_l14">Total proveedor personalización con IVA</span><span class="bv" id="p_total_proveedor_con_iva">—</span></div>
+
+        <div class="tramo-info" id="tramo_info_321" style="display:none">
+          <strong>Tramos DTF Textil 321DTF:</strong><br>
+          1m → 10,50 €/m · 2–5m → 9,98 €/m · 6–10m → 9,03 €/m<br>
+          11–25m → 7,98 €/m · 26–60m → 7,45 €/m · 61–100m → 7,35 €/m · +101m → 7,14 €/m
+        </div>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar-label"><span>Margen real sobre venta</span><span id="bar_pct">—</span></div>
+        <div class="bar-bg">
+          <div class="bar-fill" id="margin_bar" style="width:0%"></div>
+          <div class="bar-min-line" id="bar_min_line" style="left:60%">
+            <div class="bar-min-label" id="bar_min_label">mín 60%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pliego-preview" id="pliego_preview" style="display:none">
+        <div class="pb-title">Vista previa del pliego</div>
+        <div class="preview-wrap">
+          <svg id="svg_pliego" viewBox="0 0 560 1000" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+        <div class="preview-legend">
+          <div class="brow"><span class="bl">Diseños colocados en este pliego</span><span class="bv" id="pv_disenos">—</span></div>
+          <div class="brow"><span class="bl">Área neta usada</span><span class="bv" id="pv_area_neta">—</span></div>
+          <div class="brow"><span class="bl">Área ocupada real</span><span class="bv" id="pv_area_ocupada">—</span></div>
+          <div class="brow"><span class="bl">Área libre</span><span class="bv" id="pv_area_libre">—</span></div>
+          <div class="brow"><span class="bl">Aprovechamiento neto</span><span class="bv" id="pv_aprov_neto">—</span></div>
+          <div class="brow"><span class="bl">Aprovechamiento real</span><span class="bv" id="pv_aprov_real">—</span></div>
+        </div>
+        <div class="tramo-info" id="pv_info_extra">
+          Azul = área neta del diseño · Línea gris discontinua = margen exterior de 0,2 cm · El resto es área libre o no aprovechada.
+        </div>
+      </div>
+
+      <div class="email-box" id="email_box">
+        <div class="pb-title">Presupuesto cliente y guardado en Notion</div>
+
+        <div class="grid3">
+          <div class="field">
+            <label>Cliente</label>
+            <input type="text" id="email_cliente" placeholder="Ej. Clínica Sonrisa">
+          </div>
+          <div class="field">
+            <label>Artículo</label>
+            <input type="text" id="email_producto" placeholder="Ej. Camiseta técnica">
+          </div>
+          <div class="field">
+            <label>Email cliente</label>
+            <input type="email" id="email_destino" placeholder="cliente@empresa.com">
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:10px">
+          <label>Condiciones del presupuesto</label>
+          <textarea class="input-textarea" id="condiciones_presupuesto">Presupuesto válido durante 30 días.
+Producción sujeta a confirmación de diseño y disponibilidad.
+Para iniciar el pedido se solicitará un anticipo del 50%.
+Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen, técnica especial u otra fecha pactada con anterioridad.
+El precio indicado incluye únicamente lo detallado en este presupuesto.</textarea>
+          <div class="hint">Estas condiciones se incluyen en el email al cliente y también se mandan al webhook de Make.</div>
+        </div>
+
+        <div class="actions-row">
+          <button type="button" class="btn-primary big" id="btn_email_presupuesto">📩 Enviar presupuesto al cliente</button>
+          <button type="button" class="btn-secondary" id="btn_guardar_notion">🗂️ Guardar presupuesto en Notion</button>
+        </div>
+
+        <div class="interno-sep"></div>
+
+        <div class="interno-box">
+          <div class="interno-header">
+            <span class="interno-icon">🧾</span>
+            <div>
+              <div class="interno-title">Copia interna completa</div>
+              <div class="interno-sub">Te llega a ti con todos los costes, márgenes y detalles del pedido.</div>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:10px">
+            <label>Tu email</label>
+            <input type="email" id="mi_email" placeholder="presupuestos@benditolab.com">
+          </div>
+
+          <button type="button" class="btn-interno" id="btn_email_interno">📊 Enviarme el presupuesto completo</button>
+        </div>
+
+        <div class="status-note" id="save_status">
+          El botón de cliente abre tu correo con el presupuesto limpio. El botón de Notion hace un POST al webhook de Make con todo el presupuesto.
+        </div>
+      </div>
+    </div>
+
+    <p class="footer-note">Una calculadora creada por Bendito Lab para hacer su vida más fácil.</p>
+  </div>
+
+  <script>
+    const IVA_COMPRA = 1.21;
+    const IVA_VENTA = 0.21;
+    const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/pb8y7wan55b6inhft6mufphkv1j0y76d';
+
+    const f2 = n => (Number(n || 0)).toFixed(2).replace('.', ',') + ' €';
+    const pct = n => (Number(n || 0)).toFixed(1).replace('.', ',') + ' %';
+
+    const VINILO_M2 = { htv: 15, adhesivo: 18, transfer: 8 };
+
+    const LASER_PRESETS = {
+      grabado_boligrafo: { maq: 2, man: 4 },
+      grabado_libreta: { maq: 4, man: 4 },
+      grabado_tabla: { maq: 8, man: 5 },
+      grabado_metal: { maq: 5, man: 5 },
+      corte_simple: { maq: 8, man: 6 },
+      grabado_superficie: { maq: 15, man: 8 },
+      grabado_premium: { maq: 20, man: 10 },
+      manual: null
+    };
+
+    const TRAMOS_321DTF = [
+      { min: 1, max: 1, precio: 10.50, label: '1 m → 10,50 €/m' },
+      { min: 2, max: 5, precio: 9.98, label: '2–5 m → 9,98 €/m' },
+      { min: 6, max: 10, precio: 9.03, label: '6–10 m → 9,03 €/m' },
+      { min: 11, max: 25, precio: 7.98, label: '11–25 m → 7,98 €/m' },
+      { min: 26, max: 60, precio: 7.45, label: '26–60 m → 7,45 €/m' },
+      { min: 61, max: 100, precio: 7.35, label: '61–100 m → 7,35 €/m' },
+      { min: 101, max: Infinity, precio: 7.14, label: '+101 m → 7,14 €/m' }
+    ];
+
+    const PROV_CONFIG = {
+      '321dtf': { nombre: '321DTF', ancho_cm: 56, alto_cm: 100, coste_pliego: 10.50, envio: 3.50, envio_gratis_desde: null },
+      'dtfbarcelona': { nombre: 'DTF Barcelona', ancho_cm: 60, alto_cm: 100, coste_pliego: 9.15, envio: 6.90, envio_gratis_desde: 50 },
+      'tudtf': { nombre: 'TuDTF', ancho_cm: 56, alto_cm: 100, coste_pliego: 10.90, envio: 4.90, envio_gratis_desde: 150 },
+      'dtfrapido': { nombre: 'DTFRápido', ancho_cm: 55, alto_cm: 100, coste_pliego: 11.95, envio: 0, envio_gratis_desde: 0 },
+      'amazon': { nombre: 'Amazon (vinilo)', ancho_cm: 30.5, alto_cm: 300, coste_pliego: 14.20, envio: 5.99, envio_gratis_desde: 0 },
+      'propio': { nombre: 'Producción propia', ancho_cm: 0, alto_cm: 0, coste_pliego: 0, envio: 0, envio_gratis_desde: 0 },
+      'ninguno': { nombre: '—', ancho_cm: 0, alto_cm: 0, coste_pliego: 0, envio: 0, envio_gratis_desde: 0 }
+    };
+
+    const TECNICAS = {
+      ninguna: { proveedores: [] },
+      dtf_textil: { proveedores: ['321dtf', 'dtfbarcelona', 'tudtf', 'dtfrapido'] },
+      dtf_oro: { proveedores: ['321dtf', 'dtfbarcelona', 'tudtf', 'dtfrapido'] },
+      sublimacion: { proveedores: ['dtfbarcelona', 'tudtf'] },
+      vinilo: { proveedores: ['amazon', 'propio'] },
+      dtf_uv: { proveedores: ['321dtf', 'dtfbarcelona', 'tudtf', 'dtfrapido'] },
+      bordado: { proveedores: ['propio'] },
+      laser: { proveedores: ['propio'] }
+    };
+
+    const TRAMOS_VENTA = [
+      { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
+      { min: 21, max: 49, dto: 0.02, label: '21–49 ud' },
+      { min: 50, max: 99, dto: 0.06, label: '50–99 ud' },
+      { min: 100, max: 149, dto: 0.12, label: '100–149 ud' },
+      { min: 150, max: 199, dto: 0.15, label: '150–199 ud' },
+      { min: 200, max: Infinity, dto: 0.20, label: '200+ ud' }
+    ];
+
+    const PERFILES_BLANCOS = {
+      toleshop: [
+        { min: 1, max: 9, dto: 0.00, label: '1–9 ud' },
+        { min: 10, max: 24, dto: 0.05, label: '10–24 ud' },
+        { min: 25, max: 49, dto: 0.10, label: '25–49 ud' },
+        { min: 50, max: 99, dto: 0.15, label: '50–99 ud' },
+        { min: 100, max: Infinity, dto: 0.20, label: '100+ ud' }
+      ],
+      suave: [
+        { min: 1, max: 9, dto: 0.00, label: '1–9 ud' },
+        { min: 10, max: 24, dto: 0.03, label: '10–24 ud' },
+        { min: 25, max: 49, dto: 0.06, label: '25–49 ud' },
+        { min: 50, max: 99, dto: 0.10, label: '50–99 ud' },
+        { min: 100, max: Infinity, dto: 0.15, label: '100+ ud' }
+      ],
+      sin_descuento: [
+        { min: 1, max: Infinity, dto: 0.00, label: 'Todas las cantidades' }
+      ]
+    };
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function getMargenMin() {
+      return parseInt(document.getElementById('margen_min').value, 10) / 100;
+    }
+
+    function fmtM2(v) {
+      return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
+    }
+
+    function parseEuroTextToNumber(text) {
+      if (!text) return 0;
+      const clean = String(text)
+        .replace(/€/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.')
+        .replace(/[^0-9.-]/g, '')
+        .trim();
+      const n = parseFloat(clean);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function getCurrentTechniqueText() {
+      return document.getElementById('tecnica')?.selectedOptions[0]?.textContent || 'Sin personalizar';
+    }
+
+    function getCurrentProviderText() {
+      const el = document.getElementById('p_proveedor');
+      return el ? el.textContent.trim() : '—';
+    }
+
+    function setTramosBlancos(tramos) {
+      const rows = [1, 2, 3, 4, 5];
+      rows.forEach((n, idx) => {
+        const t = tramos[idx] || { min: '', max: '', dto: 0 };
+        document.getElementById(`tb${n}_min`).value = Number.isFinite(t.min) ? t.min : '';
+        document.getElementById(`tb${n}_max`).value = t.max === Infinity ? 999999 : (Number.isFinite(t.max) ? t.max : '');
+        document.getElementById(`tb${n}_dto`).value = ((t.dto || 0) * 100).toFixed(1).replace(/\.0$/, '');
+      });
+    }
+
+    function getTramosBlancosFromUI() {
+      const out = [];
+      for (let n = 1; n <= 5; n++) {
+        const min = parseInt(document.getElementById(`tb${n}_min`).value, 10);
+        const maxRaw = parseInt(document.getElementById(`tb${n}_max`).value, 10);
+        const dto = (parseFloat(document.getElementById(`tb${n}_dto`).value) || 0) / 100;
+        if (!Number.isFinite(min) || !Number.isFinite(maxRaw)) continue;
+        out.push({
+          min,
+          max: maxRaw >= 999999 ? Infinity : maxRaw,
+          dto,
+          label: maxRaw >= 999999 ? `${min}+ ud` : `${min}–${maxRaw} ud`
+        });
+      }
+      out.sort((a, b) => a.min - b.min);
+      return out;
+    }
+
+    function getTramoBlanco(q, tramos) {
+      for (const t of tramos) {
+        if (q >= t.min && q <= t.max) return t;
+      }
+      return tramos[tramos.length - 1] || { min: 1, max: Infinity, dto: 0, label: 'Sin tramo' };
+    }
+
+    function applyPerfilBlanco(forceCalc = true) {
+      const perfil = document.getElementById('perfil_blanco').value;
+      if (perfil !== 'personalizado') {
+        setTramosBlancos(PERFILES_BLANCOS[perfil] || PERFILES_BLANCOS.toleshop);
+      }
+      if (forceCalc) calc();
+    }
+
+    function get321Precio(metros) {
+      for (const t of TRAMOS_321DTF) {
+        if (metros >= t.min && metros <= t.max) return t;
+      }
+      return TRAMOS_321DTF[TRAMOS_321DTF.length - 1];
+    }
+
+    function getTramoVenta(q) {
+      for (let i = 0; i < TRAMOS_VENTA.length; i++) {
+        if (q >= TRAMOS_VENTA[i].min && q <= TRAMOS_VENTA[i].max) return i;
+      }
+      return TRAMOS_VENTA.length - 1;
+    }
+
+    function renderPliegoPreview({ pw, ph, dis_ancho, dis_alto, MC, dh, dv, total_imp }) {
+      const svg = document.getElementById('svg_pliego');
+      const previewBox = document.getElementById('pliego_preview');
+      if (!svg || !previewBox) return;
+
+      if (!pw || !ph || !dh || !dv) {
+        previewBox.style.display = 'none';
+        svg.innerHTML = '';
+        return;
+      }
+
+      const scale = 10;
+      const W = pw * scale;
+      const H = ph * scale;
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+      const totalPorPliego = dh * dv;
+      const disenosEnEstePliego = Math.min(totalPorPliego, total_imp);
+
+      const areaPliegoCm2 = pw * ph;
+      const areaNetaUsadaCm2 = dis_ancho * dis_alto * disenosEnEstePliego;
+      const anchoOcupadoCm = dh > 0 ? (dh * dis_ancho + (dh - 1) * MC) : 0;
+      const altoOcupadoCm = dv > 0 ? (dv * dis_alto + (dv - 1) * MC) : 0;
+      const areaOcupadaRealCm2 = anchoOcupadoCm * altoOcupadoCm;
+      const areaLibreCm2 = Math.max(0, areaPliegoCm2 - areaOcupadaRealCm2);
+      const aprovechamientoNeto = areaPliegoCm2 > 0 ? (areaNetaUsadaCm2 / areaPliegoCm2) * 100 : 0;
+      const aprovechamientoReal = areaPliegoCm2 > 0 ? (areaOcupadaRealCm2 / areaPliegoCm2) * 100 : 0;
+
+      let svgHtml = '';
+      svgHtml += `<rect x="0" y="0" width="${W}" height="${H}" rx="8" ry="8" fill="#f8f8f8" stroke="#222" stroke-width="2"/>`;
+      svgHtml += `<rect x="${MC * scale}" y="${MC * scale}" width="${W - 2 * MC * scale}" height="${H - 2 * MC * scale}" fill="#ffffff" stroke="#c7c7c7" stroke-width="1.5" stroke-dasharray="6 4"/>`;
+
+      let placed = 0;
+      for (let row = 0; row < dv; row++) {
+        for (let col = 0; col < dh; col++) {
+          if (placed >= disenosEnEstePliego) break;
+          const x = (MC + col * (dis_ancho + MC)) * scale;
+          const y = (MC + row * (dis_alto + MC)) * scale;
+          const w = dis_ancho * scale;
+          const h = dis_alto * scale;
+          svgHtml += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" ry="4" fill="#cfe8ff" stroke="#2563eb" stroke-width="1.5"/>`;
+          placed++;
+        }
+      }
+
+      svgHtml += `<text x="${W / 2}" y="${H - 10}" text-anchor="middle" font-size="14" fill="#555" font-family="Arial, sans-serif">${dh} columnas × ${dv} filas · ${disenosEnEstePliego} diseños visibles</text>`;
+      svg.innerHTML = svgHtml;
+      previewBox.style.display = 'block';
+
+      setText('pv_disenos', disenosEnEstePliego + ' ud');
+      setText('pv_area_neta', fmtM2(areaNetaUsadaCm2 / 10000));
+      setText('pv_area_ocupada', fmtM2(areaOcupadaRealCm2 / 10000));
+      setText('pv_area_libre', fmtM2(areaLibreCm2 / 10000));
+      setText('pv_aprov_neto', pct(aprovechamientoNeto));
+      setText('pv_aprov_real', pct(aprovechamientoReal));
+    }
+
+    function hidePliegoPreview() {
+      const previewBox = document.getElementById('pliego_preview');
+      const svg = document.getElementById('svg_pliego');
+      if (previewBox) previewBox.style.display = 'none';
+      if (svg) svg.innerHTML = '';
+    }
+
+    function buildClientBudgetEmail() {
+      const numeroPresupuesto = document.getElementById('numeroPresupuesto')?.value.trim() || 'Sin número';
+      const nombreCliente = document.getElementById('email_cliente')?.value.trim() || '';
+      const producto = document.getElementById('email_producto')?.value.trim() || 'Artículo personalizado';
+      const destino = document.getElementById('email_destino')?.value.trim() || '';
+      const cantidad = parseInt(document.getElementById('cantidad')?.value || '0', 10) || 0;
+
+      const precioUnidad = document.getElementById('r_pvp_dto_con')?.textContent?.trim() || '—';
+      const totalPresupuesto = document.getElementById('r_total_iva')?.textContent?.trim() || '—';
+      const tecnica = getCurrentTechniqueText();
+
+      const condicionesRaw = document.getElementById('condiciones_presupuesto')?.value.trim() || '';
+      const condiciones = condicionesRaw
+        .split('\n')
+        .map(linea => linea.trim())
+        .filter(Boolean)
+        .map(linea => `- ${linea.replace(/^-+\s*/, '')}`);
+
+      const saludo = nombreCliente ? `Hola ${nombreCliente},` : 'Hola,';
+      const asunto = `Tu presupuesto ${numeroPresupuesto} ya está listo · Bendito Lab`;
+
+      const bodyLines = [
+        saludo,
+        '',
+        `Tu presupuesto ${numeroPresupuesto} ya está listo:`,
+        '',
+        `Artículo: ${producto}`,
+        `Técnica: ${tecnica}`,
+        `Cantidad: ${cantidad} uds`,
+        `Precio por unidad: ${precioUnidad}`,
+        `Total presupuesto: ${totalPresupuesto}`,
+        '',
+        'Condiciones:',
+        ...condiciones,
+        '',
+        'Si tienes cualquier pregunta, no dudes en escribirme.',
+        '',
+        'Un abrazo,',
+        'Silvia',
+        'Bendito Lab'
+      ];
+
+      return {
+        destino,
+        asunto,
+        body: bodyLines.join('\n')
+      };
+    }
+
+    function buildBudgetPayload() {
+      const nombreCliente = document.getElementById('email_cliente').value.trim();
+      const producto = document.getElementById('email_producto').value.trim();
+      const emailDestino = document.getElementById('email_destino').value.trim();
+      const cantidad = Number(document.getElementById('cantidad').value || 0);
+      const fecha = new Date().toISOString().slice(0, 10);
+      const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
+      const numeroPresupuesto =
+        document.getElementById('numeroPresupuesto')?.value.trim() ||
+        `PRES-${fecha.replace(/-/g, '')}-${String(Date.now()).slice(-6)}`;
+      const notasInternas = document.getElementById('notasInternas')?.value.trim() || '';
+
+      const { body } = buildClientBudgetEmail();
+      const tecnica = getCurrentTechniqueText();
+      const proveedor = getCurrentProviderText();
+      const precioUnidadCliente = parseEuroTextToNumber(document.getElementById('r_pvp_dto_con').textContent);
+      const totalPresupuestoCliente = parseEuroTextToNumber(document.getElementById('r_total_iva').textContent);
+      const pvpSinIva = parseEuroTextToNumber(document.getElementById('r_pvp_dto_sin').textContent);
+      const pvpConIva = parseEuroTextToNumber(document.getElementById('r_pvp_dto_con').textContent);
+      const totalPedidoConIva = parseEuroTextToNumber(document.getElementById('r_total_iva').textContent);
+      const costeTotalUd = parseEuroTextToNumber(document.getElementById('r_coste_ud').textContent);
+      const beneficioTotalPedido = parseEuroTextToNumber(document.getElementById('r_ben_total').textContent);
+      const packaging = parseEuroTextToNumber(document.getElementById('b_pack_ud').textContent) * cantidad;
+      const otrosCostes = parseEuroTextToNumber(document.getElementById('b_otros_ud').textContent) * cantidad;
+      const pliegos = parseFloat((document.getElementById('p_num')?.textContent || '0').replace(/[^0-9.]/g, '')) || 0;
+      const areaLibre = parseFloat(
+        String(document.getElementById('pv_area_libre')?.textContent || '0')
+          .replace('m²', '')
+          .replace(/\./g, '')
+          .replace(',', '.')
+          .replace(/[^0-9.-]/g, '')
+      ) || 0;
+      const aprovechamiento = parseFloat(
+        String(document.getElementById('pv_aprov_real')?.textContent || '0')
+          .replace('%', '')
+          .replace(/\./g, '')
+          .replace(',', '.')
+          .replace(/[^0-9.-]/g, '')
+      ) || 0;
+
+      const nombre = `${numeroPresupuesto} · ${nombreCliente || 'Sin cliente'} · ${producto || 'Sin producto'} · ${fecha}`;
+
+      let picaje = 0;
+      if (tecnica === 'Bordado') {
+        picaje = parseEuroTextToNumber(document.getElementById('p_total_proveedor_con_iva')?.textContent || '0');
+      }
+
+      return {
+        nombre,
+        id_presupuesto: numeroPresupuesto,
+        numero_presupuesto: numeroPresupuesto,
+        fecha_envio: fecha,
+        estado: 'Enviado',
+        cliente: nombreCliente,
+        nombre_cliente: nombreCliente,
+        email_destino: emailDestino,
+        producto,
+        cantidad,
+        tecnica,
+        proveedor,
+        precio_unidad_cliente: precioUnidadCliente,
+        pvp_sin_iva: pvpSinIva,
+        pvp_con_iva: pvpConIva,
+        total_presupuesto_cliente: totalPresupuestoCliente,
+        total_pedido_con_iva: totalPedidoConIva,
+        coste_total_ud: costeTotalUd,
+        beneficio_total_pedido: beneficioTotalPedido,
+        packaging,
+        picaje,
+        otros_costes: otrosCostes,
+        pliegos,
+        area_libre: areaLibre,
+        aprovechamiento,
+        condiciones,
+        notas_internas: notasInternas,
+        texto_enviado: body
+      };
+    }
+
+    function sendBudgetEmail() {
+      const { destino, asunto, body } = buildClientBudgetEmail();
+      if (!destino) {
+        alert('Escribe el email del cliente primero.');
+        return;
+      }
+      const href = `mailto:${encodeURIComponent(destino)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(body)}`;
+      window.location.href = href;
+    }
+
+    async function saveBudgetToMake() {
+      const statusEl = document.getElementById('save_status');
+
+      if (!MAKE_WEBHOOK_URL || MAKE_WEBHOOK_URL === 'PEGA_AQUI_TU_WEBHOOK_DE_MAKE') {
+        alert('Primero pega la URL real del webhook de Make en el código.');
+        return;
+      }
+
+      const payload = buildBudgetPayload();
+
+      try {
+        statusEl.textContent = 'Enviando presupuesto a Make...';
+
+        const res = await fetch(MAKE_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        statusEl.textContent = 'Presupuesto enviado correctamente al webhook de Make.';
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = 'No se pudo enviar el presupuesto a Make. Revisa la URL del webhook y Vercel.';
+        alert('No se pudo enviar el presupuesto al webhook de Make.');
+      }
+    }
+
+    function populateProveedorSelect() {
+      const tecnica = document.getElementById('tecnica').value;
+      const sp = document.getElementById('proveedor_sel');
+      const current = sp.value;
+      const proveedores = TECNICAS[tecnica]?.proveedores || [];
+
+      sp.innerHTML = '';
+
+      proveedores.forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = PROV_CONFIG[key].nombre;
+        sp.appendChild(opt);
+      });
+
+      if (proveedores.includes(current)) sp.value = current;
+    }
+
+    function applyLaserPreset() {
+      const key = document.getElementById('laser_tipo').value;
+      const preset = LASER_PRESETS[key];
+      if (!preset) return;
+      document.getElementById('laser_maq').value = preset.maq;
+      document.getElementById('laser_man').value = preset.man;
+    }
+
+    function updateDetalleLabels(tecnica) {
+      const labels = {
+        pb_title: 'Detalle de pliegos',
+        p_l1: 'Proveedor',
+        p_l2: 'Tramo precio aplicado',
+        p_l3: 'Dimensiones pliego',
+        p_l4: 'Diseños por pliego',
+        p_l5: 'Pliegos necesarios',
+        p_l6: 'Área pliego',
+        p_l7: 'Área usada',
+        p_l8: 'Área libre',
+        p_l9: 'Coste / pliego',
+        p_l10: 'Coste total material sin IVA',
+        p_l11: 'IVA material proveedor',
+        p_l12: 'Coste total material con IVA',
+        p_l13: 'Envío proveedor con IVA',
+        p_l14: 'Total proveedor personalización con IVA'
+      };
+
+      if (tecnica === 'bordado') {
+        labels.pb_title = 'Detalle de bordado';
+        labels.p_l1 = 'Modelo de cálculo';
+        labels.p_l2 = 'Puntadas × posiciones';
+        labels.p_l3 = 'Coste por puntada';
+        labels.p_l4 = 'Posiciones / ud';
+        labels.p_l5 = 'Nº colores';
+        labels.p_l6 = 'Manipulación / posición';
+        labels.p_l7 = 'Extra colores / ud';
+        labels.p_l8 = 'Picaje prorrateado / ud';
+        labels.p_l9 = 'Coste puntadas / ud';
+        labels.p_l10 = 'Coste total personalización / ud';
+        labels.p_l11 = 'Coste total personalización pedido';
+        labels.p_l12 = 'Picaje total';
+        labels.p_l13 = 'IVA proveedor';
+        labels.p_l14 = 'Total proveedor con IVA';
+      } else if (tecnica === 'laser') {
+        labels.pb_title = 'Detalle de láser';
+        labels.p_l1 = 'Tipo de trabajo';
+        labels.p_l2 = 'Coste máquina / hora';
+        labels.p_l3 = 'Coste mano de obra / hora';
+        labels.p_l4 = 'Minutos máquina / ud';
+        labels.p_l5 = 'Minutos manipulación / ud';
+        labels.p_l6 = 'Coste máquina / ud';
+        labels.p_l7 = 'Coste mano de obra / ud';
+        labels.p_l8 = 'Consumible extra / ud';
+        labels.p_l9 = 'Coste personalización / ud';
+        labels.p_l10 = 'Coste total personalización';
+        labels.p_l11 = 'Consumible total';
+        labels.p_l12 = 'Proveedor';
+        labels.p_l13 = 'IVA proveedor';
+        labels.p_l14 = 'Total proveedor con IVA';
+      }
+
+      for (const [id, text] of Object.entries(labels)) setText(id, text);
+    }
+
+    function leerInputs() {
+      return {
+        cantidad: Math.max(1, parseInt(document.getElementById('cantidad').value, 10) || 1),
+        precio_blanco: parseFloat(document.getElementById('precio_blanco').value) || 0,
+        pack_ud: parseFloat(document.getElementById('pack_coste').value) || 0,
+        otros_fijos: parseFloat(document.getElementById('otros_fijos').value) || 0,
+        tecnica_key: document.getElementById('tecnica').value,
+        margen_min: getMargenMin(),
+        proveedor_key: (() => {
+          const tecnica = document.getElementById('tecnica').value;
+          return (TECNICAS[tecnica]?.proveedores || [])[0]
+            ? (document.getElementById('proveedor_sel').value || TECNICAS[tecnica].proveedores[0])
+            : 'ninguno';
+        })(),
+        dis_ancho: parseFloat(document.getElementById('dis_ancho').value) || 10,
+        dis_alto: parseFloat(document.getElementById('dis_alto').value) || 10,
+        posiciones: parseInt(document.getElementById('posiciones').value, 10) || 1,
+        vinilo_tipo: document.getElementById('vinilo_tipo').value
+      };
+    }
+
+    function calcPersonalizacion({ tecnica_key, proveedor_key, cantidad, dis_ancho, dis_alto, posiciones, vinilo_tipo }) {
+      const MC = 0.2;
+      const prov = PROV_CONFIG[proveedor_key] || PROV_CONFIG['ninguno'];
+
+      const resultado = {
+        pers_ud: 0,
+        coste_total_mat: 0,
+        coste_total_mat_sin_iva: 0,
+        iva_mat_proveedor: 0,
+        total_proveedor_personalizacion_con_iva: 0,
+        num_pliegos: 0,
+        dis_pliego: 0,
+        area_pliego_m2: 0,
+        area_usada_m2: 0,
+        coste_pliego_val: 0,
+        show_pliegos: false,
+        envio_prov_total: 0,
+        prov_dims: '—',
+        tramo_label_display: '—',
+        detalle: null,
+        prov,
+        MC,
+        dh: 0,
+        dv: 0,
+        pw: 0,
+        ph: 0,
+        total_imp: 0
+      };
+
+      if (tecnica_key === 'bordado') {
+        const puntadas = parseInt(document.getElementById('puntadas').value, 10) || 5000;
+        const bord_colores = parseInt(document.getElementById('bord_colores').value, 10) || 1;
+        const bord_pos = parseInt(document.getElementById('bord_pos').value, 10) || 1;
+        const bord_picaje = parseInt(document.getElementById('bord_picaje').value, 10) || 0;
+        const bord_coste_puntada = parseFloat(document.getElementById('bord_coste_puntada').value) || 0.0015;
+        const bord_manipulacion = parseFloat(document.getElementById('bord_manipulacion').value) || 1.25;
+        const bord_picaje_coste = parseFloat(document.getElementById('bord_picaje_coste').value) || 10;
+        const bord_extra_color = parseFloat(document.getElementById('bord_extra_color').value) || 0.15;
+
+        const coste_puntadas_ud = puntadas * bord_coste_puntada * bord_pos;
+        const extra_colores_ud = Math.max(0, bord_colores - 1) * bord_extra_color * bord_pos;
+        const coste_manipulacion_ud = bord_manipulacion * bord_pos;
+        const coste_picaje_ud = bord_picaje ? (bord_picaje_coste / cantidad) : 0;
+
+        resultado.pers_ud = coste_puntadas_ud + extra_colores_ud + coste_manipulacion_ud + coste_picaje_ud;
+        resultado.coste_total_mat = resultado.pers_ud * cantidad;
+        resultado.show_pliegos = true;
+
+        resultado.detalle = {
+          proveedor: 'Producción propia',
+          tramo: puntadas.toLocaleString('es-ES') + ' puntadas',
+          dims: f2(bord_coste_puntada),
+          disPliego: bord_pos + ' posición(es)',
+          num: bord_colores + ' color(es)',
+          areaPliego: f2(bord_manipulacion),
+          areaUsada: f2(extra_colores_ud),
+          areaLibre: f2(coste_picaje_ud),
+          costePliego: f2(coste_puntadas_ud),
+          costeTotalMat: f2(resultado.pers_ud),
+          envio: bord_picaje ? f2(bord_picaje_coste) : 'No aplica'
+        };
+      } else if (tecnica_key === 'laser') {
+        const laser_maq = parseFloat(document.getElementById('laser_maq').value) || 0;
+        const laser_man = parseFloat(document.getElementById('laser_man').value) || 0;
+        const laser_extra_ud = parseFloat(document.getElementById('laser_extra_ud').value) || 0;
+        const laser_coste_hora = parseFloat(document.getElementById('laser_coste_hora').value) || 0.63;
+        const laser_coste_mo = parseFloat(document.getElementById('laser_coste_mo').value) || 15;
+
+        const coste_maquina_ud = (laser_maq / 60) * laser_coste_hora;
+        const coste_mano_obra_ud = (laser_man / 60) * laser_coste_mo;
+
+        resultado.pers_ud = coste_maquina_ud + coste_mano_obra_ud + laser_extra_ud;
+        resultado.coste_total_mat = resultado.pers_ud * cantidad;
+        resultado.show_pliegos = true;
+
+        resultado.detalle = {
+          proveedor: document.getElementById('laser_tipo').selectedOptions[0].textContent,
+          tramo: f2(laser_coste_hora),
+          dims: f2(laser_coste_mo),
+          disPliego: laser_maq.toFixed(1).replace('.', ',') + ' min',
+          num: laser_man.toFixed(1).replace('.', ',') + ' min',
+          areaPliego: f2(coste_maquina_ud),
+          areaUsada: f2(coste_mano_obra_ud),
+          areaLibre: laser_extra_ud > 0 ? f2(laser_extra_ud) : '—',
+          costePliego: f2(resultado.pers_ud),
+          costeTotalMat: f2(resultado.coste_total_mat),
+          envio: 'Producción propia'
+        };
+      } else if (tecnica_key !== 'ninguna') {
+        const m2_rate = tecnica_key === 'vinilo' ? (VINILO_M2[vinilo_tipo] || 15) : 0;
+        const pw = prov.ancho_cm;
+        const ph = prov.alto_cm;
+
+        resultado.pw = pw;
+        resultado.ph = ph;
+
+        if (pw > 0 && ph > 0) {
+          const dh = Math.floor((pw - 2 * MC + MC) / (dis_ancho + MC));
+          const dv = Math.floor((ph - 2 * MC + MC) / (dis_alto + MC));
+
+          resultado.dh = dh;
+          resultado.dv = dv;
+          resultado.dis_pliego = Math.max(1, dh * dv);
+          resultado.total_imp = cantidad * posiciones;
+          resultado.num_pliegos = Math.ceil(resultado.total_imp / resultado.dis_pliego);
+          resultado.area_pliego_m2 = (pw * ph) / 10000;
+
+          const area_dis_m2 = (dis_ancho * dis_alto) / 10000;
+          resultado.area_usada_m2 = Math.min(
+            area_dis_m2 * resultado.total_imp,
+            resultado.area_pliego_m2 * resultado.num_pliegos
+          );
+
+          resultado.prov_dims = pw + ' × ' + ph + ' cm';
+
+          if (proveedor_key === '321dtf' && tecnica_key === 'dtf_textil') {
+            const t = get321Precio(resultado.num_pliegos);
+            resultado.coste_pliego_val = t.precio;
+            resultado.tramo_label_display = t.label;
+          } else if (tecnica_key === 'vinilo') {
+            resultado.coste_pliego_val = m2_rate * resultado.area_pliego_m2;
+            resultado.tramo_label_display = 'Tarifa fija';
+          } else {
+            resultado.coste_pliego_val = prov.coste_pliego;
+            resultado.tramo_label_display = 'Tarifa estándar';
+          }
+
+          resultado.coste_total_mat_sin_iva = resultado.coste_pliego_val * resultado.num_pliegos;
+          resultado.coste_total_mat = resultado.coste_total_mat_sin_iva * IVA_COMPRA;
+          resultado.iva_mat_proveedor = resultado.coste_total_mat - resultado.coste_total_mat_sin_iva;
+          resultado.pers_ud = resultado.coste_total_mat / cantidad;
+
+          let envio_prov_sin_iva = 0;
+          if (prov.envio_gratis_desde === null) {
+            envio_prov_sin_iva = prov.envio;
+          } else if (resultado.coste_total_mat_sin_iva >= prov.envio_gratis_desde) {
+            envio_prov_sin_iva = 0;
+          } else {
+            envio_prov_sin_iva = prov.envio_gratis_desde === 0 ? 0 : prov.envio;
+          }
+
+          resultado.envio_prov_total = envio_prov_sin_iva * IVA_COMPRA;
+          resultado.total_proveedor_personalizacion_con_iva = resultado.coste_total_mat + resultado.envio_prov_total;
+          resultado.show_pliegos = true;
+        }
+      }
+
+      return resultado;
+    }
+
+    function calcPVP({ cantidad, precio_blanco, pack_ud, otros_fijos, margen_min, pers_ud, envio_prov_total }) {
+      const divisor = 1 - margen_min;
+
+      const tramosBlancos = getTramosBlancosFromUI();
+      const tramoBlanco = getTramoBlanco(cantidad, tramosBlancos);
+      const usarDtoBlancoAuto = document.getElementById('usar_dto_blanco_auto').checked;
+      const usarDtoBlancoManual = document.getElementById('usar_dto_blanco_manual').checked;
+      const dtoBlancoManual = Math.max(0, (parseFloat(document.getElementById('dto_blanco_manual').value) || 0) / 100);
+
+      const dtoBlancoAplicado = Math.min(
+        1,
+        usarDtoBlancoManual ? dtoBlancoManual : (usarDtoBlancoAuto ? (tramoBlanco.dto || 0) : 0)
+      );
+
+      const precio_blanco_final_sin_iva = precio_blanco * (1 - dtoBlancoAplicado);
+      const precio_blanco_con_iva = precio_blanco_final_sin_iva * IVA_COMPRA;
+      const subtotal_blancos_sin_iva = precio_blanco_final_sin_iva * cantidad;
+      const ahorro_blancos_sin_iva = (precio_blanco - precio_blanco_final_sin_iva) * cantidad;
+      const envio_blanco_sin_iva = subtotal_blancos_sin_iva >= 100 ? 0 : 5.95;
+      const envio_blanco_total = envio_blanco_sin_iva * IVA_COMPRA;
+      const subtotal_blancos = precio_blanco_con_iva * cantidad;
+      const total_blancos = subtotal_blancos + envio_blanco_total;
+      const envio_blanco_ud = envio_blanco_total / cantidad;
+      const envio_prov_ud = envio_prov_total / cantidad;
+
+      const costes_fijos_ud =
+        pers_ud +
+        pack_ud +
+        (otros_fijos / cantidad) +
+        envio_blanco_ud +
+        envio_prov_ud;
+
+      const coste_total_ud = precio_blanco_con_iva + costes_fijos_ud;
+
+      const ti = getTramoVenta(cantidad);
+      const dto_nominal = TRAMOS_VENTA[ti].dto;
+      const pvp_minimo = coste_total_ud / divisor;
+      const blanco_dto_nom = precio_blanco_con_iva * (1 - dto_nominal);
+      const pvp_dto_nom = blanco_dto_nom + costes_fijos_ud;
+
+      let blanco_final, pvp_final, capped;
+
+      if (pvp_dto_nom >= pvp_minimo) {
+        blanco_final = blanco_dto_nom;
+        pvp_final = pvp_dto_nom;
+        capped = false;
+      } else {
+        blanco_final = Math.max(pvp_minimo - costes_fijos_ud, 0);
+        pvp_final = blanco_final + costes_fijos_ud;
+        capped = true;
+      }
+
+      const dto_importe = precio_blanco_con_iva - blanco_final;
+      const dto_real_pct = precio_blanco_con_iva > 0 ? (dto_importe / precio_blanco_con_iva) * 100 : 0;
+      const pvp_final_iva = pvp_final * (1 + IVA_VENTA);
+      const total_pedido_iva = pvp_final_iva * cantidad;
+      const margen_real = pvp_final > 0 ? ((pvp_final - coste_total_ud) / pvp_final) * 100 : 0;
+      const ben_ud = pvp_final - coste_total_ud;
+      const ben_total = ben_ud * cantidad;
+
+      return {
+        tramoBlanco,
+        dtoBlancoAplicado,
+        precio_blanco_final_sin_iva,
+        precio_blanco_con_iva,
+        subtotal_blancos_sin_iva,
+        ahorro_blancos_sin_iva,
+        envio_blanco_total,
+        subtotal_blancos,
+        total_blancos,
+        envio_blanco_ud,
+        envio_prov_ud,
+        costes_fijos_ud,
+        coste_total_ud,
+        ti,
+        dto_nominal,
+        blanco_final,
+        pvp_final,
+        capped,
+        dto_importe,
+        dto_real_pct,
+        pvp_final_iva,
+        total_pedido_iva,
+        margen_real,
+        ben_ud,
+        ben_total
+      };
+    }
+
+    function renderResultados(inputs, pers, pvp) {
+      const { cantidad, tecnica_key, pack_ud, otros_fijos, margen_min, proveedor_key } = inputs;
+      const {
+        pers_ud,
+        envio_prov_total,
+        show_pliegos,
+        detalle,
+        prov,
+        coste_total_mat_sin_iva,
+        iva_mat_proveedor,
+        coste_total_mat,
+        num_pliegos,
+        dis_pliego,
+        area_pliego_m2,
+        area_usada_m2,
+        coste_pliego_val,
+        prov_dims,
+        tramo_label_display,
+        total_proveedor_personalizacion_con_iva,
+        MC,
+        dh,
+        dv,
+        pw,
+        ph,
+        total_imp
+      } = pers;
+
+      const {
+        tramoBlanco,
+        dtoBlancoAplicado,
+        precio_blanco_final_sin_iva,
+        precio_blanco_con_iva,
+        subtotal_blancos_sin_iva,
+        ahorro_blancos_sin_iva,
+        envio_blanco_total,
+        subtotal_blancos,
+        total_blancos,
+        envio_blanco_ud,
+        envio_prov_ud,
+        coste_total_ud,
+        ti,
+        dto_nominal,
+        blanco_final,
+        pvp_final,
+        capped,
+        dto_importe,
+        dto_real_pct,
+        pvp_final_iva,
+        total_pedido_iva,
+        margen_real,
+        ben_ud,
+        ben_total
+      } = pvp;
+
+      const mp = (margen_min * 100).toFixed(0);
+
+      const mvd = document.getElementById('margen_val_display');
+      mvd.textContent = mp + '%';
+      mvd.className = 'margen-val' + (margen_min >= 0.60 ? ' green' : ' amber');
+
+      document.getElementById('margen_hint').textContent =
+        margen_min >= 0.60
+          ? 'Margen saludable B2B. Descuento aplicado solo sobre artículo base.'
+          : 'Por debajo del 60%. Úsalo solo si el volumen o la estrategia lo justifican.';
+
+      setText('tramo_blanco_badge', tramoBlanco.label + ' · ' + (dtoBlancoAplicado * 100).toFixed(1).replace('.', ',') + '%');
+      setText('res_blanco_tarifa_ud', f2(inputs.precio_blanco));
+      setText('res_blanco_dto', (dtoBlancoAplicado * 100).toFixed(1).replace('.', ',') + ' %');
+      setText('res_blanco_final_sin', f2(precio_blanco_final_sin_iva));
+      setText('res_blanco_ahorro', ahorro_blancos_sin_iva > 0 ? f2(ahorro_blancos_sin_iva) : '—');
+      setText('res_blanco_ud', f2(precio_blanco_con_iva));
+      setText('res_blanco_cant', cantidad + ' ud');
+      setText('res_blanco_subtotal_sin', f2(subtotal_blancos_sin_iva));
+      setText('res_blanco_subtotal', f2(subtotal_blancos));
+      setText('res_blanco_envio', envio_blanco_total > 0 ? f2(envio_blanco_total) : 'Gratis (≥100 € sin IVA)');
+      setText('res_blanco_total', f2(total_blancos));
+
+      setText('r_coste_ud', f2(coste_total_ud));
+      setText('r_total_blancos', f2(total_blancos));
+      setText('r_pvp_dto_sin', f2(pvp_final));
+      setText('r_pvp_dto_con', f2(pvp_final_iva));
+      setText('r_ben_total', f2(ben_total));
+      setText('r_total_iva', f2(total_pedido_iva));
+
+      const badge = document.getElementById('tramo_badge');
+      badge.textContent =
+        'Tramo ' +
+        TRAMOS_VENTA[ti].label +
+        ' · ' +
+        (dto_nominal * 100).toFixed(0) +
+        '% dto artículo base' +
+        (capped ? ' (limitado a ' + dto_real_pct.toFixed(0) + '%)' : '');
+
+      badge.className = 'tramo-badge' + (capped ? ' capped' : '');
+      document.getElementById('aviso_dto').className = 'aviso' + (capped ? ' show' : '');
+
+      setText('b_blanco_sin_dto', f2(precio_blanco_con_iva));
+
+      const pill = document.getElementById('b_dto_pill');
+      if (dto_nominal === 0) {
+        pill.textContent = 'sin dto en este tramo';
+        pill.className = 'dto-pill ok';
+        setText('b_dto_importe', '—');
+        setText('b_blanco_tras_dto', '');
+      } else if (capped) {
+        pill.textContent = (dto_nominal * 100).toFixed(0) + '% → limitado a ' + dto_real_pct.toFixed(0) + '%';
+        pill.className = 'dto-pill';
+        setText('b_dto_importe', dto_importe > 0 ? '- ' + f2(dto_importe) : '—');
+        setText('b_blanco_tras_dto', 'artículo base queda: ' + f2(blanco_final) + ' / ud');
+      } else {
+        pill.textContent = (dto_nominal * 100).toFixed(0) + '% aplicado';
+        pill.className = 'dto-pill ok';
+        setText('b_dto_importe', '- ' + f2(dto_importe));
+        setText('b_blanco_tras_dto', 'artículo base queda: ' + f2(blanco_final) + ' / ud');
+      }
+
+      setText('b_pers_ud', tecnica_key === 'ninguna' ? '—' : f2(pers_ud));
+      setText('b_pack_ud', pack_ud > 0 ? f2(pack_ud) : '—');
+      setText('b_otros_ud', otros_fijos > 0 ? f2(otros_fijos / cantidad) : '—');
+      setText('b_envio_blanco_ud', envio_blanco_total > 0 ? f2(envio_blanco_ud) + ' (total ' + f2(envio_blanco_total) + ')' : 'Gratis (≥100 € sin IVA)');
+      setText('b_envio_prov_ud', (show_pliegos && envio_prov_total > 0) ? f2(envio_prov_ud) + ' (total ' + f2(envio_prov_total) + ')' : (show_pliegos ? 'Gratis / no aplica' : '—'));
+      setText('b_pvp_final_sin', f2(pvp_final));
+      setText('b_iva', f2(pvp_final * IVA_VENTA));
+      setText('b_pvp_final_con', f2(pvp_final_iva));
+      setText('b_ben_ud', f2(ben_ud));
+      setText('b_ben_total', f2(ben_total));
+      setText('b_ingresos_sin', f2(pvp_final * cantidad));
+      setText('b_total_iva', f2(total_pedido_iva));
+
+      const pb = document.getElementById('pliegos_box');
+      updateDetalleLabels(tecnica_key);
+
+      if (show_pliegos) {
+        pb.style.display = 'block';
+
+        if (tecnica_key === 'bordado' || tecnica_key === 'laser') {
+          setText('p_proveedor', detalle.proveedor);
+          setText('p_tramo_precio', detalle.tramo);
+          setText('p_dims', detalle.dims);
+          setText('p_dis_pliego', detalle.disPliego);
+          setText('p_num', detalle.num);
+          setText('p_area_pliego', detalle.areaPliego);
+          setText('p_area_usada', detalle.areaUsada);
+          setText('p_area_libre', detalle.areaLibre);
+          setText('p_coste_pliego', detalle.costePliego);
+          setText('p_coste_total_mat_sin', detalle.costeTotalMat);
+          setText('p_iva_mat_prov', 'No aplica');
+          setText('p_coste_total_mat', detalle.costeTotalMat);
+          setText('p_envio_prov', detalle.envio);
+          setText('p_total_proveedor_con_iva', detalle.envio === 'No aplica' ? 'No aplica' : detalle.costeTotalMat);
+          document.getElementById('tramo_info_321').style.display = 'none';
+        } else {
+          setText('p_proveedor', prov.nombre);
+          setText('p_tramo_precio', tramo_label_display + ' (' + f2(coste_pliego_val) + '/pliego)');
+          setText('p_dims', prov_dims);
+          setText('p_dis_pliego', dis_pliego + ' diseños');
+          setText('p_num', num_pliegos + ' pliegos');
+          setText('p_area_pliego', (area_pliego_m2 * 10000).toFixed(0) + ' cm² (' + area_pliego_m2.toFixed(4).replace('.', ',') + ' m²)');
+          const alib = Math.max(0, area_pliego_m2 * num_pliegos - area_usada_m2);
+          setText('p_area_usada', (area_usada_m2 * 10000).toFixed(0) + ' cm²');
+          setText('p_area_libre', (alib * 10000).toFixed(0) + ' cm²');
+          setText('p_coste_pliego', f2(coste_pliego_val));
+          setText('p_coste_total_mat_sin', f2(coste_total_mat_sin_iva));
+          setText('p_iva_mat_prov', f2(iva_mat_proveedor));
+          setText('p_coste_total_mat', f2(coste_total_mat));
+          setText('p_envio_prov', envio_prov_total > 0 ? f2(envio_prov_total) : 'Gratis');
+          setText('p_total_proveedor_con_iva', f2(total_proveedor_personalizacion_con_iva));
+          document.getElementById('tramo_info_321').style.display =
+            (proveedor_key === '321dtf' && tecnica_key === 'dtf_textil') ? 'block' : 'none';
+        }
+      } else {
+        pb.style.display = 'none';
+      }
+
+      if (
+        show_pliegos &&
+        tecnica_key !== 'bordado' &&
+        tecnica_key !== 'laser' &&
+        pw > 0 &&
+        ph > 0 &&
+        dh > 0 &&
+        dv > 0
+      ) {
+        renderPliegoPreview({
+          pw,
+          ph,
+          dis_ancho: inputs.dis_ancho,
+          dis_alto: inputs.dis_alto,
+          MC,
+          dh,
+          dv,
+          total_imp
+        });
+      } else {
+        hidePliegoPreview();
+      }
+
+      const bar = document.getElementById('margin_bar');
+      bar.style.width = Math.max(0, Math.min(100, margen_real)) + '%';
+      bar.className = 'bar-fill' + (margen_real < margen_min * 100 ? ' amber' : '');
+      setText('bar_pct', pct(margen_real));
+
+      document.getElementById('bar_min_line').style.left = (margen_min * 100) + '%';
+      setText('bar_min_label', 'mín ' + mp + '%');
+    }
+
+    function calc() {
+      const inputs = leerInputs();
+      const pers = calcPersonalizacion(inputs);
+      const pvp = calcPVP({
+        ...inputs,
+        pers_ud: pers.pers_ud,
+        envio_prov_total: pers.envio_prov_total
+      });
+      renderResultados(inputs, pers, pvp);
+    }
+
+    function updateTecnicaUI() {
+      const t = document.getElementById('tecnica').value;
+      populateProveedorSelect();
+      document.getElementById('bloque_area').style.display = (t !== 'ninguna' && t !== 'bordado' && t !== 'laser') ? 'block' : 'none';
+      document.getElementById('bloque_bordado').style.display = t === 'bordado' ? 'block' : 'none';
+      document.getElementById('bloque_laser').style.display = t === 'laser' ? 'block' : 'none';
+      document.getElementById('bloque_vinilo_tipo').style.display = t === 'vinilo' ? 'block' : 'none';
+      calc();
+    }
+
+    function buildInternalEmail() {
+      const inputs = leerInputs();
+      const pers = calcPersonalizacion(inputs);
+      const pvp = calcPVP({
+        ...inputs,
+        pers_ud: pers.pers_ud,
+        envio_prov_total: pers.envio_prov_total
+      });
+
+      const { cantidad, precio_blanco, pack_ud, otros_fijos, tecnica_key, margen_min } = inputs;
+      const {
+        pers_ud,
+        envio_prov_total,
+        show_pliegos,
+        coste_total_mat,
+        coste_total_mat_sin_iva,
+        iva_mat_proveedor,
+        total_proveedor_personalizacion_con_iva,
+        num_pliegos,
+        dis_pliego,
+        area_pliego_m2,
+        area_usada_m2,
+        coste_pliego_val,
+        prov_dims,
+        tramo_label_display,
+        prov
+      } = pers;
+
+      const {
+        precio_blanco_con_iva,
+        precio_blanco_final_sin_iva,
+        dtoBlancoAplicado,
+        subtotal_blancos_sin_iva,
+        envio_blanco_total,
+        total_blancos,
+        coste_total_ud,
+        pvp_final,
+        pvp_final_iva,
+        total_pedido_iva,
+        margen_real,
+        ben_ud,
+        ben_total,
+        dto_nominal,
+        ti,
+        capped,
+        dto_real_pct,
+        envio_blanco_ud,
+        envio_prov_ud,
+        costes_fijos_ud
+      } = pvp;
+
+      const numeroPresupuesto = document.getElementById('numeroPresupuesto')?.value.trim() || 'Sin número';
+      const nombreCliente = document.getElementById('email_cliente').value.trim() || '—';
+      const producto = document.getElementById('email_producto').value.trim() || '—';
+      const emailDestino = document.getElementById('email_destino')?.value.trim() || '—';
+      const tecnica = document.getElementById('tecnica').selectedOptions[0]?.textContent || '—';
+      const notasInternas = document.getElementById('notasInternas')?.value.trim() || '';
+      const fecha = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const linea = '─'.repeat(42);
+
+      const lines = [
+        'PRESUPUESTO INTERNO · BENDITO LAB',
+        `Fecha: ${fecha}`,
+        `Nº presupuesto: ${numeroPresupuesto}`,
+        linea,
+        `Cliente:   ${nombreCliente}`,
+        `Email cliente: ${emailDestino}`,
+        `Artículo:  ${producto}`,
+        `Técnica:   ${tecnica}`,
+        `Cantidad:  ${cantidad} ud`,
+        linea,
+        'COSTES',
+        `  Artículo base tarifa sin IVA/ud:   ${f2(precio_blanco)}`,
+        `  Dto blancos aplicado:              ${(dtoBlancoAplicado * 100).toFixed(1).replace('.', ',')} %`,
+        `  Artículo base final sin IVA/ud:    ${f2(precio_blanco_final_sin_iva)}`,
+        `  Artículo base con IVA/ud:          ${f2(precio_blanco_con_iva)}`,
+        `  Subtotal blancos sin IVA:          ${f2(subtotal_blancos_sin_iva)}`,
+        `  Envío blancos con IVA:             ${envio_blanco_total > 0 ? f2(envio_blanco_total) : 'Gratis'}`,
+        `  Total blancos con IVA:             ${f2(total_blancos)}`,
+        '',
+        `  Personalización/ud:                ${tecnica_key === 'ninguna' ? '—' : f2(pers_ud)}`,
+        `  Packaging/ud:                      ${pack_ud > 0 ? f2(pack_ud) : '—'}`,
+        `  Otros costes/ud:                   ${otros_fijos > 0 ? f2(otros_fijos / cantidad) : '—'}`,
+        `  Envío blancos/ud:                  ${envio_blanco_total > 0 ? f2(envio_blanco_ud) : 'Gratis'}`,
+        `  Envío proveedor/ud:                ${show_pliegos && envio_prov_total > 0 ? f2(envio_prov_ud) : '—'}`,
+        `  Costes fijos totales/ud:           ${f2(costes_fijos_ud)}`,
+        `  COSTE TOTAL/ud:                    ${f2(coste_total_ud)}`,
+        linea,
+        'PRECIOS Y MARGEN',
+        `  Margen mínimo configurado:         ${(margen_min * 100).toFixed(0)} %`,
+        `  Tramo venta:                       ${TRAMOS_VENTA[ti].label} · ${(dto_nominal * 100).toFixed(0)}% dto${capped ? ' (limitado a ' + dto_real_pct.toFixed(0) + '%)' : ''}`,
+        `  PVP final sin IVA/ud:              ${f2(pvp_final)}`,
+        `  PVP final con IVA/ud:              ${f2(pvp_final_iva)}`,
+        `  Margen real sobre venta:           ${pct(margen_real)}`,
+        `  Beneficio/ud:                      ${f2(ben_ud)}`,
+        `  Beneficio total pedido:            ${f2(ben_total)}`,
+        `  TOTAL PEDIDO CON IVA:              ${f2(total_pedido_iva)}`
+      ];
+
+      if (show_pliegos && tecnica_key !== 'bordado' && tecnica_key !== 'laser') {
+        lines.push(linea, 'DETALLE PLIEGOS / PERSONALIZACIÓN');
+        lines.push(`  Proveedor:                         ${prov.nombre}`);
+        lines.push(`  Tramo precio:                      ${tramo_label_display} (${f2(coste_pliego_val)}/pliego)`);
+        lines.push(`  Dimensiones pliego:                ${prov_dims}`);
+        lines.push(`  Diseños por pliego:                ${dis_pliego}`);
+        lines.push(`  Pliegos necesarios:                ${num_pliegos}`);
+        lines.push(`  Área pliego:                       ${(area_pliego_m2 * 10000).toFixed(0)} cm²`);
+        lines.push(`  Área usada:                        ${(area_usada_m2 * 10000).toFixed(0)} cm²`);
+        lines.push(`  Coste material sin IVA:            ${f2(coste_total_mat_sin_iva)}`);
+        lines.push(`  IVA proveedor:                     ${f2(iva_mat_proveedor)}`);
+        lines.push(`  Coste material con IVA:            ${f2(coste_total_mat)}`);
+        lines.push(`  Envío proveedor con IVA:           ${envio_prov_total > 0 ? f2(envio_prov_total) : 'Gratis'}`);
+        lines.push(`  Total proveedor con IVA:           ${f2(total_proveedor_personalizacion_con_iva)}`);
+      }
+
+      if (notasInternas) {
+        lines.push(linea, 'NOTAS INTERNAS', notasInternas);
+      }
+
+      lines.push(linea, 'Generado por Calculadora Bendito Lab');
+
+      return {
+        asunto: `[INTERNO] ${numeroPresupuesto} · ${nombreCliente} · ${producto} · ${fecha}`,
+        body: lines.join('\n')
+      };
+    }
+
+    function sendInternalEmail() {
+      const destino = document.getElementById('mi_email').value.trim();
+      if (!destino) {
+        alert('Escribe tu email primero para poder enviarte la copia interna.');
+        return;
+      }
+
+      const { asunto, body } = buildInternalEmail();
+      const href = `mailto:${encodeURIComponent(destino)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(body)}`;
+      window.location.href = href;
+    }
+
+    function generarNumeroPresupuesto() {
+      const campo = document.getElementById('numeroPresupuesto');
+      if (!campo) return;
+
+      if (campo.value) return;
+
+      let numero = localStorage.getItem('contadorPresupuestos');
+
+      if (!numero) {
+        numero = 1;
+      } else {
+        numero = parseInt(numero, 10) + 1;
+      }
+
+      localStorage.setItem('contadorPresupuestos', numero);
+      campo.value = 'PRE-' + String(numero).padStart(4, '0');
+    }
+
+    function on(id, event, handler) {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener(event, handler);
+    }
+
+    window.addEventListener('load', () => {
+      const slider = document.getElementById('slider_cant');
+      const cantI = document.getElementById('cantidad');
+
+      on('tecnica', 'change', updateTecnicaUI);
+      on('perfil_blanco', 'change', () => applyPerfilBlanco(true));
+      on('margen_min', 'input', calc);
+      on('laser_tipo', 'change', () => {
+        applyLaserPreset();
+        calc();
+      });
+
+      if (slider && cantI) {
+        slider.addEventListener('input', () => {
+          cantI.value = slider.value;
+          setText('slider_out', slider.value + ' ud');
+          calc();
+        });
+
+        cantI.addEventListener('input', () => {
+          slider.value = cantI.value;
+          setText('slider_out', cantI.value + ' ud');
+          calc();
+        });
+      }
+
+      [
+        'precio_blanco', 'pack_coste', 'otros_fijos', 'proveedor_sel', 'dis_ancho', 'dis_alto', 'posiciones', 'vinilo_tipo',
+        'usar_dto_blanco_auto', 'usar_dto_blanco_manual', 'dto_blanco_manual',
+        'tb1_min', 'tb1_max', 'tb1_dto', 'tb2_min', 'tb2_max', 'tb2_dto',
+        'tb3_min', 'tb3_max', 'tb3_dto', 'tb4_min', 'tb4_max', 'tb4_dto',
+        'tb5_min', 'tb5_max', 'tb5_dto',
+        'puntadas', 'bord_colores', 'bord_pos', 'bord_picaje',
+        'bord_coste_puntada', 'bord_manipulacion', 'bord_picaje_coste', 'bord_extra_color',
+        'laser_maq', 'laser_man', 'laser_extra_ud', 'laser_coste_hora', 'laser_coste_mo'
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', calc);
+        el.addEventListener('change', calc);
+      });
+
+      on('btn_email_presupuesto', 'click', sendBudgetEmail);
+      on('btn_guardar_notion', 'click', saveBudgetToMake);
+      on('btn_email_interno', 'click', sendInternalEmail);
+
+      generarNumeroPresupuesto();
+
+      if (cantI) setText('slider_out', cantI.value + ' ud');
+
+      if (document.getElementById('perfil_blanco')) applyPerfilBlanco(false);
+      if (document.getElementById('proveedor_sel')) populateProveedorSelect();
+      if (document.getElementById('laser_tipo')) applyLaserPreset();
+      if (document.getElementById('tecnica')) updateTecnicaUI();
+      else calc();
+    });
+  </script>
+</body>
+</html>

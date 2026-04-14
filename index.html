@@ -669,12 +669,12 @@
 
           <div class="field">
             <label>Descuento manual (%)</label>
-            <input type="number" id="dto_blanco_manual" value="0" step="0.1" min="0" max="100">
+            <input type="number" id="dto_blanco_manual" value="0" step="0.1" min="0" max="25">
           </div>
 
           <div class="field">
             <label>Tramo aplicado</label>
-            <div class="pill-soft" id="tramo_blanco_badge">1–9 ud · 0%</div>
+            <div class="pill-soft" id="tramo_blanco_badge">1–20 ud · 0%</div>
           </div>
         </div>
 
@@ -1074,18 +1074,18 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     const PERFILES_BLANCOS = {
       toleshop: [
-        { min: 1, max: 9, dto: 0.00, label: '1–9 ud' },
-        { min: 10, max: 24, dto: 0.05, label: '10–24 ud' },
-        { min: 25, max: 49, dto: 0.10, label: '25–49 ud' },
-        { min: 50, max: 99, dto: 0.15, label: '50–99 ud' },
-        { min: 100, max: Infinity, dto: 0.20, label: '100+ ud' }
+        { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
+        { min: 21, max: 50, dto: 0.10, label: '21-50 ud' },
+        { min: 51, max: 100, dto: 0.15, label: '51-100 ud' },
+        { min: 101, max: 200, dto: 0.17, label: '101-200 ud' },
+        { min: 201, max: Infinity, dto: 0.20, label: '201+ ud' }
       ],
-      suave: [
-        { min: 1, max: 9, dto: 0.00, label: '1–9 ud' },
-        { min: 10, max: 24, dto: 0.03, label: '10–24 ud' },
-        { min: 25, max: 49, dto: 0.06, label: '25–49 ud' },
-        { min: 50, max: 99, dto: 0.10, label: '50–99 ud' },
-        { min: 100, max: Infinity, dto: 0.15, label: '100+ ud' }
+      camisetas y polos: [
+        { min: 1, max: 5, dto: 0.00, label: '1–5 ud' },
+        { min: 6, max: 25, dto: 0.10, label: '6–25 ud' },
+        { min: 26, max: 50, dto: 0.15, label: '26–50 ud' },
+        { min: 51, max: 100, dto: 0.17, label: '55–100 ud' },
+        { min: 101, max: Infinity, dto: 0.20, label: '101+ ud' }
       ],
       sin_descuento: [
         { min: 1, max: Infinity, dto: 0.00, label: 'Todas las cantidades' }

@@ -49,7 +49,6 @@
       text-decoration: none;
       color: inherit;
     }
-
     .brand-logo img {
       display: block;
       height: 44px;
@@ -67,13 +66,28 @@
       box-shadow: var(--shadow-sm);
     }
     .results { background: var(--color-background-secondary); }
-    .sec-title { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem; }
+    .sec-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 1rem;
+    }
     .grid2, .grid3, .grid4 { display: grid; gap: 12px; margin-bottom: 10px; }
     .grid2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .grid3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
     .grid4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
-    .field label { font-size: 13px; color: var(--color-text-secondary); display: block; margin-bottom: 6px; }
-    .field input, .field select {
+
+    .field label {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select {
       width: 100%;
       font-size: 14px;
       padding: 10px 12px;
@@ -82,62 +96,264 @@
       background: #fff;
       color: var(--color-text-primary);
     }
-    .field input:focus, .field select:focus { outline: none; border-color: #1D9E75; box-shadow: 0 0 0 3px rgba(29,158,117,.12); }
+
+    .field input:focus,
+    .field select:focus,
+    textarea.input-textarea:focus {
+      outline: none;
+      border-color: #1D9E75;
+      box-shadow: 0 0 0 3px rgba(29,158,117,.12);
+    }
+
     .hint { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; }
+
     .slider-row, .margen-slider-wrap { display: flex; align-items: center; gap: 10px; }
     .slider-row { margin-bottom: 12px; }
     .slider-row label, .margen-slider-wrap label { font-size: 13px; color: var(--color-text-secondary); white-space: nowrap; }
     .slider-row input[type=range], .margen-slider-wrap input[type=range] { flex: 1; }
     .slider-row .val { font-size: 14px; font-weight: 600; min-width: 64px; text-align: right; }
-    .sub-block { margin: 8px 0 4px; padding: 12px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); border: 1px solid var(--color-border-tertiary); }
+
+    .sub-block {
+      margin: 8px 0 4px;
+      padding: 12px;
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border-tertiary);
+    }
+
     .margen-val { font-size: 22px; font-weight: 700; min-width: 60px; text-align: right; }
     .margen-val.green { color: #1D9E75; }
     .margen-val.amber { color: #BA7517; }
-    .margen-ticks { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; padding: 0 2px; }
-    .blancos-resumen, .pliegos-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; margin-top: 8px; border: 1px solid var(--color-border-tertiary); }
-    .pb-title { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .04em; }
-    .metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-bottom: 1.25rem; }
-    .metric { background: var(--color-background-primary); border-radius: var(--border-radius-md); padding: .85rem 1rem; border: 1px solid var(--color-border-tertiary); }
+    .margen-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      margin-top: 4px;
+      padding: 0 2px;
+    }
+
+    .blancos-resumen, .pliegos-box {
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-md);
+      padding: 12px 14px;
+      margin-top: 8px;
+      border: 1px solid var(--color-border-tertiary);
+    }
+
+    .pb-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric {
+      background: var(--color-background-primary);
+      border-radius: var(--border-radius-md);
+      padding: .85rem 1rem;
+      border: 1px solid var(--color-border-tertiary);
+    }
+
     .metric .ml { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
     .metric .mv { font-size: 18px; font-weight: 700; color: var(--color-text-primary); }
     .metric .mv.green { color: #1D9E75; }
     .metric .mv.teal { color: #0F6E56; }
     .metric .mv.big { font-size: 22px; color: #1D9E75; }
-    .brow { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--color-border-tertiary); }
+
+    .brow {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--color-border-tertiary);
+    }
     .brow:last-child { border-bottom: none; }
     .brow .bl { color: var(--color-text-secondary); flex: 1; }
     .brow .bv { font-weight: 700; color: var(--color-text-primary); text-align: right; }
     .brow .bv.accent { color: #1D9E75; }
-    .btotal { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; padding: 10px 0 4px; border-top: 1px solid var(--color-border-primary); margin-top: 4px; }
+
+    .btotal {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 0 4px;
+      border-top: 1px solid var(--color-border-primary);
+      margin-top: 4px;
+    }
     .btotal .bv { color: #1D9E75; }
-    .btotal-iva { display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; padding: 10px 12px; background: #E1F5EE; border-radius: var(--border-radius-md); margin-top: 8px; }
+
+    .btotal-iva {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 10px 12px;
+      background: #E1F5EE;
+      border-radius: var(--border-radius-md);
+      margin-top: 8px;
+    }
     .btotal-iva .bv { color: #085041; }
-    .tramo-badge { display: inline-block; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: var(--border-radius-md); background: #E1F5EE; color: #085041; margin-bottom: 12px; }
+
+    .tramo-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: var(--border-radius-md);
+      background: #E1F5EE;
+      color: #085041;
+      margin-bottom: 12px;
+    }
     .tramo-badge.capped { background: #FAEEDA; color: #633806; }
-    .aviso { font-size: 12px; padding: 8px 10px; border-radius: var(--border-radius-md); background: #FAEEDA; color: #633806; margin-bottom: 10px; display: none; border: 1px solid #f3ddb8; }
+
+    .aviso {
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: var(--border-radius-md);
+      background: #FAEEDA;
+      color: #633806;
+      margin-bottom: 10px;
+      display: none;
+      border: 1px solid #f3ddb8;
+    }
     .aviso.show { display: block; }
-    .dto-pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: #FAEEDA; color: #633806; margin-left: 6px; vertical-align: middle; }
+
+    .dto-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #FAEEDA;
+      color: #633806;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
     .dto-pill.ok { background: #E1F5EE; color: #085041; }
-    .bv-stack { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-    .bv-sub { font-size: 11px; color: var(--color-text-tertiary); font-weight: 400; }
+
+    .pill-soft {
+      display: inline-block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f3f4f6;
+      border: 1px solid var(--color-border-tertiary);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      min-height: 42px;
+      width: 100%;
+    }
+
+    .tramos-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .tramos-table th,
+    .tramos-table td {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 13px;
+      border-bottom: 1px solid var(--color-border-tertiary);
+    }
+    .tramos-table thead th {
+      background: #f8fafc;
+      color: var(--color-text-secondary);
+      font-weight: 700;
+    }
+    .tramos-table tbody tr:last-child td { border-bottom: none; }
+
+    .bv-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+    .bv-sub {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      font-weight: 400;
+    }
+
     .bar-wrap { margin-top: 12px; }
-    .bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
-    .bar-bg { height: 10px; background: var(--color-border-tertiary); border-radius: 8px; overflow: visible; position: relative; }
-    .bar-fill { height: 100%; border-radius: 8px; transition: width .3s; background: #1D9E75; }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-bottom: 4px;
+    }
+    .bar-bg {
+      height: 10px;
+      background: var(--color-border-tertiary);
+      border-radius: 8px;
+      overflow: visible;
+      position: relative;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 8px;
+      transition: width .3s;
+      background: #1D9E75;
+    }
     .bar-fill.amber { background: #BA7517; }
-    .bar-min-line { position: absolute; top: -3px; bottom: -3px; width: 2px; background: #E24B4A; border-radius: 2px; transition: left .3s; }
-    .bar-min-label { position: absolute; top: -18px; font-size: 10px; color: #E24B4A; transform: translateX(-50%); white-space: nowrap; font-weight: 700; }
-    .tramo-info { font-size: 11px; color: var(--color-text-tertiary); margin-top: 8px; padding: 8px 10px; background: var(--color-background-primary); border-radius: var(--border-radius-md); border: 1px solid var(--color-border-tertiary); line-height: 1.6; }
+    .bar-min-line {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: #E24B4A;
+      border-radius: 2px;
+      transition: left .3s;
+    }
+    .bar-min-label {
+      position: absolute;
+      top: -18px;
+      font-size: 10px;
+      color: #E24B4A;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .tramo-info {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: var(--color-background-primary);
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border-tertiary);
+      line-height: 1.6;
+    }
     .tramo-info strong { color: var(--color-text-primary); }
 
-    .pliego-preview{
+    .pliego-preview {
       background: var(--color-background-secondary);
       border-radius: var(--border-radius-lg);
       padding: 1rem 1.25rem;
       margin-top: 12px;
       border: 1px solid var(--color-border-tertiary);
     }
-    .preview-wrap{
+
+    .preview-wrap {
       background: #fff;
       border: 1px solid var(--color-border-tertiary);
       border-radius: var(--border-radius-md);
@@ -145,7 +361,8 @@
       margin-bottom: 12px;
       overflow: auto;
     }
-    #svg_pliego{
+
+    #svg_pliego {
       display: block;
       width: 100%;
       max-width: 420px;
@@ -154,26 +371,30 @@
       background: #f8f8f8;
       border-radius: 8px;
     }
-    .preview-legend{
+
+    .preview-legend {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px 14px;
     }
-    .email-box{
+
+    .email-box {
       background: var(--color-background-secondary);
       border-radius: var(--border-radius-lg);
       padding: 1rem 1.25rem;
       margin-top: 12px;
       border: 1px solid var(--color-border-tertiary);
     }
-    .actions-row{
+
+    .actions-row {
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       align-items:center;
       margin-top:12px;
     }
-    .btn-primary{
+
+    .btn-primary {
       appearance:none;
       border:0;
       border-radius: var(--border-radius-md);
@@ -184,8 +405,9 @@
       font-weight:600;
       cursor:pointer;
     }
-    .btn-primary:hover{ filter:brightness(1.05); }
-    .btn-primary.big{
+    .btn-primary:hover { filter:brightness(1.05); }
+
+    .btn-primary.big {
       width:100%;
       justify-content:center;
       display:inline-flex;
@@ -194,12 +416,14 @@
       font-size:16px;
       box-shadow:0 8px 24px rgba(8,80,65,.18);
     }
-    .email-top-note{
+
+    .email-top-note {
       font-size:13px;
       color:var(--color-text-secondary);
       margin:6px 0 10px;
     }
-    .email-help{
+
+    .email-help {
       font-size:12px;
       color:var(--color-text-tertiary);
       margin-top:8px;
@@ -218,7 +442,8 @@
       resize: vertical;
       font-family: var(--font-sans);
     }
-    .btn-secondary{
+
+    .btn-secondary {
       appearance:none;
       border:1px solid #0f766e;
       border-radius: var(--border-radius-md);
@@ -229,14 +454,22 @@
       font-weight:600;
       cursor:pointer;
     }
-    .btn-secondary:hover{ background:#f0fdfa; }
-    .status-note{
+    .btn-secondary:hover { background:#f0fdfa; }
+
+    .status-note {
       font-size:12px;
       color:var(--color-text-secondary);
       margin-top:10px;
       line-height:1.5;
     }
-    .footer-note { color: var(--color-text-tertiary); font-size: 12px; text-align: center; margin-top: 10px; }
+
+    .footer-note {
+      color: var(--color-text-tertiary);
+      font-size: 12px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
     @media (max-width: 820px) {
       .brand-header { flex-direction: column; align-items: flex-start; }
       .metrics, .grid2, .grid3, .grid4, .preview-legend { grid-template-columns: 1fr; }
@@ -246,7 +479,7 @@
 <body>
   <div class="wrap">
     <div class="brand-header">
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAk8AAADfCAYAAADvPjcEAAABN2lDQ1BBZG9iZSBSR0IgKDE5OTgpAAAokZWPv0rDUBSHvxtFxaFWCOLgcCdRUGzVwYxJW4ogWKtDkq1JQ5ViEm6uf/oQjm4dXNx9AidHwUHxCXwDxamDQ4QMBYvf9J3fORzOAaNi152GUYbzWKt205Gu58vZF2aYAoBOmKV2q3UAECdxxBjf7wiA10277jTG+38yH6ZKAyNguxtlIYgK0L/SqQYxBMygn2oQD4CpTto1EE9AqZf7G1AKcv8ASsr1fBBfgNlzPR+MOcAMcl8BTB1da4Bakg7UWe9Uy6plWdLuJkEkjweZjs4zuR+HiUoT1dFRF8jvA2AxH2w3HblWtay99X/+PRHX82Vun0cIQCw9F1lBeKEuf1UYO5PrYsdwGQ7vYXpUZLs3cLcBC7dFtlqF8hY8Dn8AwMZP/fNTP8gAAAAJcEhZcwAALiMAAC4jAXilP3YAAAjDaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjYtYzE0OCA3OS4xNjQwMzYsIDIwMTkvMDgvMTMtMDE6MDY6NTcgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOkNvbnRhaW5zQWlHZW5lcmF0ZWRDb250ZW50PSJodHRwczovL2NhbnZhLmNvbS9leHBvcnQiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpBdHRyaWI9Imh0dHA6Ly9ucy5hdHRyaWJ1dGlvbi5jb20vYWRzLzEuMC8iIENvbnRhaW5zQWlHZW5lcmF0ZWRDb250ZW50OkNvbnRhaW5zQWlHZW5lcmF0ZWRDb250ZW50PSJZZXMiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiB4bXA6Q3JlYXRvclRvb2w9IkNhbnZhIChSZW5kZXJlcikgZG9jPURBRzRnRFY3Um1JIHVzZXI9VUFHTlp0V01RVEEgYnJhbmQ9QkFHTlpzYmFsancgdGVtcGxhdGU9TmFyYW5qYSBQYWxtZXJhIEVzdHVkaW8gZGUgRGlzZcOxbyBDaGFwYXMgVmludGFnZSBUZXh0byBDdXJ2byBMb2dvdGlwbyIgeG1wOkNyZWF0ZURhdGU9IjIwMjUtMTEtMTdUMDE6MDI6MjQrMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDI1LTExLTE5VDE0OjEyOjA4KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDI1LTExLTE5VDE0OjEyOjA4KzAxOjAwIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0iQWRvYmUgUkdCICgxOTk4KSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDplOTRjZjE0Mi1kNDVkLTkzNGEtOTlkNy1hNjkyMWI4MTM1NjQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ZDA5ZDcyYzItOGQ3NC03MjQyLTlkZjQtOWY0NGM5ZTIyZWRlIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6ZDA5ZDcyYzItOGQ3NC03MjQyLTlkZjQtOWY0NGM5ZTIyZWRlIj4gPGRjOnRpdGxlPiA8cmRmOkFsdD4gPHJkZjpsaSB4bWw6bGFuZz0ieC1kZWZhdWx0Ij5OYXJhbmphIFBhbG1lcmEgRXN0dWRpbyBkZSBEaXNlw7FvIENoYXBhcyBWaW50YWdlIFRleHRvIEN1cnZvIExvZ290aXBvIC0gT3B0aW9uIDMgKDQpPC9yZGY6bGk+IDwvcmRmOkFsdD4gPC9kYzp0aXRsZT4gPGRjOmNyZWF0b3I+IDxyZGY6U2VxPiA8cmRmOmxpPkRpbG8gYm9uaXRvPC9yZGY6bGk+IDwvcmRmOlNlcT4gPC9kYzpjcmVhdG9yPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpkMDlkNzJjMi04ZDc0LTcyNDItOWRmNC05ZjQ0YzllMjJlZGUiIHN0RXZ0OndoZW49IjIwMjUtMTEtMTdUMDM6NDY6MDQrMDE6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4wIChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6ZTk0Y2YxNDItZDQ1ZC05MzRhLTk5ZDctYTY5MjFiODEzNTY0IiBzdEV2dDp3aGVuPSIyMDI1LTExLTE5VDE0OjEyOjA4KzAxOjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgMjEuMCAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDxBdHRyaWI6QWRzPiA8cmRmOlNlcT4gPHJkZjpsaSBBdHRyaWI6Q3JlYXRlZD0iMjAyNS0xMS0xNyIgQXR0cmliOkV4dElkPSJmY2IzM2VhMi0yYjVjLTRkNWItODlhYi04NjllNGI4MWM4ZWYiIEF0dHJpYjpGYklkPSI1MjUyNjU5MTQxNzk1ODAiIEF0dHJpYjpUb3VjaFR5cGU9IjIiLz4gPC9yZGY6U2VxPiA8L0F0dHJpYjpBZHM+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+957+jwAAMJNJREFUeJzt3Xm8ndP1x/HPTa5MxpCSoIh5nlM1FFUpSlH0h6iZ/qiGH62Oaq4aSluKmqqlqLlUUkVRqaJITVVj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" alt="Bendito Lab">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAk8AAADfCAYAAADvPjcEAAABN2lDQ1BBZG9iZSBSR0IgKDE5OTgpAAAokZWPv0rDUBSHvxtFxaFWCOLgcCdRUGzVwYxJW4ogWKtDkq1JQ5ViEm6uf/oQjm4dXNx9AidHwUHxCXwDxamDQ4QMBYvf9J3fORzOAaNi152GUYbzWKt205Gu58vZF2aYAoBOmKV2q3UAECdxxBjf7wiA10277jTG+38yH6ZKAyNguxtlIYgK0L/SqQYxBMygn2oQD4CpTto1EE9AqZf7G1AKcv8ASsr1fBBfgNlzPR+MOcAMcl8BTB1da4Bakg7UWe9Uy6plWdLuJkEkjweZjs4zuR+HiUoT1dFRF8jvA2AxH2w3HblWtay99X/+PRHX82Vun0cIQCw9F1lBeKEuf1UYO5PrYsdwGQ7vYXpUZLs3cLcBC7dFtlqF8hY8Dn8AwMZP/fNTP8gAAAAJcEhZcwAALiMAAC4jAXilP3YAAAjDaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjYtYzE0OCA3OS4xNjQwMzYsIDIwMTkvMDgvMTMtMDE6MDY6NTcgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOkNvbnRhaW5zQWlHZW5lcmF0ZWRDb250ZW50PSJodHRwczovL2NhbnZhLmNvbS9leHBvcnQiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpBdHRyaWI9Imh0dHA6Ly9ucy5hdHRyaWJ1dGlvbi5jb20vYWRzLzEuMC8iIENvbnRhaW5zQWlHZW5lcmF0ZWRDb250ZW50OkNvbnRhaW5zQWlHZW5lcmF0ZWRDb250ZW50PSJZZXMiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiB4bXA6Q3JlYXRvclRvb2w9IkNhbnZhIChSZW5kZXJlcikgZG9jPURBRzRnRFY3Um1JIHVzZXI9VUFHTlp0V01RVEEgYnJhbmQ9QkFHTlpzYmFsancgdGVtcGxhdGU9TmFyYW5qYSBQYWxtZXJhIEVzdHVkaW8gZGUgRGlzZcOxbyBDaGFwYXMgVmludGFnZSBUZXh0byBDdXJ2byBMb2dvdGlwbyIgeG1wOkNyZWF0ZURhdGU9IjIwMjUtMTEtMTdUMDE6MDI6MjQrMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDI1LTExLTE5VDE0OjEyOjA4KzAxOjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDI1LTExLTE5VDE0OjEyOjA4KzAxOjAwIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0iQWRvYmUgUkdCICgxOTk4KSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDplOTRjZjE0Mi1kNDVkLTkzNGEtOTlkNy1hNjkyMWI4MTM1NjQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ZDA5ZDcyYzItOGQ3NC03MjQyLTlkZjQtOWY0NGM5ZTIyZWRlIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6ZDA5ZDcyYzItOGQ3NC03MjQyLTlkZjQtOWY0NGM5ZTIyZWRlIj4gPGRjOnRpdGxlPiA8cmRmOkFsdD4gPHJkZjpsaSB4bWw6bGFuZz0ieC1kZWZhdWx0Ij5OYXJhbmphIFBhbG1lcmEgRXN0dWRpbyBkZSBEaXNlw7FvIENoYXBhcyBWaW50YWdlIFRleHRvIEN1cnZvIExvZ290aXBvIC0gT3B0aW9uIDMgKDQpPC9yZGY6bGk+IDwvcmRmOkFsdD4gPC9kYzp0aXRsZT4gPGRjOmNyZWF0b3I+IDxyZGY6U2VxPiA8cmRmOmxpPkRpbG8gYm9uaXRvPC9yZGY6bGk+IDwvcmRmOlNlcT4gPC9kYzpjcmVhdG9yPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpkMDlkNzJjMi04ZDc0LTcyNDItOWRmNC05ZjQ0YzllMjJlZGUiIHN0RXZ0OndoZW49IjIwMjUtMTEtMTdUMDM6NDY6MDQrMDE6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4wIChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6ZTk0Y2YxNDItZDQ1ZC05MzRhLTk5ZDctYTY5MjFiODEzNTY0IiBzdEV2dDp3aGVuPSIyMDI1LTExLTE5VDE0OjEyOjA4KzAxOjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgMjEuMCAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDxBdHRyaWI6QWRzPiA8cmRmOlNlcT4gPHJkZjpsaSBBdHRyaWI6Q3JlYXRlZD0iMjAyNS0xMS0xNyIgQXR0cmliOkV4dElkPSJmY2IzM2VhMi0yYjVjLTRkNWItODlhYi04NjllNGI4MWM4ZWYiIEF0dHJpYjpGYklkPSI1MjUyNjU5MTQxNzk1ODAiIEF0dHJpYjpUb3VjaFR5cGU9IjIiLz4gPC9yZGY6U2VxPiA8L0F0dHJpYjpBZHM+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+957+jwAAMJNJREFUeJzt3Xm8ndP1x/HPTa5MxpCSoIh5nlM1FFUpSlH0h6iZ/qiGH62Oaq4aSluKmqqlqLlUUkVRqaJITVVj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" alt="Bendito Lab">
       <div class="brand-copy">
         <h1>Calculadora B2B</h1>
         <p>Costes, márgenes y PVP para pedidos de Bendito Lab.</p>
@@ -267,6 +500,7 @@
 
     <div class="card">
       <div class="sec-title">Artículo base</div>
+
       <div class="grid3">
         <div class="field">
           <label>Nombre artículo</label>
@@ -281,6 +515,7 @@
           <input type="number" id="cantidad" value="25" step="1" min="1" max="1500">
         </div>
       </div>
+
       <div class="slider-row">
         <label>Cantidad:</label>
         <input type="range" id="slider_cant" min="1" max="1500" step="1" value="25">
@@ -292,6 +527,7 @@
         <div class="hint" id="base_items_hint">Puedes presupuestar varios artículos. El tramo se calcula con la suma de cantidades.</div>
       </div>
       <div id="base_items_extra"></div>
+
       <div class="sub-block" id="bloque_descuento_venta">
         <div class="sec-title" style="margin-bottom:8px">Descuento por tramos (venta)</div>
         <div class="grid3">
@@ -312,6 +548,7 @@
             <div class="hint">El margen real se mantiene siempre en ~60% o superior.</div>
           </div>
         </div>
+
         <table class="tramos-table">
           <thead>
             <tr>
@@ -330,6 +567,7 @@
           </tbody>
         </table>
       </div>
+
       <div class="grid2">
         <div class="field">
           <label>Packaging (€/ud)</label>
@@ -342,6 +580,21 @@
           <div class="hint">Diseño, pruebas, muestras, desplazamiento…</div>
         </div>
       </div>
+
+      <div class="grid2" style="margin-top:10px">
+        <div class="field">
+          <label>Envío blancos automático (€/pedido sin IVA)</label>
+          <input type="number" id="envio_blanco_auto" value="5.95" step="0.01" min="0" readonly data-default="5.95">
+          <div class="hint">Solo aparece si hay artículos válidos y el subtotal de blancos sin IVA es menor de 100 €.</div>
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end">
+          <label style="display:block;width:100%">
+            <input type="checkbox" id="quitar_envio_blanco">
+            Quitar envío de blancos
+          </label>
+        </div>
+      </div>
+
       <div class="blancos-resumen">
         <div class="pb-title">Coste blancos</div>
         <div class="brow"><span class="bl">Precio tarifa / ud sin IVA</span><span class="bv" id="res_blanco_tarifa_ud">—</span></div>
@@ -359,6 +612,7 @@
 
     <div class="card">
       <div class="sec-title">Personalización</div>
+
       <div class="field" style="margin-bottom:12px">
         <label>Técnica</label>
         <select id="tecnica">
@@ -404,7 +658,7 @@
             <div class="field">
               <label>Envío proveedor (€/pedido sin IVA)</label>
               <input type="number" id="otro_prov_envio" value="0" step="0.1" min="0">
-              <div class="hint">Este envío se suma al cálculo (se aplica IVA compra).</div>
+              <div class="hint">Este envío se suma al cálculo según agrupación por proveedor.</div>
             </div>
             <div class="field">
               <label>Envío gratis desde (€ sin IVA)</label>
@@ -582,8 +836,8 @@
           </div>
           <div class="field">
             <label>Nº Presupuesto</label>
-            <input type="number" id="presupuesto_num" placeholder="Ej. 25" min="1" step="1" inputmode="numeric">
-            <div class="hint">Se rellena solo. Si lo cambias, el siguiente continuará desde ahí.</div>
+            <input type="text" id="presupuesto_num" placeholder="Ej. PRESU-26/25" inputmode="text">
+            <div class="hint">Se rellena solo con el prefijo PRESU-26/. Si lo cambias, el siguiente continuará desde ahí.</div>
           </div>
           <div class="field">
             <label>Artículo</label>
@@ -594,6 +848,7 @@
             <input type="email" id="email_destino" placeholder="cliente@empresa.com">
           </div>
         </div>
+
         <div class="field" style="margin-top:10px">
           <label>Condiciones del presupuesto</label>
           <textarea class="input-textarea" id="condiciones_presupuesto">Presupuesto válido durante 30 días.
@@ -604,6 +859,7 @@ Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica esp
 El precio indicado incluye únicamente lo detallado en este presupuesto.</textarea>
           <div class="hint">Estas condiciones se incluyen en el email al cliente.</div>
         </div>
+
         <div class="actions-row">
           <button type="button" class="btn-primary big" id="btn_email_presupuesto">📩 Enviar presupuesto al cliente</button>
           <button type="button" class="btn-secondary" id="btn_whatsapp_presupuesto">💬 Enviar por WhatsApp</button>
@@ -611,8 +867,8 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
           <button type="button" class="btn-secondary" id="btn_presupuesto_pdf_1p">🧾 Descargar PDF (1 página)</button>
           <button type="button" class="btn-secondary" id="btn_guardar_presupuesto">💾 Guardar presupuesto (interno)</button>
         </div>
+
         <div class="status-note" id="save_status">Cliente: abre tu correo con el presupuesto. Guardar: abre un email a presupuestos@benditolab.com con todos los datos.</div>
-      </div>
       </div>
     </div>
 
@@ -620,16 +876,17 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
   </div>
 
   <script>
-
     const IVA_COMPRA = 1.21;
     const IVA_VENTA = 0.21;
     const INTERNAL_BUDGET_EMAIL = 'presupuestos@benditolab.com';
     const MARGEN_MIN_ENFORCED = 0.60;
     const DTO_MANUAL_MAX = 0.26;
-    const BUDGET_PREFIX = 'PRE-26/';
+    const BUDGET_PREFIX = 'PRESU-26/';
+
     const f2 = n => (Number(n || 0)).toFixed(2).replace('.', ',') + ' €';
     const pct = n => (Number(n || 0)).toFixed(1).replace('.', ',') + ' %';
     const VINILO_M2 = { htv: 15, adhesivo: 18, transfer: 8 };
+
     const LASER_PRESETS = {
       grabado_boligrafo: { maq: 2, man: 4 },
       grabado_libreta: { maq: 4, man: 4 },
@@ -640,6 +897,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       grabado_premium: { maq: 20, man: 10 },
       manual: null
     };
+
     const TRAMOS_321DTF = [
       { min: 1, max: 1, precio: 10.50, label: '1 m → 10,50 €/m' },
       { min: 2, max: 5, precio: 9.98, label: '2–5 m → 9,98 €/m' },
@@ -649,6 +907,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       { min: 61, max: 100, precio: 7.35, label: '61–100 m → 7,35 €/m' },
       { min: 101, max: Infinity, precio: 7.14, label: '+101 m → 7,14 €/m' }
     ];
+
     const PROV_CONFIG = {
       '321dtf': { nombre: '321DTF', ancho_cm: 56, alto_cm: 100, coste_pliego: 10.50, envio: 3.50, envio_gratis_desde: null },
       'dtfbarcelona': { nombre: 'DTF Barcelona', ancho_cm: 60, alto_cm: 100, coste_pliego: 9.15, envio: 6.90, envio_gratis_desde: 50 },
@@ -659,6 +918,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       'propio': { nombre: 'Producción propia', ancho_cm: 0, alto_cm: 0, coste_pliego: 0, envio: 0, envio_gratis_desde: 0 },
       'ninguno': { nombre: '—', ancho_cm: 0, alto_cm: 0, coste_pliego: 0, envio: 0, envio_gratis_desde: 0 }
     };
+
     const TECNICAS = {
       ninguna: { proveedores: [] },
       dtf_textil: { proveedores: ['321dtf', 'dtfbarcelona', 'tudtf', 'dtfrapido', 'otro'] },
@@ -669,6 +929,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       bordado: { proveedores: ['propio'] },
       laser: { proveedores: ['propio'] }
     };
+
     const TRAMOS_VENTA = [
       { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
       { min: 21, max: 49, dto: 0.02, label: '21–49 ud' },
@@ -689,6 +950,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const nombre0 = (document.getElementById('articulo_base_nombre')?.value || '').trim();
       const unit0 = clamp(parseFloat(document.getElementById('precio_blanco')?.value || '0') || 0, 0, 999999);
       const qty0 = Math.max(0, parseInt(document.getElementById('cantidad')?.value || '0', 10) || 0);
+
       if (unit0 > 0 && qty0 > 0) items.push({ nombre: nombre0 || 'Artículo 1', unit_sin_iva: unit0, qty: qty0 });
 
       document.querySelectorAll('#base_items_extra .base-item-row').forEach((row, idx) => {
@@ -734,7 +996,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     function getProviderConfigFromRoot(root, key) {
       if (key !== 'otro') return PROV_CONFIG[key] || PROV_CONFIG['ninguno'];
 
-      const q = (field) => root?.querySelector?.(`[data-field="${field}"]`);
+      const q = field => root?.querySelector?.(`[data-field="${field}"]`);
       const nombre = (q('otro_prov_nombre')?.value || '').trim() || 'Otro (manual)';
       const envio = clamp(parseFloat(q('otro_prov_envio')?.value || '0') || 0, 0, 999999);
       const gratisRaw = (q('otro_prov_envio_gratis')?.value || '').trim();
@@ -742,7 +1004,49 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const coste_pliego = clamp(parseFloat(q('otro_prov_coste_pliego')?.value || '0') || 0, 0, 999999);
       const ancho_cm = clamp(parseFloat(q('otro_prov_ancho_cm')?.value || '0') || 0, 0, 999999);
       const alto_cm = clamp(parseFloat(q('otro_prov_alto_cm')?.value || '0') || 0, 0, 999999);
+
       return { nombre, ancho_cm, alto_cm, coste_pliego, envio, envio_gratis_desde };
+    }
+
+    function computeProviderShippingTotals(items) {
+      const groups = {};
+
+      (items || []).forEach((it) => {
+        if (!it || !it.shipping_eligible) return;
+
+        const key = it.proveedor_key || it.proveedor_nombre || 'proveedor';
+        if (!groups[key]) {
+          groups[key] = {
+            key,
+            nombre: it.proveedor_nombre || 'Proveedor',
+            envio: Number(it.proveedor_envio || 0),
+            envio_gratis_desde: it.proveedor_envio_gratis_desde ?? null,
+            material_sin_iva: 0
+          };
+        }
+
+        groups[key].material_sin_iva += Number(it.coste_total_mat_sin_iva || 0);
+      });
+
+      const list = Object.values(groups).map((g) => {
+        let envio_sin_iva = 0;
+
+        if (g.envio_gratis_desde === null) envio_sin_iva = g.envio;
+        else if (g.material_sin_iva >= g.envio_gratis_desde) envio_sin_iva = 0;
+        else envio_sin_iva = g.envio_gratis_desde === 0 ? 0 : g.envio;
+
+        return {
+          ...g,
+          envio_sin_iva,
+          envio_con_iva: envio_sin_iva * IVA_COMPRA
+        };
+      });
+
+      return {
+        groups: list,
+        total_sin_iva: list.reduce((acc, g) => acc + g.envio_sin_iva, 0),
+        total_con_iva: list.reduce((acc, g) => acc + g.envio_con_iva, 0)
+      };
     }
 
     function computePersonalizacionFromRoot(root, cantidadTotal) {
@@ -757,6 +1061,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         const el = document.getElementById(fallbackId);
         return el ? (parseFloat(el.value) || def) : def;
       };
+
       const readInt = (field, fallbackId, def = 0) => {
         const v = root?.querySelector?.(`[data-field="${field}"]`)?.value;
         if (v !== undefined) return parseInt(v, 10) || def;
@@ -773,6 +1078,10 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       let pliegos = 0;
       let area_libre = 0;
       let aprovechamiento = 0;
+      let coste_total_mat_sin_iva = 0;
+      let coste_total_mat_con_iva = 0;
+      let iva_mat_proveedor = 0;
+      let shipping_eligible = false;
 
       if (tecnica_key === 'bordado') {
         const puntadas = readInt('puntadas', 'puntadas', 5000);
@@ -790,17 +1099,23 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         const coste_picaje_ud = bord_picaje ? (bord_picaje_coste / cantidad) : 0;
 
         pers_ud = coste_puntadas_ud + extra_colores_ud + coste_manipulacion_ud + coste_picaje_ud;
-        total_proveedor_personalizacion_con_iva = (pers_ud * cantidad);
+        total_proveedor_personalizacion_con_iva = pers_ud * cantidad;
+        coste_total_mat_sin_iva = total_proveedor_personalizacion_con_iva;
+        coste_total_mat_con_iva = total_proveedor_personalizacion_con_iva;
       } else if (tecnica_key === 'laser') {
         const laser_maq = readNum('laser_maq', 'laser_maq', 2);
         const laser_man = readNum('laser_man', 'laser_man', 4);
         const laser_extra_ud = readNum('laser_extra_ud', 'laser_extra_ud', 0);
         const laser_coste_hora = readNum('laser_coste_hora', 'laser_coste_hora', 0.63);
         const laser_coste_mo = readNum('laser_coste_mo', 'laser_coste_mo', 15);
+
         const coste_maquina_ud = (laser_maq / 60) * laser_coste_hora;
         const coste_mano_obra_ud = (laser_man / 60) * laser_coste_mo;
+
         pers_ud = coste_maquina_ud + coste_mano_obra_ud + laser_extra_ud;
-        total_proveedor_personalizacion_con_iva = (pers_ud * cantidad);
+        total_proveedor_personalizacion_con_iva = pers_ud * cantidad;
+        coste_total_mat_sin_iva = total_proveedor_personalizacion_con_iva;
+        coste_total_mat_con_iva = total_proveedor_personalizacion_con_iva;
       } else if (tecnica_key !== 'ninguna') {
         const dis_ancho = readNum('dis_ancho', 'dis_ancho', 10);
         const dis_alto = readNum('dis_alto', 'dis_alto', 10);
@@ -809,6 +1124,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
         const pw = prov.ancho_cm;
         const ph = prov.alto_cm;
+
         if (pw > 0 && ph > 0) {
           const dh = Math.floor((pw - 2 * MC + MC) / (dis_ancho + MC));
           const dv = Math.floor((ph - 2 * MC + MC) / (dis_alto + MC));
@@ -831,20 +1147,16 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
             coste_pliego_val = prov.coste_pliego;
           }
 
-          const coste_total_mat_sin_iva = coste_pliego_val * num_pliegos;
-          const coste_total_mat = coste_total_mat_sin_iva * IVA_COMPRA;
-          pers_ud = coste_total_mat / cantidad;
+          coste_total_mat_sin_iva = coste_pliego_val * num_pliegos;
+          iva_mat_proveedor = coste_total_mat_sin_iva * (IVA_COMPRA - 1);
+          coste_total_mat_con_iva = coste_total_mat_sin_iva * IVA_COMPRA;
+          pers_ud = coste_total_mat_con_iva / cantidad;
 
-          let envio_prov_total_sin_iva = 0;
-          if (prov.envio_gratis_desde === null) envio_prov_total_sin_iva = prov.envio;
-          else if (coste_total_mat_sin_iva >= prov.envio_gratis_desde) envio_prov_total_sin_iva = 0;
-          else envio_prov_total_sin_iva = prov.envio_gratis_desde === 0 ? 0 : prov.envio;
-
-          const envio_prov_total = envio_prov_total_sin_iva * IVA_COMPRA;
-          total_proveedor_personalizacion_con_iva = coste_total_mat + envio_prov_total;
+          total_proveedor_personalizacion_con_iva = coste_total_mat_con_iva;
           pliegos = num_pliegos;
           area_libre = alib;
           aprovechamiento = aprov;
+          shipping_eligible = !['propio', 'ninguno'].includes(proveedor_key);
         }
       }
 
@@ -855,6 +1167,12 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         proveedor_nombre: prov?.nombre || '—',
         pers_ud,
         total_personalizacion_con_iva: total_proveedor_personalizacion_con_iva,
+        coste_total_mat_sin_iva,
+        coste_total_mat_con_iva,
+        iva_mat_proveedor,
+        shipping_eligible,
+        proveedor_envio: Number(prov?.envio || 0),
+        proveedor_envio_gratis_desde: prov?.envio_gratis_desde ?? null,
         pliegos,
         area_libre,
         aprovechamiento
@@ -874,6 +1192,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     function addBaseItemRow() {
       const wrap = document.getElementById('base_items_extra');
       if (!wrap) return;
+
       const row = document.createElement('div');
       row.className = 'sub-block base-item-row';
       row.innerHTML = `
@@ -896,14 +1215,17 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
           <button type="button" class="btn-secondary" data-action="remove">🗑️ Quitar artículo</button>
         </div>
       `;
+
       row.querySelector('[data-action="remove"]')?.addEventListener('click', () => {
         row.remove();
         calc();
       });
+
       row.querySelectorAll('input').forEach((el) => {
         el.addEventListener('input', calc);
         el.addEventListener('change', calc);
       });
+
       wrap.appendChild(row);
       calc();
     }
@@ -1033,9 +1355,9 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         </div>
       `;
 
-      // Populate provider options based on técnica
       const provSelect = row.querySelector('[data-field="proveedor_sel"]');
       const tecnicaSelect = row.querySelector('[data-field="tecnica"]');
+
       const syncProviders = () => {
         const tKey = tecnicaSelect?.value || 'ninguna';
         const proveedores = TECNICAS[tKey]?.proveedores || [];
@@ -1060,6 +1382,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
       tecnicaSelect?.addEventListener('change', () => { syncProviders(); calc(); });
       provSelect?.addEventListener('change', () => { updatePersExtraRowUI(row); calc(); });
+
       row.querySelectorAll('input, select').forEach((el) => {
         el.addEventListener('input', calc);
         el.addEventListener('change', calc);
@@ -1072,11 +1395,10 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     function formatBudgetNumber(n) {
       const nn = normalizeBudgetNumber(n);
-      return nn ? `${BUDGET_PREFIX}${nn}` : `${BUDGET_PREFIX}—`;
+      return nn ? `${BUDGET_PREFIX}${nn}` : `${BUDGET_PREFIX}`;
     }
 
     function getEffectiveMargenMin() {
-      // El slider existe (min 40%) pero el cálculo asegura margen real ≥60%.
       return Math.max(getMargenMin(), MARGEN_MIN_ENFORCED);
     }
 
@@ -1084,15 +1406,16 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       for (const t of TRAMOS_321DTF) if (metros >= t.min && metros <= t.max) return t;
       return TRAMOS_321DTF[TRAMOS_321DTF.length - 1];
     }
+
     function getTramoVenta(q) {
       for (let i = 0; i < TRAMOS_VENTA.length; i++) {
         if (q >= TRAMOS_VENTA[i].min && q <= TRAMOS_VENTA[i].max) return i;
       }
       return TRAMOS_VENTA.length - 1;
     }
+
     function getMargenMin() { return parseInt(document.getElementById('margen_min').value, 10) / 100; }
     function setText(id, value) { document.getElementById(id).textContent = value; }
-
 
     function fmtM2(v) {
       return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
@@ -1164,7 +1487,12 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     function parseEuroTextToNumber(text) {
       if (!text) return 0;
-      const clean = String(text).replace(/€/g, '').replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '').trim();
+      const clean = String(text)
+        .replace(/€/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.')
+        .replace(/[^0-9.-]/g, '')
+        .trim();
       const n = parseFloat(clean);
       return Number.isFinite(n) ? n : 0;
     }
@@ -1208,6 +1536,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       }
       if (packaging > 0) extras.push(`- Packaging: ${packaging.toFixed(2).replace('.', ',')} €`);
       if (otros > 0) extras.push(`- Otros costes: ${otros.toFixed(2).replace('.', ',')} €`);
+
       return extras;
     }
 
@@ -1226,7 +1555,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const persExtras = getPersExtras();
 
       const isProbablyEmail = (v) => /.+@.+\..+/.test(String(v || '').trim());
-      // Si el usuario ha pegado el email en "Artículo" por error, lo corregimos.
+
       if (isProbablyEmail(producto) && !isProbablyEmail(destino)) {
         [producto, destino] = [destino, producto];
       }
@@ -1272,6 +1601,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         const l = line.trim();
         if (l) bodyLines.push(`- ${l.replace(/^[-•]\s*/, '')}`);
       });
+
       bodyLines.push('', 'Un saludo,', 'Silvia', 'Bendito Lab', '', 'presupuestos@benditolab.com');
 
       return { destino, asunto, body: bodyLines.join('\n') };
@@ -1283,10 +1613,10 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const numPresupuestoFmt = formatBudgetNumber(payload?.numero_presupuesto);
       const asunto = `Guardar presupuesto ${numPresupuestoFmt} · ${payload?.cliente || 'Sin cliente'}${payload?.producto ? ' · ' + payload.producto : ''}`;
 
-      const getText = (id) => (document.getElementById(id)?.textContent || '').trim();
-      const getVal = (id) => (document.getElementById(id)?.value || '').toString().trim();
+      const getText = id => (document.getElementById(id)?.textContent || '').trim();
+      const getVal = id => (document.getElementById(id)?.value || '').toString().trim();
       const line = (k, v) => `${k}: ${v ?? '—'}`;
-      const section = (t) => `\n====================\n${t}\n====================`;
+      const section = t => `\n====================\n${t}\n====================`;
 
       const margenControl = getVal('margen_min') ? `${getVal('margen_min')}%` : '—';
       const margenEfectivo = `${Math.round(getEffectiveMargenMin() * 100)}%`;
@@ -1300,12 +1630,12 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const articulos = Array.isArray(payload?.articulos_base) ? payload.articulos_base : [];
       const articulosLines = articulos.length
         ? articulos.map((it) => {
-          const qty = Number(it.qty || 0);
-          const unit = Number(it.unit_sin_iva || 0);
-          const subSin = unit * qty;
-          const subCon = subSin * IVA_COMPRA;
-          return `- ${it.nombre || 'Artículo'} · ${qty} uds · ${unit.toFixed(2).replace('.', ',')} €/ud sin IVA · Subtotal: ${subSin.toFixed(2).replace('.', ',')} € sin IVA (${subCon.toFixed(2).replace('.', ',')} € con IVA)`;
-        })
+            const qty = Number(it.qty || 0);
+            const unit = Number(it.unit_sin_iva || 0);
+            const subSin = unit * qty;
+            const subCon = subSin * IVA_COMPRA;
+            return `- ${it.nombre || 'Artículo'} · ${qty} uds · ${unit.toFixed(2).replace('.', ',')} €/ud sin IVA · Subtotal: ${subSin.toFixed(2).replace('.', ',')} € sin IVA (${subCon.toFixed(2).replace('.', ',')} € con IVA)`;
+          })
         : ['—'];
 
       const persExtra = Array.isArray(payload?.personalizaciones_extra) ? payload.personalizaciones_extra : [];
@@ -1313,7 +1643,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         ? persExtra.map((p, idx) => `- Extra ${idx + 1}: ${(p.tecnica_label || p.tecnica_key || '—')} · ${(p.proveedor_nombre || '—')} · Coste/ud: ${Number(p.pers_ud || 0).toFixed(2).replace('.', ',')} €`)
         : ['—'];
 
-      // Personalización principal (inputs)
       const tecnicaPrincipal = (document.getElementById('tecnica')?.selectedOptions?.[0]?.textContent || '').trim() || '—';
       const proveedorPrincipalKey = getVal('proveedor_sel') || '—';
       const proveedorPrincipalNombre = (proveedorPrincipalKey === 'otro')
@@ -1333,7 +1662,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         line('Pliego (cm)', `${getVal('otro_prov_ancho_cm') || '—'} × ${getVal('otro_prov_alto_cm') || '—'}`)
       ] : [];
 
-      // Resumen de blancos (lo que se ve en pantalla)
       const blancosLines = [
         line('Precio tarifa / ud sin IVA', getText('res_blanco_tarifa_ud') || '—'),
         line('Descuento tramo aplicado', getText('res_blanco_dto') || '—'),
@@ -1347,7 +1675,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         line('Total blancos con IVA', getText('res_blanco_total') || '—')
       ];
 
-      // Detalle de pliegos (lo que se ve en pantalla)
       const pliegosLines = [
         line(getText('p_l1') || 'Proveedor', getText('p_proveedor') || '—'),
         line(getText('p_l2') || 'Tramo precio aplicado', getText('p_tramo_precio') || '—'),
@@ -1428,10 +1755,18 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     }
 
     const BUDGET_COUNTER_KEY = 'benditolab_budget_counter_v1';
+
     function normalizeBudgetNumber(v) {
-      const n = parseInt(String(v || '').replace(/[^\d]/g, ''), 10);
+      const s = String(v || '').trim();
+      if (!s) return null;
+
+      const lastPart = s.includes('/') ? s.split('/').pop() : s;
+      const digits = lastPart.replace(/[^\d]/g, '');
+      const n = parseInt(digits, 10);
+
       return Number.isFinite(n) && n > 0 ? n : null;
     }
+
     function getStoredBudgetCounter() {
       try {
         return normalizeBudgetNumber(localStorage.getItem(BUDGET_COUNTER_KEY));
@@ -1439,37 +1774,46 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         return null;
       }
     }
+
     function setStoredBudgetCounter(n) {
       try {
         localStorage.setItem(BUDGET_COUNTER_KEY, String(n));
       } catch {}
     }
+
     function getBudgetInputEl() {
       return document.getElementById('presupuesto_num');
     }
+
     function ensureBudgetNumberInitialized() {
       const el = getBudgetInputEl();
       if (!el) return;
       const current = normalizeBudgetNumber(el.value);
       const stored = getStoredBudgetCounter();
       const initial = current ?? stored ?? 1;
-      el.value = String(initial);
+      el.value = formatBudgetNumber(initial);
       setStoredBudgetCounter(initial);
     }
+
     function handleBudgetNumberEdited() {
       const el = getBudgetInputEl();
       if (!el) return;
       const n = normalizeBudgetNumber(el.value);
-      if (!n) return;
-      el.value = String(n);
+      if (!n) {
+        const fallback = getStoredBudgetCounter() ?? 1;
+        el.value = formatBudgetNumber(fallback);
+        return;
+      }
+      el.value = formatBudgetNumber(n);
       setStoredBudgetCounter(n);
     }
+
     function bumpBudgetNumber() {
       const el = getBudgetInputEl();
       if (!el) return;
       const n = normalizeBudgetNumber(el.value) ?? getStoredBudgetCounter() ?? 1;
       const next = n + 1;
-      el.value = String(next);
+      el.value = formatBudgetNumber(next);
       setStoredBudgetCounter(next);
     }
 
@@ -1500,6 +1844,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const idPres = `PRES-${fecha.replace(/-/g, '')}-${String(Date.now()).slice(-6)}`;
       const nombre = `${cliente || 'Sin cliente'} · ${producto || 'Sin producto'} · ${fecha}`;
       let picaje = 0;
+
       if (tecnica === 'Bordado') {
         picaje = parseEuroTextToNumber(document.getElementById('p_total_proveedor_con_iva')?.textContent || '0');
       }
@@ -1601,10 +1946,12 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       if (n === null || n === undefined || Number.isNaN(Number(n))) return '—';
       return (Number(n)).toFixed(2).replace('.', ',') + ' €';
     }
+
     function pctTxt(n) {
       if (n === null || n === undefined || Number.isNaN(Number(n))) return '—';
       return (Number(n)).toFixed(1).replace('.', ',') + ' %';
     }
+
     function escHtml(s) {
       return String(s ?? '')
         .replace(/&/g, '&amp;')
@@ -1621,7 +1968,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     function replaceFormControlsWithText(rootEl) {
       if (!rootEl) return;
 
-      // Inputs
       rootEl.querySelectorAll('input').forEach((el) => {
         const type = (el.getAttribute('type') || '').toLowerCase();
         const isButtonLike = ['button', 'submit', 'reset', 'range', 'checkbox', 'radio', 'file', 'color'].includes(type);
@@ -1635,7 +1981,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         el.replaceWith(replacement);
       });
 
-      // Selects
       rootEl.querySelectorAll('select').forEach((el) => {
         const selectedText = el.selectedOptions?.[0]?.textContent?.trim() || '';
         const replacement = document.createElement('div');
@@ -1645,7 +1990,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         el.replaceWith(replacement);
       });
 
-      // Textareas
       rootEl.querySelectorAll('textarea').forEach((el) => {
         const text = (el.value ?? el.textContent ?? '').toString().trim();
         const replacement = document.createElement('div');
@@ -1665,16 +2009,13 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         return `<!doctype html><html lang="es"><head><meta charset="utf-8"/><title>Presupuesto</title><style>${css}</style></head><body><p>No se pudo generar el presupuesto.</p></body></html>`;
       }
 
-      // Quitar bloque de email/acciones del editor en el PDF si existen.
       clone.querySelectorAll('#email_box, .email-box').forEach(el => el.remove());
       clone.querySelectorAll('.actions-row, button').forEach(el => el.remove());
 
-      // El logo está embebido en base64 (muy pesado) → lo quitamos en el HTML para Make.
       if (!includeLogo) {
         clone.querySelectorAll('.brand-logo img, .brand-header img').forEach(img => img.remove());
       }
 
-      // Convertimos controles a texto para que el PDF sea “igual a la vista”, pero sin campos editables.
       replaceFormControlsWithText(clone);
 
       const extraCss = `
@@ -1693,7 +2034,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
            </div>`
         : '';
 
-      // Insertar acciones de impresión bajo el header (si aplica)
       if (includePrintActions) {
         const header = clone.querySelector('.brand-header');
         if (header) {
@@ -1719,8 +2059,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     }
 
     function buildFullBudgetHtml(payload) {
-      // Para el PDF que genera Make, queremos que se vea IGUAL que el editor.
-      // No incluimos logo base64 para no inflar el payload del webhook.
       return buildBudgetEditorViewHtml({ includeLogo: false, includePrintActions: false });
     }
 
@@ -1743,30 +2081,25 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
           const wrap = doc.querySelector('.wrap');
           if (!wrap) return;
 
-          // Reset
           wrap.style.transformOrigin = 'top left';
           wrap.style.transform = '';
 
-          // Aproximación A4 en CSS px (a 96dpi). Evita cortes: escalamos en base a alto.
-          const A4_H_PX = 1122; // 11.69in * 96
-          const TOP_BOTTOM_SAFE = 70; // margen de seguridad para encabezados/impresora
+          const A4_H_PX = 1122;
+          const TOP_BOTTOM_SAFE = 70;
           const availableH = Math.max(600, A4_H_PX - TOP_BOTTOM_SAFE);
 
-          // Medimos el alto real de contenido
           const rect = wrap.getBoundingClientRect();
           const contentH = rect.height || wrap.scrollHeight || 0;
           if (!contentH) return;
 
           const scale = Math.min(1, availableH / contentH);
           wrap.style.transform = `scale(${scale})`;
-          // Compensa el layout para que no “encoga” el body y quede aire abajo
           wrap.style.height = `${contentH * scale}px`;
         } catch (_) {}
       };
 
       w.addEventListener('load', () => {
         if (onePage) {
-          // Inyectamos reglas de impresión (evitar saltos y forzar 1 página A4)
           const st = w.document.createElement('style');
           st.textContent = `
             @page { size: A4; margin: 10mm; }
@@ -1775,7 +2108,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
             .wrap { page-break-inside: avoid; break-inside: avoid; }
           `;
           w.document.head.appendChild(st);
-          // Espera un tick a que se aplique el layout
           setTimeout(() => {
             fitOnePage();
             if (autoPrint) w.print();
@@ -1812,8 +2144,22 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     function updateDetalleLabels(tecnica) {
       const labels = {
         pb_title: 'Detalle de pliegos',
-        p_l1: 'Proveedor', p_l2: 'Tramo precio aplicado', p_l3: 'Dimensiones pliego', p_l4: 'Diseños por pliego', p_l5: 'Pliegos necesarios', p_l6: 'Área pliego', p_l7: 'Área usada', p_l8: 'Área libre', p_l9: 'Coste / pliego', p_l10: 'Coste total material sin IVA', p_l11: 'IVA material proveedor', p_l12: 'Coste total material con IVA', p_l13: 'Envío proveedor con IVA', p_l14: 'Total proveedor personalización con IVA'
+        p_l1: 'Proveedor',
+        p_l2: 'Tramo precio aplicado',
+        p_l3: 'Dimensiones pliego',
+        p_l4: 'Diseños por pliego',
+        p_l5: 'Pliegos necesarios',
+        p_l6: 'Área pliego',
+        p_l7: 'Área usada',
+        p_l8: 'Área libre',
+        p_l9: 'Coste / pliego',
+        p_l10: 'Coste total material sin IVA',
+        p_l11: 'IVA material proveedor',
+        p_l12: 'Coste total material con IVA',
+        p_l13: 'Envío proveedor con IVA',
+        p_l14: 'Total proveedor personalización con IVA'
       };
+
       if (tecnica === 'bordado') {
         labels.pb_title = 'Detalle de bordado';
         labels.p_l1 = 'Modelo de cálculo';
@@ -1847,6 +2193,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         labels.p_l13 = 'IVA proveedor';
         labels.p_l14 = 'Total proveedor con IVA';
       }
+
       for (const [id, text] of Object.entries(labels)) setText(id, text);
     }
 
@@ -1860,18 +2207,36 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const tecnica_key = document.getElementById('tecnica').value;
       const margen_min = getEffectiveMargenMin();
       const divisor = 1 - margen_min;
-      const proveedor_key = (TECNICAS[tecnica_key]?.proveedores || [])[0] ? (document.getElementById('proveedor_sel').value || TECNICAS[tecnica_key].proveedores[0]) : 'ninguno';
+      const proveedor_key = (TECNICAS[tecnica_key]?.proveedores || [])[0]
+        ? (document.getElementById('proveedor_sel').value || TECNICAS[tecnica_key].proveedores[0])
+        : 'ninguno';
       const prov = getProviderConfig(proveedor_key);
       const dis_ancho = parseFloat(document.getElementById('dis_ancho').value) || 10;
       const dis_alto = parseFloat(document.getElementById('dis_alto').value) || 10;
       const posiciones = parseInt(document.getElementById('posiciones').value, 10) || 1;
       const vinilo_tipo = document.getElementById('vinilo_tipo').value;
       const MC = 0.2;
+
       let pw = 0, ph = 0, dh = 0, dv = 0, total_imp = 0;
 
-      let pers_ud = 0, coste_total_mat = 0, coste_total_mat_sin_iva = 0, iva_mat_proveedor = 0, total_proveedor_personalizacion_con_iva = 0, num_pliegos = 0, dis_pliego = 0;
-      let area_pliego_m2 = 0, area_usada_m2 = 0, coste_pliego_val = 0;
-      let show_pliegos = false, envio_prov_total = 0, envio_prov_total_sin_iva = 0, prov_dims = '—', tramo_label_display = '—';
+      let pers_ud = 0,
+          coste_total_mat = 0,
+          coste_total_mat_sin_iva = 0,
+          iva_mat_proveedor = 0,
+          total_proveedor_personalizacion_con_iva = 0,
+          num_pliegos = 0,
+          dis_pliego = 0;
+
+      let area_pliego_m2 = 0,
+          area_usada_m2 = 0,
+          coste_pliego_val = 0;
+
+      let show_pliegos = false,
+          envio_prov_total = 0,
+          envio_prov_total_sin_iva = 0,
+          prov_dims = '—',
+          tramo_label_display = '—';
+
       let detalle = null;
 
       if (tecnica_key === 'bordado') {
@@ -1891,6 +2256,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
         pers_ud = coste_puntadas_ud + extra_colores_ud + coste_manipulacion_ud + coste_picaje_ud;
         coste_total_mat = pers_ud * cantidad;
+
         detalle = {
           proveedor: 'Producción propia',
           tramo: puntadas.toLocaleString('es-ES') + ' puntadas',
@@ -1917,6 +2283,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
         pers_ud = coste_maquina_ud + coste_mano_obra_ud + laser_extra_ud;
         coste_total_mat = pers_ud * cantidad;
+
         detalle = {
           proveedor: document.getElementById('laser_tipo').selectedOptions[0].textContent,
           tramo: f2(laser_coste_hora),
@@ -1935,6 +2302,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         const m2_rate = tecnica_key === 'vinilo' ? (VINILO_M2[vinilo_tipo] || 15) : 0;
         pw = prov.ancho_cm;
         ph = prov.alto_cm;
+
         if (pw > 0 && ph > 0) {
           dh = Math.floor((pw - 2 * MC + MC) / (dis_ancho + MC));
           dv = Math.floor((ph - 2 * MC + MC) / (dis_alto + MC));
@@ -1962,30 +2330,66 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
           coste_total_mat = coste_total_mat_sin_iva * IVA_COMPRA;
           iva_mat_proveedor = coste_total_mat - coste_total_mat_sin_iva;
           pers_ud = coste_total_mat / cantidad;
-
-          if (prov.envio_gratis_desde === null) envio_prov_total_sin_iva = prov.envio;
-          else if (coste_total_mat_sin_iva >= prov.envio_gratis_desde) envio_prov_total_sin_iva = 0;
-          else envio_prov_total_sin_iva = prov.envio_gratis_desde === 0 ? 0 : prov.envio;
-
-          envio_prov_total = envio_prov_total_sin_iva * IVA_COMPRA;
-          total_proveedor_personalizacion_con_iva = coste_total_mat + envio_prov_total;
           show_pliegos = true;
         }
       }
 
-      // Descuento de blancos eliminado: el coste del blanco es el que introduces (sin IVA).
+      const persExtras = getPersExtras();
+      const persExtrasUd = persExtras.reduce((acc, p) => acc + (p.pers_ud || 0), 0);
+
+      const providerShipping = computeProviderShippingTotals([
+        {
+          tecnica_key,
+          proveedor_key,
+          proveedor_nombre: prov?.nombre || '—',
+          coste_total_mat_sin_iva,
+          shipping_eligible: (tecnica_key !== 'ninguna' && tecnica_key !== 'bordado' && tecnica_key !== 'laser' && !['propio', 'ninguno'].includes(proveedor_key)),
+          proveedor_envio: Number(prov?.envio || 0),
+          proveedor_envio_gratis_desde: prov?.envio_gratis_desde ?? null
+        },
+        ...persExtras
+      ]);
+
+      envio_prov_total = providerShipping.total_con_iva;
+      envio_prov_total_sin_iva = providerShipping.total_sin_iva;
+
+      const mainProviderShipping = providerShipping.groups.find(g => g.key === proveedor_key);
+      const envio_prov_principal_con_iva = mainProviderShipping?.envio_con_iva || 0;
+
+      if (tecnica_key !== 'bordado' && tecnica_key !== 'laser' && tecnica_key !== 'ninguna') {
+        total_proveedor_personalizacion_con_iva = coste_total_mat + envio_prov_principal_con_iva;
+      }
+
+      const providerShippingSummary = providerShipping.groups.length
+        ? providerShipping.groups
+            .map(g => `${g.nombre}: ${g.envio_con_iva > 0 ? f2(g.envio_con_iva) : 'Gratis'}`)
+            .join(' · ')
+        : '';
+
       const precio_blanco_final_sin_iva = precio_blanco;
       const precio_blanco_con_iva = precio_blanco_final_sin_iva * IVA_COMPRA;
       const subtotal_blancos_sin_iva = subtotal_blancos_sin_iva_raw;
       const ahorro_blancos_sin_iva = 0;
-      const envio_blanco_sin_iva = subtotal_blancos_sin_iva >= 100 ? 0 : 5.95;
+      const hasWhiteItems = baseItems.length > 0 && subtotal_blancos_sin_iva > 0;
+      const envioBlancoField = document.getElementById('envio_blanco_auto');
+      const quitarEnvioBlanco = Boolean(document.getElementById('quitar_envio_blanco')?.checked);
+
+      const envio_blanco_auto_sin_iva = (hasWhiteItems && subtotal_blancos_sin_iva < 100)
+        ? (parseFloat(envioBlancoField?.dataset.default || '5.95') || 5.95)
+        : 0;
+
+      if (envioBlancoField) {
+        envioBlancoField.value = envio_blanco_auto_sin_iva.toFixed(2);
+      }
+
+      const envio_blanco_sin_iva = (!quitarEnvioBlanco && envio_blanco_auto_sin_iva > 0) ? envio_blanco_auto_sin_iva : 0;
       const envio_blanco_total = envio_blanco_sin_iva * IVA_COMPRA;
       const subtotal_blancos = precio_blanco_con_iva * cantidad;
       const total_blancos = subtotal_blancos + envio_blanco_total;
-      const envio_blanco_ud = envio_blanco_total / cantidad;
-      const envio_prov_ud = envio_prov_total / cantidad;
-      const persExtrasUd = getPersExtras().reduce((acc, p) => acc + (p.pers_ud || 0), 0);
-      const costes_fijos_ud = pers_ud + persExtrasUd + pack_ud + (otros_fijos / cantidad) + envio_blanco_ud + envio_prov_ud;
+      const envio_blanco_ud = cantidad > 0 ? (envio_blanco_total / cantidad) : 0;
+      const envio_prov_ud = cantidad > 0 ? (envio_prov_total / cantidad) : 0;
+      const personalizacion_total_ud = pers_ud + persExtrasUd;
+      const costes_fijos_ud = personalizacion_total_ud + pack_ud + (otros_fijos / cantidad) + envio_blanco_ud + envio_prov_ud;
       const coste_total_ud = precio_blanco_con_iva + costes_fijos_ud;
 
       const ti = getTramoVenta(cantidad);
@@ -1998,8 +2402,15 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const pvp_dto_nom = blanco_dto_nom + costes_fijos_ud;
 
       let blanco_final, pvp_final, capped;
-      if (pvp_dto_nom >= pvp_minimo) { blanco_final = blanco_dto_nom; pvp_final = pvp_dto_nom; capped = false; }
-      else { blanco_final = Math.max(pvp_minimo - costes_fijos_ud, 0); pvp_final = blanco_final + costes_fijos_ud; capped = true; }
+      if (pvp_dto_nom >= pvp_minimo) {
+        blanco_final = blanco_dto_nom;
+        pvp_final = pvp_dto_nom;
+        capped = false;
+      } else {
+        blanco_final = Math.max(pvp_minimo - costes_fijos_ud, 0);
+        pvp_final = blanco_final + costes_fijos_ud;
+        capped = true;
+      }
 
       const dto_importe = precio_blanco_con_iva - blanco_final;
       const dto_real_pct = precio_blanco_con_iva > 0 ? (dto_importe / precio_blanco_con_iva) * 100 : 0;
@@ -2013,6 +2424,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const mvd = document.getElementById('margen_val_display');
       mvd.textContent = mp + '%';
       mvd.className = 'margen-val' + (margen_min >= 0.60 ? ' green' : ' amber');
+
       document.getElementById('margen_hint').textContent = margen_min >= 0.60
         ? 'Margen saludable B2B. Descuento aplicado solo sobre artículo base.'
         : 'Por debajo del 60%. Úsalo solo si el volumen o la estrategia lo justifican.';
@@ -2025,7 +2437,15 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       setText('res_blanco_cant', cantidad + ' ud');
       setText('res_blanco_subtotal_sin', f2(subtotal_blancos_sin_iva));
       setText('res_blanco_subtotal', f2(subtotal_blancos));
-      setText('res_blanco_envio', envio_blanco_total > 0 ? f2(envio_blanco_total) : 'Gratis (≥100 € sin IVA)');
+
+      let textoEnvioBlancos = '—';
+      if (hasWhiteItems) {
+        if (envio_blanco_auto_sin_iva === 0) textoEnvioBlancos = 'Gratis (≥100 € sin IVA)';
+        else if (quitarEnvioBlanco) textoEnvioBlancos = 'Quitado manualmente';
+        else textoEnvioBlancos = f2(envio_blanco_total);
+      }
+      setText('res_blanco_envio', textoEnvioBlancos);
+
       setText('res_blanco_total', f2(total_blancos));
       setText('r_coste_ud', f2(coste_total_ud));
       setText('r_total_blancos', f2(total_blancos));
@@ -2037,30 +2457,50 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const badge = document.getElementById('tramo_badge');
       badge.textContent = 'Tramo ' + TRAMOS_VENTA[ti].label + ' · ' + (dto_nominal * 100).toFixed(0) + '% dto artículo base' + (usarDtoVentaManual ? ' (manual)' : '') + (capped ? ' (limitado a ' + dto_real_pct.toFixed(0) + '%)' : '');
       badge.className = 'tramo-badge' + (capped ? ' capped' : '');
-      document.getElementById('aviso_dto').className = 'aviso' + (capped ? ' show' : '');
 
+      document.getElementById('aviso_dto').className = 'aviso' + (capped ? ' show' : '');
       setText('tramo_venta_badge', TRAMOS_VENTA[ti].label + ' · ' + (dto_nominal * 100).toFixed(0) + '%');
 
       setText('b_blanco_sin_dto', f2(precio_blanco_con_iva));
+
       const pill = document.getElementById('b_dto_pill');
       if (dto_nominal === 0) {
-        pill.textContent = 'sin dto en este tramo'; pill.className = 'dto-pill ok';
-        setText('b_dto_importe', '—'); setText('b_blanco_tras_dto', '');
+        pill.textContent = 'sin dto en este tramo';
+        pill.className = 'dto-pill ok';
+        setText('b_dto_importe', '—');
+        setText('b_blanco_tras_dto', '');
       } else if (capped) {
-        pill.textContent = (dto_nominal * 100).toFixed(0) + '% → limitado a ' + dto_real_pct.toFixed(0) + '%'; pill.className = 'dto-pill';
+        pill.textContent = (dto_nominal * 100).toFixed(0) + '% → limitado a ' + dto_real_pct.toFixed(0) + '%';
+        pill.className = 'dto-pill';
         setText('b_dto_importe', dto_importe > 0 ? '- ' + f2(dto_importe) : '—');
         setText('b_blanco_tras_dto', 'artículo base queda: ' + f2(blanco_final) + ' / ud');
       } else {
-        pill.textContent = (dto_nominal * 100).toFixed(0) + '% aplicado'; pill.className = 'dto-pill ok';
+        pill.textContent = (dto_nominal * 100).toFixed(0) + '% aplicado';
+        pill.className = 'dto-pill ok';
         setText('b_dto_importe', '- ' + f2(dto_importe));
         setText('b_blanco_tras_dto', 'artículo base queda: ' + f2(blanco_final) + ' / ud');
       }
 
-      setText('b_pers_ud', tecnica_key === 'ninguna' ? '—' : f2(pers_ud));
+      setText('b_pers_ud', (tecnica_key === 'ninguna' && personalizacion_total_ud <= 0) ? '—' : f2(personalizacion_total_ud));
       setText('b_pack_ud', pack_ud > 0 ? f2(pack_ud) : '—');
       setText('b_otros_ud', otros_fijos > 0 ? f2(otros_fijos / cantidad) : '—');
-      setText('b_envio_blanco_ud', envio_blanco_total > 0 ? f2(envio_blanco_ud) + ' (total ' + f2(envio_blanco_total) + ')' : 'Gratis (≥100 € sin IVA)');
-      setText('b_envio_prov_ud', (show_pliegos && envio_prov_total > 0) ? f2(envio_prov_ud) + ' (total ' + f2(envio_prov_total) + ')' : (show_pliegos ? 'Gratis / no aplica' : '—'));
+
+      const textoEnvioBlancoUd = !hasWhiteItems
+        ? '—'
+        : (envio_blanco_auto_sin_iva === 0
+          ? 'Gratis (≥100 € sin IVA)'
+          : (quitarEnvioBlanco ? 'Quitado manualmente' : f2(envio_blanco_ud) + ' (total ' + f2(envio_blanco_total) + ')'));
+
+      setText('b_envio_blanco_ud', textoEnvioBlancoUd);
+
+      const hayEnvioProveedor = providerShipping.groups.length > 0;
+      setText(
+        'b_envio_prov_ud',
+        hayEnvioProveedor
+          ? (envio_prov_total > 0 ? f2(envio_prov_ud) + ' (total ' + f2(envio_prov_total) + ')' : 'Gratis')
+          : '—'
+      );
+
       setText('b_pvp_final_sin', f2(pvp_final));
       setText('b_iva', f2(pvp_final * IVA_VENTA));
       setText('b_pvp_final_con', f2(pvp_final_iva));
@@ -2071,8 +2511,10 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
       const pb = document.getElementById('pliegos_box');
       updateDetalleLabels(tecnica_key);
+
       if (show_pliegos) {
         pb.style.display = 'block';
+
         if (tecnica_key === 'bordado' || tecnica_key === 'laser') {
           setText('p_proveedor', detalle.proveedor);
           setText('p_tramo_precio', detalle.tramo);
@@ -2096,6 +2538,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
           setText('p_dis_pliego', dis_pliego + ' diseños');
           setText('p_num', num_pliegos + ' pliegos');
           setText('p_area_pliego', (area_pliego_m2 * 10000).toFixed(0) + ' cm² (' + area_pliego_m2.toFixed(4).replace('.', ',') + ' m²)');
+
           const alib = Math.max(0, area_pliego_m2 * num_pliegos - area_usada_m2);
           setText('p_area_usada', (area_usada_m2 * 10000).toFixed(0) + ' cm²');
           setText('p_area_libre', (alib * 10000).toFixed(0) + ' cm²');
@@ -2103,7 +2546,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
           setText('p_coste_total_mat_sin', f2(coste_total_mat_sin_iva));
           setText('p_iva_mat_prov', f2(iva_mat_proveedor));
           setText('p_coste_total_mat', f2(coste_total_mat));
-          setText('p_envio_prov', envio_prov_total > 0 ? f2(envio_prov_total) : 'Gratis');
+          setText('p_envio_prov', providerShippingSummary || (envio_prov_total > 0 ? f2(envio_prov_total) : 'Gratis'));
           setText('p_total_proveedor_con_iva', f2(total_proveedor_personalizacion_con_iva));
           document.getElementById('tramo_info_321').style.display = (proveedor_key === '321dtf' && tecnica_key === 'dtf_textil') ? 'block' : 'none';
         }
@@ -2128,30 +2571,43 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     function updateTecnicaUI() {
       const t = document.getElementById('tecnica').value;
       populateProveedorSelect();
+
       document.getElementById('bloque_area').style.display = (t !== 'ninguna' && t !== 'bordado' && t !== 'laser') ? 'block' : 'none';
       document.getElementById('bloque_bordado').style.display = t === 'bordado' ? 'block' : 'none';
       document.getElementById('bloque_laser').style.display = t === 'laser' ? 'block' : 'none';
       document.getElementById('bloque_vinilo_tipo').style.display = t === 'vinilo' ? 'block' : 'none';
+
       const provSel = document.getElementById('proveedor_sel');
       const otroBox = document.getElementById('bloque_proveedor_otro');
       if (otroBox) otroBox.style.display = (provSel && provSel.value === 'otro') ? 'block' : 'none';
+
       calc();
     }
 
     document.getElementById('tecnica').addEventListener('change', updateTecnicaUI);
+
     const provSelEl = document.getElementById('proveedor_sel');
     if (provSelEl) provSelEl.addEventListener('change', updateTecnicaUI);
+
     document.getElementById('margen_min').addEventListener('input', calc);
     document.getElementById('laser_tipo').addEventListener('change', () => { applyLaserPreset(); calc(); });
 
     const slider = document.getElementById('slider_cant');
     const cantI = document.getElementById('cantidad');
-    slider.addEventListener('input', () => { cantI.value = slider.value; setText('slider_out', slider.value + ' ud'); calc(); });
-    cantI.addEventListener('input', () => { slider.value = cantI.value; setText('slider_out', cantI.value + ' ud'); calc(); });
+    slider.addEventListener('input', () => {
+      cantI.value = slider.value;
+      setText('slider_out', slider.value + ' ud');
+      calc();
+    });
+    cantI.addEventListener('input', () => {
+      slider.value = cantI.value;
+      setText('slider_out', cantI.value + ' ud');
+      calc();
+    });
 
     [
       'precio_blanco','pack_coste','otros_fijos','proveedor_sel','dis_ancho','dis_alto','posiciones','vinilo_tipo',
-      'usar_dto_venta_manual','dto_venta_manual',
+      'usar_dto_venta_manual','dto_venta_manual','quitar_envio_blanco',
       'otro_prov_nombre','otro_prov_envio','otro_prov_envio_gratis','otro_prov_coste_pliego','otro_prov_ancho_cm','otro_prov_alto_cm',
       'puntadas','bord_colores','bord_pos','bord_picaje','bord_coste_puntada','bord_manipulacion','bord_picaje_coste','bord_extra_color',
       'laser_maq','laser_man','laser_extra_ud','laser_coste_hora','laser_coste_mo'
@@ -2164,14 +2620,19 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     const emailBtn = document.getElementById('btn_email_presupuesto');
     if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
+
     const waBtn = document.getElementById('btn_whatsapp_presupuesto');
     if (waBtn) waBtn.addEventListener('click', sendBudgetWhatsApp);
+
     const fullBtn = document.getElementById('btn_presupuesto_completo');
     if (fullBtn) fullBtn.addEventListener('click', openFullBudgetDocument);
+
     const pdf1pBtn = document.getElementById('btn_presupuesto_pdf_1p');
     if (pdf1pBtn) pdf1pBtn.addEventListener('click', () => openFullBudgetDocument({ onePage: true, autoPrint: true }));
+
     const saveBtn = document.getElementById('btn_guardar_presupuesto');
     if (saveBtn) saveBtn.addEventListener('click', sendInternalBudgetEmail);
+
     const budgetNumEl = document.getElementById('presupuesto_num');
     if (budgetNumEl) {
       ensureBudgetNumberInitialized();
@@ -2181,6 +2642,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     const addBaseBtn = document.getElementById('btn_add_base_item');
     if (addBaseBtn) addBaseBtn.addEventListener('click', addBaseItemRow);
+
     const addPersBtn = document.getElementById('btn_add_pers_extra');
     if (addPersBtn) addPersBtn.addEventListener('click', addPersExtraRow);
 
@@ -2188,7 +2650,6 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     populateProveedorSelect();
     applyLaserPreset();
     updateTecnicaUI();
-  
   </script>
 </body>
 </html>

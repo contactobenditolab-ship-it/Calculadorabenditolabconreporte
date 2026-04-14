@@ -1045,236 +1045,127 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         .replace(/'/g, '&#39;');
     }
 
-    function buildFullBudgetHtml(payload) {
-      const css = document.querySelector('style')?.textContent || '';
-      const title = `Presupuesto${payload?.numero_presupuesto ? ' #' + payload.numero_presupuesto : ''} · ${payload?.cliente || 'Sin cliente'}`;
+    function getInlineAppCss() {
+      return document.querySelector('style')?.textContent || '';
+    }
 
-      const rows = (items) => (items || [])
-        .filter(Boolean)
-        .map(([k, v]) => `<div class="brow"><span class="bl">${escHtml(k)}</span><span class="bv">${escHtml(v)}</span></div>`)
-        .join('');
+    function replaceFormControlsWithText(rootEl) {
+      if (!rootEl) return;
 
-      const headerRows = rows([
-        ['Nº presupuesto', payload?.numero_presupuesto ? String(payload.numero_presupuesto) : '—'],
-        ['Fecha', payload?.fecha_envio || '—'],
-        ['Cliente', payload?.cliente || '—'],
-        ['Email cliente', payload?.email_destino || '—'],
-        ['Artículo', payload?.producto || '—'],
-        ['Cantidad', payload?.cantidad ? `${payload.cantidad} uds` : '—'],
-        ['Técnica', payload?.tecnica || '—'],
-        ['Proveedor', payload?.proveedor || '—']
-      ]);
+      // Inputs
+      rootEl.querySelectorAll('input').forEach((el) => {
+        const type = (el.getAttribute('type') || '').toLowerCase();
+        const isButtonLike = ['button', 'submit', 'reset', 'range', 'checkbox', 'radio', 'file', 'color'].includes(type);
+        if (isButtonLike) return;
 
-      const priceRows = rows([
-        ['Precio unidad (cliente)', euro(payload?.precio_unidad_cliente)],
-        ['PVP sin IVA', euro(payload?.pvp_sin_iva)],
-        ['PVP con IVA', euro(payload?.pvp_con_iva)],
-        ['Total presupuesto (cliente)', euro(payload?.total_presupuesto_cliente)],
-        ['Total pedido (con IVA)', euro(payload?.total_pedido_con_iva)],
-        ['Coste total / ud', euro(payload?.coste_total_ud)],
-        ['Beneficio total pedido', euro(payload?.beneficio_total_pedido)]
-      ]);
+        const text = (el.value ?? el.getAttribute('value') ?? '').toString().trim();
+        const replacement = document.createElement('div');
+        replacement.className = (el.className || '').toString();
+        replacement.style.cssText = (el.getAttribute('style') || '') + ';white-space:pre-wrap;';
+        replacement.textContent = text || '—';
+        el.replaceWith(replacement);
+      });
 
-      const extrasRows = rows([
-        ['Packaging', euro(payload?.packaging)],
-        ['Otros costes', euro(payload?.otros_costes)],
-        ['Picaje', payload?.picaje ? euro(payload.picaje) : '—'],
-        ['Pliegos', payload?.pliegos ? String(payload.pliegos) : '—'],
-        ['Área libre', (payload?.area_libre ?? payload?.area_libre === 0) ? `${String(payload.area_libre).replace('.', ',')} m²` : '—'],
-        ['Aprovechamiento', (payload?.aprovechamiento ?? payload?.aprovechamiento === 0) ? pctTxt(payload.aprovechamiento) : '—']
-      ]);
+      // Selects
+      rootEl.querySelectorAll('select').forEach((el) => {
+        const selectedText = el.selectedOptions?.[0]?.textContent?.trim() || '';
+        const replacement = document.createElement('div');
+        replacement.className = (el.className || '').toString();
+        replacement.style.cssText = (el.getAttribute('style') || '') + ';white-space:pre-wrap;';
+        replacement.textContent = selectedText || '—';
+        el.replaceWith(replacement);
+      });
 
-      const condiciones = String(payload?.condiciones || '').trim();
-      const condicionesHtml = condiciones
-        ? `<div class="card"><div class="sec-title">Condiciones</div><div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(condiciones)}</div></div>`
+      // Textareas
+      rootEl.querySelectorAll('textarea').forEach((el) => {
+        const text = (el.value ?? el.textContent ?? '').toString().trim();
+        const replacement = document.createElement('div');
+        replacement.className = (el.className || '').toString();
+        replacement.style.cssText = (el.getAttribute('style') || '') + ';white-space:pre-wrap;';
+        replacement.textContent = text || '—';
+        el.replaceWith(replacement);
+      });
+    }
+
+    function buildBudgetEditorViewHtml({ includeLogo = false, includePrintActions = false } = {}) {
+      const css = getInlineAppCss();
+      const wrap = document.querySelector('.wrap');
+      const clone = wrap ? wrap.cloneNode(true) : null;
+
+      if (!clone) {
+        return `<!doctype html><html lang="es"><head><meta charset="utf-8"/><title>Presupuesto</title><style>${css}</style></head><body><p>No se pudo generar el presupuesto.</p></body></html>`;
+      }
+
+      // Quitar bloque de email/acciones del editor en el PDF si existen.
+      clone.querySelectorAll('#email_box, .email-box').forEach(el => el.remove());
+      clone.querySelectorAll('.actions-row, button').forEach(el => el.remove());
+
+      // El logo está embebido en base64 (muy pesado) → lo quitamos en el HTML para Make.
+      if (!includeLogo) {
+        clone.querySelectorAll('.brand-logo img, .brand-header img').forEach(img => img.remove());
+      }
+
+      // Convertimos controles a texto para que el PDF sea “igual a la vista”, pero sin campos editables.
+      replaceFormControlsWithText(clone);
+
+      const extraCss = `
+        body { background: #fff; padding: 0; }
+        .wrap { padding: 18px 16px 24px; }
+        @media print {
+          body { background: #fff !important; }
+          .wrap { padding: 0 !important; }
+          .card, .margen-config, .results { box-shadow: none !important; }
+        }
+      `;
+
+      const actionsHtml = includePrintActions
+        ? `<div class="actions-row no-print" style="margin:12px 0 14px">
+             <button type="button" class="btn-primary big" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+           </div>`
         : '';
 
-      const emailTexto = String(payload?.texto_enviado || '').trim();
-      const emailHtml = emailTexto
-        ? `<div class="card"><div class="sec-title">Texto enviado al cliente (email)</div><div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(emailTexto)}</div></div>`
-        : '';
+      // Insertar acciones de impresión bajo el header (si aplica)
+      if (includePrintActions) {
+        const header = clone.querySelector('.brand-header');
+        if (header) {
+          const actionsWrap = document.createElement('div');
+          actionsWrap.innerHTML = actionsHtml;
+          header.insertAdjacentElement('afterend', actionsWrap.firstElementChild);
+        }
+      }
 
-      // No incluimos el logo base64 para no inflar el payload del webhook.
       return `<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${escHtml(title)}</title>
+  <title>Presupuesto</title>
   <style>${css}</style>
-  <style>
-    body { background: #fff; }
-    .wrap { padding-top: 18px; }
-    @media print {
-      body { background: #fff !important; }
-      .wrap { padding: 0 !important; }
-      .card { box-shadow: none !important; border: 1px solid #eee !important; }
-    }
-  </style>
+  <style>${extraCss}</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="brand-header">
-      <div class="brand-copy">
-        <h1 style="margin:0">Presupuesto completo</h1>
-        <p style="margin:6px 0 0">Generado desde la calculadora</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="sec-title">Datos del presupuesto</div>
-      <div class="grid2">${headerRows}</div>
-    </div>
-
-    <div class="card">
-      <div class="sec-title">Precios y totales</div>
-      <div class="grid2">${priceRows}</div>
-    </div>
-
-    <div class="card">
-      <div class="sec-title">Extras y producción</div>
-      <div class="grid2">${extrasRows}</div>
-    </div>
-
-    ${condicionesHtml}
-    ${emailHtml}
-
-    <p class="footer-note">Documento generado automáticamente.</p>
-  </div>
+  ${clone.outerHTML}
 </body>
 </html>`;
     }
 
+    function buildFullBudgetHtml(payload) {
+      // Para el PDF que genera Make, queremos que se vea IGUAL que el editor.
+      // No incluimos logo base64 para no inflar el payload del webhook.
+      return buildBudgetEditorViewHtml({ includeLogo: false, includePrintActions: false });
+    }
+
     function openFullBudgetDocument() {
       ensureBudgetNumberInitialized();
-      const payload = buildBudgetPayload();
-
-      const title = `Presupuesto${payload.numero_presupuesto ? ' #' + payload.numero_presupuesto : ''} · ${payload.cliente || 'Sin cliente'}`;
       const w = window.open('', '_blank', 'noopener,noreferrer');
       if (!w) {
         alert('Tu navegador ha bloqueado la pestaña nueva. Permite popups para poder ver/imprimir el presupuesto completo.');
         return;
       }
 
-      const css = document.querySelector('style')?.textContent || '';
-      const logoSrc = document.querySelector('.brand-header img')?.getAttribute('src') || '';
-
-      const rows = (items) => items
-        .filter(Boolean)
-        .map(([k, v]) => `<div class="brow"><span class="bl">${escHtml(k)}</span><span class="bv">${escHtml(v)}</span></div>`)
-        .join('');
-
-      const headerRows = rows([
-        ['Nº presupuesto', payload.numero_presupuesto ? String(payload.numero_presupuesto) : '—'],
-        ['Fecha', payload.fecha_envio || '—'],
-        ['Cliente', payload.cliente || '—'],
-        ['Email cliente', payload.email_destino || '—'],
-        ['Artículo', payload.producto || '—'],
-        ['Cantidad', payload.cantidad ? `${payload.cantidad} uds` : '—'],
-        ['Técnica', payload.tecnica || '—'],
-        ['Proveedor', payload.proveedor || '—']
-      ]);
-
-      const priceRows = rows([
-        ['Precio unidad (cliente)', euro(payload.precio_unidad_cliente)],
-        ['PVP sin IVA', euro(payload.pvp_sin_iva)],
-        ['PVP con IVA', euro(payload.pvp_con_iva)],
-        ['Total presupuesto (cliente)', euro(payload.total_presupuesto_cliente)],
-        ['Total pedido (con IVA)', euro(payload.total_pedido_con_iva)],
-        ['Coste total / ud', euro(payload.coste_total_ud)],
-        ['Beneficio total pedido', euro(payload.beneficio_total_pedido)]
-      ]);
-
-      const extrasRows = rows([
-        ['Packaging', euro(payload.packaging)],
-        ['Otros costes', euro(payload.otros_costes)],
-        ['Picaje', payload.picaje ? euro(payload.picaje) : '—'],
-        ['Pliegos', payload.pliegos ? String(payload.pliegos) : '—'],
-        ['Área libre', (payload.area_libre ?? payload.area_libre === 0) ? `${String(payload.area_libre).replace('.', ',')} m²` : '—'],
-        ['Aprovechamiento', (payload.aprovechamiento ?? payload.aprovechamiento === 0) ? pctTxt(payload.aprovechamiento) : '—']
-      ]);
-
-      const condiciones = (payload.condiciones || '').trim();
-      const condicionesHtml = condiciones
-        ? `<div class="card"><div class="sec-title">Condiciones</div><div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(condiciones)}</div></div>`
-        : '';
-
-      const emailTexto = (payload.texto_enviado || '').trim();
-      const emailHtml = emailTexto
-        ? `<div class="card"><div class="sec-title">Texto enviado al cliente (email)</div><div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(emailTexto)}</div></div>`
-        : '';
-
+      const html = buildBudgetEditorViewHtml({ includeLogo: true, includePrintActions: true });
       w.document.open();
-      w.document.write(`<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${escHtml(title)}</title>
-  <style>${css}</style>
-  <style>
-    @media print {
-      .no-print { display:none !important; }
-      body { background: #fff !important; }
-      .wrap { padding: 0 !important; }
-      .card { box-shadow: none !important; border: 1px solid #eee !important; }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="brand-header">
-      ${logoSrc ? `<img src="${escHtml(logoSrc)}" alt="Logo" style="height:44px;width:auto" />` : ''}
-      <div class="brand-copy">
-        <h1 style="margin:0">Presupuesto completo</h1>
-        <p style="margin:6px 0 0">Generado desde la calculadora · listo para imprimir o guardar como PDF</p>
-      </div>
-    </div>
-
-    <div class="actions-row no-print" style="margin-top:12px">
-      <button type="button" class="btn-primary big" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
-      <button type="button" class="btn-secondary" onclick="navigator.clipboard?.writeText(document.getElementById('full_text')?.innerText || '')">📋 Copiar texto</button>
-    </div>
-
-    <div class="card">
-      <div class="sec-title">Datos del presupuesto</div>
-      <div class="grid2">${headerRows}</div>
-    </div>
-
-    <div class="card">
-      <div class="sec-title">Precios y totales</div>
-      <div class="grid2">${priceRows}</div>
-    </div>
-
-    <div class="card">
-      <div class="sec-title">Extras y producción</div>
-      <div class="grid2">${extrasRows}</div>
-    </div>
-
-    ${condicionesHtml}
-    ${emailHtml}
-
-    <div class="card" id="full_text">
-      <div class="sec-title">Resumen (para copiar/pegar)</div>
-      <div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(
-        [
-          `Presupuesto${payload.numero_presupuesto ? ' #' + payload.numero_presupuesto : ''} — Bendito Lab`,
-          `Cliente: ${payload.cliente || '—'}`,
-          `Artículo: ${payload.producto || '—'}`,
-          `Cantidad: ${payload.cantidad ? payload.cantidad + ' uds' : '—'}`,
-          `Técnica: ${payload.tecnica || '—'} / Proveedor: ${payload.proveedor || '—'}`,
-          `Precio ud (cliente): ${euro(payload.precio_unidad_cliente)}`,
-          `Total (con IVA): ${euro(payload.total_pedido_con_iva)}`,
-          '',
-          (payload.condiciones || '').trim()
-        ].filter(Boolean).join('\n')
-      )}</div>
-    </div>
-
-    <p class="footer-note">Documento generado automáticamente.</p>
-  </div>
-</body>
-</html>`);
+      w.document.write(html);
       w.document.close();
     }
 

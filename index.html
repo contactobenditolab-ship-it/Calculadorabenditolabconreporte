@@ -1,33 +1,17 @@
-// Function to build the client budget email content
-function buildClientBudgetEmail(budgetDetails) {
-    const { clientName, totalAmount, items } = budgetDetails;
-    let emailContent = `Hello ${clientName},\n\nHere are the details of your budget:\n`;
-
-    items.forEach(item => {
-        emailContent += `- ${item.description}: $${item.amount}\n`;
-    });
-
-    emailContent += `Total Amount: $${totalAmount}\n\nThank you!`;
-    return emailContent;
-}
-
-// Function to send the budget email
-function sendBudgetEmail(budgetDetails) {
-    const emailContent = buildClientBudgetEmail(budgetDetails);
-    // Simulate sending an email
-    console.log('Sending email:', emailContent);
-}
-
-// Set up event listeners for email buttons
-document.getElementById('btn_email_presupuesto').addEventListener('click', () => {
-    const budgetDetails = { clientName: 'John Doe', totalAmount: 500, items: [
-        { description: 'Service A', amount: 250 },
-        { description: 'Service B', amount: 250 }
-    ]};
-    sendBudgetEmail(budgetDetails);
-});
-
-// Assuming btn_guardar_notion functionality
-document.getElementById('btn_guardar_notion').addEventListener('click', () => {
-    console.log('Button to save to Notion clicked');
-});
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function emailPresupuesto() {
+            // Your email budget functionality here
+        }
+    </script>
+</head>
+<body>
+    <button id="btn_email_presupuesto" onclick="emailPresupuesto()">Email Presupuesto</button>
+    <button id="btn_guardar_notion">Guardar en Notion</button>
+</body>
+</html>

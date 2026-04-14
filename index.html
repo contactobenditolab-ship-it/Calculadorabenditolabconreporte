@@ -42,7 +42,20 @@
       gap: 16px;
       box-shadow: var(--shadow-md);
     }
-    .brand-header img { display: block; max-width: 280px; width: 100%; height: auto; }
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo img {
+      display: block;
+      height: 44px;
+      width: auto;
+      max-width: min(280px, 40vw);
+    }
     .brand-copy h1 { font-size: 22px; margin-bottom: 4px; }
     .brand-copy p { color: var(--color-text-secondary); }
     .card, .margen-config, .results {
@@ -539,6 +552,11 @@
             <input type="text" id="email_cliente" placeholder="Ej. Clínica Sonrisa">
           </div>
           <div class="field">
+            <label>Nº Presupuesto</label>
+            <input type="number" id="presupuesto_num" placeholder="Ej. 25" min="1" step="1" inputmode="numeric">
+            <div class="hint">Se rellena solo. Si lo cambias, el siguiente continuará desde ahí.</div>
+          </div>
+          <div class="field">
             <label>Artículo</label>
             <input type="text" id="email_producto" placeholder="Ej. Camiseta técnica">
           </div>
@@ -552,12 +570,15 @@
           <textarea class="input-textarea" id="condiciones_presupuesto">Presupuesto válido durante 30 días.
 Producción sujeta a confirmación de diseño y disponibilidad.
 Para iniciar el pedido se solicitará un anticipo del 50%.
+Nº de cuenta ES6514650100992038265191 o BIZUM +34647444308
 Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica especial.
 El precio indicado incluye únicamente lo detallado en este presupuesto.</textarea>
           <div class="hint">Estas condiciones se incluyen en el email al cliente y también se mandan al webhook de Make.</div>
         </div>
         <div class="actions-row">
           <button type="button" class="btn-primary big" id="btn_email_presupuesto">📩 Enviar presupuesto al cliente</button>
+          <button type="button" class="btn-secondary" id="btn_whatsapp_presupuesto">💬 Enviar por WhatsApp</button>
+          <button type="button" class="btn-secondary" id="btn_presupuesto_completo">📄 Presupuesto completo (imprimir / PDF)</button>
           <button type="button" class="btn-secondary" id="btn_guardar_notion">🗂️ Guardar presupuesto en Notion</button>
         </div>
         <div class="status-note" id="save_status">El botón de cliente abre tu correo con el presupuesto limpio. El botón de Notion hace un POST al webhook de Make con todo el presupuesto.</div>
@@ -572,7 +593,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     const IVA_COMPRA = 1.21;
     const IVA_VENTA = 0.21;
-    const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/pb8y7wan55b6inhft6mufphkv1j0y76d';
+    const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/j9d8p9smrn9wrhun492pslecee8i1ihk';
     const f2 = n => (Number(n || 0)).toFixed(2).replace('.', ',') + ' €';
     const pct = n => (Number(n || 0)).toFixed(1).replace('.', ',') + ' %';
     const VINILO_M2 = { htv: 15, adhesivo: 18, transfer: 8 };
@@ -802,21 +823,29 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     }
 
     function buildClientBudgetEmail() {
+      const numPresupuesto = (document.getElementById('presupuesto_num')?.value || '').trim();
       const cliente = document.getElementById('email_cliente').value.trim();
-      const producto = document.getElementById('email_producto').value.trim();
-      const destino = document.getElementById('email_destino').value.trim();
+      let producto = document.getElementById('email_producto').value.trim();
+      let destino = document.getElementById('email_destino').value.trim();
       const cantidad = document.getElementById('cantidad').value || '0';
       const precioUnidad = document.getElementById('r_pvp_dto_con').textContent.trim();
       const total = document.getElementById('r_total_iva').textContent.trim();
       const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
       const extras = buildExtrasLines();
 
-      const asunto = `Presupuesto Bendito Lab${cliente ? ' · ' + cliente : ''}${producto ? ' · ' + producto : ''}`;
+      const isProbablyEmail = (v) => /.+@.+\..+/.test(String(v || '').trim());
+      // Si el usuario ha pegado el email en "Artículo" por error, lo corregimos.
+      if (isProbablyEmail(producto) && !isProbablyEmail(destino)) {
+        [producto, destino] = [destino, producto];
+      }
+
+      const asunto = `Presupuesto${numPresupuesto ? ' #' + numPresupuesto : ''} Bendito Lab${cliente ? ' · ' + cliente : ''}${producto ? ' · ' + producto : ''}`;
       const bodyLines = [
         `Hola ${cliente || ''},`.trim(),
         '',
         'Te envío el presupuesto solicitado:',
         '',
+        `Nº presupuesto: ${numPresupuesto || '—'}`,
         `Artículo: ${producto || '—'}`,
         `Cantidad: ${cantidad} uds`,
         `Precio por unidad: ${precioUnidad}`,
@@ -840,10 +869,57 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       return { destino, asunto, body: bodyLines.join('\n') };
     }
 
+    const BUDGET_COUNTER_KEY = 'benditolab_budget_counter_v1';
+    function normalizeBudgetNumber(v) {
+      const n = parseInt(String(v || '').replace(/[^\d]/g, ''), 10);
+      return Number.isFinite(n) && n > 0 ? n : null;
+    }
+    function getStoredBudgetCounter() {
+      try {
+        return normalizeBudgetNumber(localStorage.getItem(BUDGET_COUNTER_KEY));
+      } catch {
+        return null;
+      }
+    }
+    function setStoredBudgetCounter(n) {
+      try {
+        localStorage.setItem(BUDGET_COUNTER_KEY, String(n));
+      } catch {}
+    }
+    function getBudgetInputEl() {
+      return document.getElementById('presupuesto_num');
+    }
+    function ensureBudgetNumberInitialized() {
+      const el = getBudgetInputEl();
+      if (!el) return;
+      const current = normalizeBudgetNumber(el.value);
+      const stored = getStoredBudgetCounter();
+      const initial = current ?? stored ?? 1;
+      el.value = String(initial);
+      setStoredBudgetCounter(initial);
+    }
+    function handleBudgetNumberEdited() {
+      const el = getBudgetInputEl();
+      if (!el) return;
+      const n = normalizeBudgetNumber(el.value);
+      if (!n) return;
+      el.value = String(n);
+      setStoredBudgetCounter(n);
+    }
+    function bumpBudgetNumber() {
+      const el = getBudgetInputEl();
+      if (!el) return;
+      const n = normalizeBudgetNumber(el.value) ?? getStoredBudgetCounter() ?? 1;
+      const next = n + 1;
+      el.value = String(next);
+      setStoredBudgetCounter(next);
+    }
+
     function buildBudgetPayload() {
       const cliente = document.getElementById('email_cliente').value.trim();
       const producto = document.getElementById('email_producto').value.trim();
       const emailDestino = document.getElementById('email_destino').value.trim();
+      const numPresupuesto = normalizeBudgetNumber(document.getElementById('presupuesto_num')?.value) || null;
       const cantidad = Number(document.getElementById('cantidad').value || 0);
       const fecha = new Date().toISOString().slice(0, 10);
       const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
@@ -869,9 +945,40 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         picaje = parseEuroTextToNumber(document.getElementById('p_total_proveedor_con_iva')?.textContent || '0');
       }
 
+      const payloadForHtml = {
+        nombre,
+        id_presupuesto: idPres,
+        numero_presupuesto: numPresupuesto,
+        fecha_envio: fecha,
+        estado: 'Enviado',
+        cliente,
+        email_destino: emailDestino,
+        producto,
+        cantidad,
+        tecnica,
+        proveedor,
+        precio_unidad_cliente: precioUnidadCliente,
+        pvp_sin_iva: pvpSinIva,
+        pvp_con_iva: pvpConIva,
+        total_presupuesto_cliente: totalPresupuestoCliente,
+        total_pedido_con_iva: totalPedidoConIva,
+        coste_total_ud: costeTotalUd,
+        beneficio_total_pedido: beneficioTotalPedido,
+        packaging,
+        picaje,
+        otros_costes: otrosCostes,
+        pliegos,
+        area_libre: areaLibre,
+        aprovechamiento,
+        condiciones,
+        texto_enviado: body
+      };
+
       return {
         nombre,
         id_presupuesto: idPres,
+        numero_presupuesto: numPresupuesto,
+        presupuesto_html: buildFullBudgetHtml(payloadForHtml),
         fecha_envio: fecha,
         estado: 'Enviado',
         cliente,
@@ -899,18 +1006,282 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     }
 
     function sendBudgetEmail() {
+      ensureBudgetNumberInitialized();
       const { destino, asunto, body } = buildClientBudgetEmail();
       if (!destino) {
         alert('Escribe el email del cliente primero. Las máquinas no leen la mente, por desgracia.');
         return;
       }
       const href = `mailto:${encodeURIComponent(destino)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(body)}`;
-      window.location.href = href;
+      const w = window.open(href, '_blank');
+      if (!w) window.location.href = href;
+      bumpBudgetNumber();
+    }
+
+    function sendBudgetWhatsApp() {
+      ensureBudgetNumberInitialized();
+      const { body } = buildClientBudgetEmail();
+      const text = body || '';
+      const href = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      const w = window.open(href, '_blank', 'noopener,noreferrer');
+      if (!w) window.location.href = href;
+      bumpBudgetNumber();
+    }
+
+    function euro(n) {
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return '—';
+      return (Number(n)).toFixed(2).replace('.', ',') + ' €';
+    }
+    function pctTxt(n) {
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return '—';
+      return (Number(n)).toFixed(1).replace('.', ',') + ' %';
+    }
+    function escHtml(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function buildFullBudgetHtml(payload) {
+      const css = document.querySelector('style')?.textContent || '';
+      const title = `Presupuesto${payload?.numero_presupuesto ? ' #' + payload.numero_presupuesto : ''} · ${payload?.cliente || 'Sin cliente'}`;
+
+      const rows = (items) => (items || [])
+        .filter(Boolean)
+        .map(([k, v]) => `<div class="brow"><span class="bl">${escHtml(k)}</span><span class="bv">${escHtml(v)}</span></div>`)
+        .join('');
+
+      const headerRows = rows([
+        ['Nº presupuesto', payload?.numero_presupuesto ? String(payload.numero_presupuesto) : '—'],
+        ['Fecha', payload?.fecha_envio || '—'],
+        ['Cliente', payload?.cliente || '—'],
+        ['Email cliente', payload?.email_destino || '—'],
+        ['Artículo', payload?.producto || '—'],
+        ['Cantidad', payload?.cantidad ? `${payload.cantidad} uds` : '—'],
+        ['Técnica', payload?.tecnica || '—'],
+        ['Proveedor', payload?.proveedor || '—']
+      ]);
+
+      const priceRows = rows([
+        ['Precio unidad (cliente)', euro(payload?.precio_unidad_cliente)],
+        ['PVP sin IVA', euro(payload?.pvp_sin_iva)],
+        ['PVP con IVA', euro(payload?.pvp_con_iva)],
+        ['Total presupuesto (cliente)', euro(payload?.total_presupuesto_cliente)],
+        ['Total pedido (con IVA)', euro(payload?.total_pedido_con_iva)],
+        ['Coste total / ud', euro(payload?.coste_total_ud)],
+        ['Beneficio total pedido', euro(payload?.beneficio_total_pedido)]
+      ]);
+
+      const extrasRows = rows([
+        ['Packaging', euro(payload?.packaging)],
+        ['Otros costes', euro(payload?.otros_costes)],
+        ['Picaje', payload?.picaje ? euro(payload.picaje) : '—'],
+        ['Pliegos', payload?.pliegos ? String(payload.pliegos) : '—'],
+        ['Área libre', (payload?.area_libre ?? payload?.area_libre === 0) ? `${String(payload.area_libre).replace('.', ',')} m²` : '—'],
+        ['Aprovechamiento', (payload?.aprovechamiento ?? payload?.aprovechamiento === 0) ? pctTxt(payload.aprovechamiento) : '—']
+      ]);
+
+      const condiciones = String(payload?.condiciones || '').trim();
+      const condicionesHtml = condiciones
+        ? `<div class="card"><div class="sec-title">Condiciones</div><div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(condiciones)}</div></div>`
+        : '';
+
+      const emailTexto = String(payload?.texto_enviado || '').trim();
+      const emailHtml = emailTexto
+        ? `<div class="card"><div class="sec-title">Texto enviado al cliente (email)</div><div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(emailTexto)}</div></div>`
+        : '';
+
+      // No incluimos el logo base64 para no inflar el payload del webhook.
+      return `<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${escHtml(title)}</title>
+  <style>${css}</style>
+  <style>
+    body { background: #fff; }
+    .wrap { padding-top: 18px; }
+    @media print {
+      body { background: #fff !important; }
+      .wrap { padding: 0 !important; }
+      .card { box-shadow: none !important; border: 1px solid #eee !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand-header">
+      <div class="brand-copy">
+        <h1 style="margin:0">Presupuesto completo</h1>
+        <p style="margin:6px 0 0">Generado desde la calculadora</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Datos del presupuesto</div>
+      <div class="grid2">${headerRows}</div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Precios y totales</div>
+      <div class="grid2">${priceRows}</div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Extras y producción</div>
+      <div class="grid2">${extrasRows}</div>
+    </div>
+
+    ${condicionesHtml}
+    ${emailHtml}
+
+    <p class="footer-note">Documento generado automáticamente.</p>
+  </div>
+</body>
+</html>`;
+    }
+
+    function openFullBudgetDocument() {
+      ensureBudgetNumberInitialized();
+      const payload = buildBudgetPayload();
+
+      const title = `Presupuesto${payload.numero_presupuesto ? ' #' + payload.numero_presupuesto : ''} · ${payload.cliente || 'Sin cliente'}`;
+      const w = window.open('', '_blank', 'noopener,noreferrer');
+      if (!w) {
+        alert('Tu navegador ha bloqueado la pestaña nueva. Permite popups para poder ver/imprimir el presupuesto completo.');
+        return;
+      }
+
+      const css = document.querySelector('style')?.textContent || '';
+      const logoSrc = document.querySelector('.brand-header img')?.getAttribute('src') || '';
+
+      const rows = (items) => items
+        .filter(Boolean)
+        .map(([k, v]) => `<div class="brow"><span class="bl">${escHtml(k)}</span><span class="bv">${escHtml(v)}</span></div>`)
+        .join('');
+
+      const headerRows = rows([
+        ['Nº presupuesto', payload.numero_presupuesto ? String(payload.numero_presupuesto) : '—'],
+        ['Fecha', payload.fecha_envio || '—'],
+        ['Cliente', payload.cliente || '—'],
+        ['Email cliente', payload.email_destino || '—'],
+        ['Artículo', payload.producto || '—'],
+        ['Cantidad', payload.cantidad ? `${payload.cantidad} uds` : '—'],
+        ['Técnica', payload.tecnica || '—'],
+        ['Proveedor', payload.proveedor || '—']
+      ]);
+
+      const priceRows = rows([
+        ['Precio unidad (cliente)', euro(payload.precio_unidad_cliente)],
+        ['PVP sin IVA', euro(payload.pvp_sin_iva)],
+        ['PVP con IVA', euro(payload.pvp_con_iva)],
+        ['Total presupuesto (cliente)', euro(payload.total_presupuesto_cliente)],
+        ['Total pedido (con IVA)', euro(payload.total_pedido_con_iva)],
+        ['Coste total / ud', euro(payload.coste_total_ud)],
+        ['Beneficio total pedido', euro(payload.beneficio_total_pedido)]
+      ]);
+
+      const extrasRows = rows([
+        ['Packaging', euro(payload.packaging)],
+        ['Otros costes', euro(payload.otros_costes)],
+        ['Picaje', payload.picaje ? euro(payload.picaje) : '—'],
+        ['Pliegos', payload.pliegos ? String(payload.pliegos) : '—'],
+        ['Área libre', (payload.area_libre ?? payload.area_libre === 0) ? `${String(payload.area_libre).replace('.', ',')} m²` : '—'],
+        ['Aprovechamiento', (payload.aprovechamiento ?? payload.aprovechamiento === 0) ? pctTxt(payload.aprovechamiento) : '—']
+      ]);
+
+      const condiciones = (payload.condiciones || '').trim();
+      const condicionesHtml = condiciones
+        ? `<div class="card"><div class="sec-title">Condiciones</div><div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(condiciones)}</div></div>`
+        : '';
+
+      const emailTexto = (payload.texto_enviado || '').trim();
+      const emailHtml = emailTexto
+        ? `<div class="card"><div class="sec-title">Texto enviado al cliente (email)</div><div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(emailTexto)}</div></div>`
+        : '';
+
+      w.document.open();
+      w.document.write(`<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${escHtml(title)}</title>
+  <style>${css}</style>
+  <style>
+    @media print {
+      .no-print { display:none !important; }
+      body { background: #fff !important; }
+      .wrap { padding: 0 !important; }
+      .card { box-shadow: none !important; border: 1px solid #eee !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand-header">
+      ${logoSrc ? `<img src="${escHtml(logoSrc)}" alt="Logo" style="height:44px;width:auto" />` : ''}
+      <div class="brand-copy">
+        <h1 style="margin:0">Presupuesto completo</h1>
+        <p style="margin:6px 0 0">Generado desde la calculadora · listo para imprimir o guardar como PDF</p>
+      </div>
+    </div>
+
+    <div class="actions-row no-print" style="margin-top:12px">
+      <button type="button" class="btn-primary big" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+      <button type="button" class="btn-secondary" onclick="navigator.clipboard?.writeText(document.getElementById('full_text')?.innerText || '')">📋 Copiar texto</button>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Datos del presupuesto</div>
+      <div class="grid2">${headerRows}</div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Precios y totales</div>
+      <div class="grid2">${priceRows}</div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Extras y producción</div>
+      <div class="grid2">${extrasRows}</div>
+    </div>
+
+    ${condicionesHtml}
+    ${emailHtml}
+
+    <div class="card" id="full_text">
+      <div class="sec-title">Resumen (para copiar/pegar)</div>
+      <div style="white-space:pre-wrap;line-height:1.55;color:var(--color-text-secondary)">${escHtml(
+        [
+          `Presupuesto${payload.numero_presupuesto ? ' #' + payload.numero_presupuesto : ''} — Bendito Lab`,
+          `Cliente: ${payload.cliente || '—'}`,
+          `Artículo: ${payload.producto || '—'}`,
+          `Cantidad: ${payload.cantidad ? payload.cantidad + ' uds' : '—'}`,
+          `Técnica: ${payload.tecnica || '—'} / Proveedor: ${payload.proveedor || '—'}`,
+          `Precio ud (cliente): ${euro(payload.precio_unidad_cliente)}`,
+          `Total (con IVA): ${euro(payload.total_pedido_con_iva)}`,
+          '',
+          (payload.condiciones || '').trim()
+        ].filter(Boolean).join('\n')
+      )}</div>
+    </div>
+
+    <p class="footer-note">Documento generado automáticamente.</p>
+  </div>
+</body>
+</html>`);
+      w.document.close();
     }
 
     async function saveBudgetToMake() {
+      ensureBudgetNumberInitialized();
       const statusEl = document.getElementById('save_status');
-      if (!MAKE_WEBHOOK_URL || MAKE_WEBHOOK_URL === 'PEGA_AQUI_TU_WEBHOOK_DE_MAKE') {
+      if (!MAKE_WEBHOOK_URL) {
         alert('Primero pega la URL real del webhook de Make en el código.');
         return;
       }
@@ -924,6 +1295,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         statusEl.textContent = 'Presupuesto enviado correctamente al webhook de Make.';
+        bumpBudgetNumber();
       } catch (err) {
         console.error(err);
         statusEl.textContent = 'No se pudo enviar el presupuesto a Make. Revisa la URL del webhook y Vercel.';
@@ -1010,6 +1382,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const posiciones = parseInt(document.getElementById('posiciones').value, 10) || 1;
       const vinilo_tipo = document.getElementById('vinilo_tipo').value;
       const MC = 0.2;
+      let pw = 0, ph = 0, dh = 0, dv = 0, total_imp = 0;
 
       let pers_ud = 0, coste_total_mat = 0, coste_total_mat_sin_iva = 0, iva_mat_proveedor = 0, total_proveedor_personalizacion_con_iva = 0, num_pliegos = 0, dis_pliego = 0;
       let area_pliego_m2 = 0, area_usada_m2 = 0, coste_pliego_val = 0;
@@ -1075,12 +1448,13 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         show_pliegos = true;
       } else if (tecnica_key !== 'ninguna') {
         const m2_rate = tecnica_key === 'vinilo' ? (VINILO_M2[vinilo_tipo] || 15) : 0;
-        const pw = prov.ancho_cm, ph = prov.alto_cm;
+        pw = prov.ancho_cm;
+        ph = prov.alto_cm;
         if (pw > 0 && ph > 0) {
-          const dh = Math.floor((pw - 2 * MC + MC) / (dis_ancho + MC));
-          const dv = Math.floor((ph - 2 * MC + MC) / (dis_alto + MC));
+          dh = Math.floor((pw - 2 * MC + MC) / (dis_ancho + MC));
+          dv = Math.floor((ph - 2 * MC + MC) / (dis_alto + MC));
           dis_pliego = Math.max(1, dh * dv);
-          const total_imp = cantidad * posiciones;
+          total_imp = cantidad * posiciones;
           num_pliegos = Math.ceil(total_imp / dis_pliego);
           area_pliego_m2 = (pw * ph) / 10000;
           const area_dis_m2 = (dis_ancho * dis_alto) / 10000;
@@ -1301,8 +1675,18 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     const emailBtn = document.getElementById('btn_email_presupuesto');
     if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
+    const waBtn = document.getElementById('btn_whatsapp_presupuesto');
+    if (waBtn) waBtn.addEventListener('click', sendBudgetWhatsApp);
+    const fullBtn = document.getElementById('btn_presupuesto_completo');
+    if (fullBtn) fullBtn.addEventListener('click', openFullBudgetDocument);
     const saveBtn = document.getElementById('btn_guardar_notion');
     if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
+    const budgetNumEl = document.getElementById('presupuesto_num');
+    if (budgetNumEl) {
+      ensureBudgetNumberInitialized();
+      budgetNumEl.addEventListener('change', handleBudgetNumberEdited);
+      budgetNumEl.addEventListener('blur', handleBudgetNumberEdited);
+    }
 
     setText('slider_out', cantI.value + ' ud');
     applyPerfilBlanco(false);

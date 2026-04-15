@@ -1,7 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora B2B - Bendito Lab</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary: #8b5cf6;
+      --accent: #ec4899;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --bg-tertiary: #f3f4f6;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --text-tertiary: #9ca3af;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      padding: 20px;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    .brand-header {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      background-image: linear-gradient(135deg, #667eea, #764ba2);
+      background-origin: border-box;
+      position: relative;
+    }
+
+    .brand-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #667eea15, #764ba215);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .brand-header > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+    }
+
+    .logo-placeholder {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand-copy h1 {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .brand-copy p {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    /* SECCIONES PRINCIPALES */
+    .margen-config, .card, .results {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .margen-config:hover, .card:hover, .results:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-light);
+    }
+
+    /* TÍTULOS DE SECCIÓN */
+    .sec-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .sec-title::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      display: block;
+    }
+
+    /* FORM FIELDS */
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: var(--transition);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="date"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: var(--bg-primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234f46e5' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    /* RANGE SLIDER */
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+      transition: var(--transition);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+      transition: var(--transition);
+    }
+
+    /* CHECKBOXES Y RADIO */
+    input[type="checkbox"],
+    input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    /* GRILLAS */
+    .grid2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .grid4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* BLOQUES SUB */
+    .sub-block {
+      background: var(--bg-tertiary);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+
+    .sub-block:hover {
+      background: var(--bg-secondary);
+      border-left-color: var(--secondary);
+    }
+
+    /* TABLAS */
+    .tramos-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tramos-table thead {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .tramos-table th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .tramos-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tramos-table tbody tr {
+      transition: var(--transition);
+    }
+
+    .tramos-table tbody tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .tramos-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* PILLS Y BADGES */
+    .pill-soft, .tramo-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid var(--primary-light);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      transition: var(--transition);
+    }
+
+    .pill-soft:hover {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+      border-color: var(--primary);
+    }
+
+    /* BOTONES */
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary.big {
+      padding: 14px 28px;
+      font-size: 15px;
+      width: 100%;
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* RESUMEN Y RESULTADOS */
+    .blancos-resumen, .brow {
+      background: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3px solid var(--primary);
+      transition: var(--transition);
+    }
+
+    .blancos-resumen {
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .blancos-resumen:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--primary-light);
+    }
+
+    .pb-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bl {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .bv {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    .bv.accent {
+      color: var(--success);
+      font-size: 16px;
+    }
+
+    .btotal, .btotal-iva {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.05));
+      padding: 16px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      border: 2px solid var(--success-light);
+      margin-top: 12px;
+    }
+
+    /* MÉTRICAS */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric {
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .metric:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-light);
+    }
+
+    .ml {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .mv {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'Monaco', 'Courier New', monospace;
+    }
+
+    .mv.green {
+      color: var(--success);
+    }
+
+    .mv.teal {
+      color: #0891b2;
+    }
+
+    .mv.big {
+      font-size: 28px;
+    }
+
+    /* BARRA DE MARGEN */
+    .bar-wrap {
+      background: var(--bg-secondary);
+      padding: 24px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border: 1px solid var(--border);
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .bar-bg {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), #10b981);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .bar-min-line {
+      position: absolute;
+      top: -4px;
+      width: 2px;
+      height: 16px;
+      background: var(--warning);
+      transition: left 0.3s ease;
+    }
+
+    .bar-min-label {
+      position: absolute;
+      top: -20px;
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--warning);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* CONTROLES */
+    .check-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+
+    .check-row label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .slider-row label {
+      font-weight: 600;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+
+    .slider-row .val {
+      font-weight: 700;
+      color: var(--primary);
+      min-width: 60px;
+      text-align: right;
+      font-family: 'Monaco', 'Courier New', monospace;
+    }
+
+    /* HINTS Y NOTAS */
+    .hint, .mini-note {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    .aviso {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1));
+      border-left: 4px solid #3b82f6;
+      padding: 12px 16px;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    /* EMAIL BOX */
+    .email-box {
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      padding: 24px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      margin-top: 24px;
+    }
+
+    .actions-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .status-note {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* FOOTER */
+    .footer-note {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      margin-top: 40px;
+      padding: 20px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .brand-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .brand-copy h1 {
+        font-size: 24px;
+      }
+
+      .grid2, .grid3, .grid4 {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .actions-row {
+        grid-template-columns: 1fr;
+      }
+
+      .sec-title {
+        font-size: 16px;
+      }
+
+      button.big {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
 <body>
   <div class="wrap">
     <div class="brand-header">
-      <!-- Logo: asegúrate de que el archivo "Option 3 (4).png" esté junto al HTML -->
       <img src="Option 3 (4).png" alt="Bendito Lab" style="max-width:280px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
       <div class="logo-placeholder" style="display:none;">BENDITO LAB</div>
       <div class="brand-copy">
@@ -14,17 +699,19 @@
     <div class="margen-config">
       <div class="sec-title">Margen mínimo garantizado</div>
       <div class="margen-slider-wrap">
-        <span style="font-size:13px;color:var(--color-text-secondary);">50%</span>
-        <input type="range" id="margen_min" min="50" max="80" step="1" value="60">
-        <span style="font-size:13px;color:var(--color-text-secondary);">80%</span>
-        <div class="margen-val green" id="margen_val_display">60%</div>
+        <span style="font-size:13px;color:var(--text-secondary);">50%</span>
+        <input type="range" id="margen_min" min="50" max="80" step="1" value="60" style="flex: 1; margin: 0 12px;">
+        <span style="font-size:13px;color:var(--text-secondary);">80%</span>
+        <div class="margen-val green" id="margen_val_display" style="font-weight:700; color: var(--success); min-width: 50px; text-align: right;">60%</div>
       </div>
-      <div class="margen-ticks"><span>50%</span><span>55%</span><span>60%</span><span>65%</span><span>70%</span><span>75%</span><span>80%</span></div>
+      <div class="margen-ticks" style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 11px; color: var(--text-tertiary);">
+        <span>50%</span><span>55%</span><span>60%</span><span>65%</span><span>70%</span><span>75%</span><span>80%</span>
+      </div>
       
-      <!-- NUEVO: Selector ValueTop -->
-      <div style="margin-top:16px;">
-        <label style="font-size:13px; font-weight:600; display:block; margin-bottom:6px;">🎯 Nivel ValueTop (descuento adicional sobre PVP sin IVA)</label>
-        <select id="valuetop_nivel" style="width:auto; min-width:220px;">
+      <!-- Selector ValueTop -->
+      <div style="margin-top:20px;">
+        <label style="font-size:13px; font-weight:600; display:block; margin-bottom:8px;">🎯 Nivel ValueTop (descuento adicional)</label>
+        <select id="valuetop_nivel" style="width:auto; min-width:240px;">
           <option value="0">Sin descuento ValueTop</option>
           <option value="1">Top 1% → 0,5% dto</option>
           <option value="2">Top 2% → 0,4% dto</option>
@@ -36,27 +723,27 @@
           <option value="8">Top 8% → 0,05% dto</option>
           <option value="9">Top 9% → 0,02% dto</option>
         </select>
-        <div class="hint">Descuento adicional sobre el PVP sin IVA, respetando el margen mínimo.</div>
+        <div class="hint">Descuento sobre PVP sin IVA, respetando margen mínimo</div>
       </div>
-      <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:8px" id="margen_hint"></div>
+      <div style="font-size:11px;color:var(--text-tertiary);margin-top:12px" id="margen_hint"></div>
     </div>
 
-    <!-- ========== ARTÍCULO PRINCIPAL ========== -->
+    <!-- ARTÍCULO PRINCIPAL -->
     <div class="card" id="articulo1">
-      <div class="sec-title">Artículo base ①</div>
+      <div class="sec-title">📦 Artículo base ①</div>
       <div class="grid2">
         <div class="field"><label>Precio coste artículo proveedor (€/ud sin IVA)</label><input type="number" id="precio_blanco" value="0" step="0.01" min="0"></div>
         <div class="field"><label>Cantidad (ud)</label><input type="number" id="cantidad" value="0" step="1" min="0" max="1500"></div>
       </div>
       <div class="slider-row">
         <label>Cantidad:</label>
-        <input type="range" id="slider_cant" min="0" max="1500" step="1" value="0">
+        <input type="range" id="slider_cant" min="0" max="1500" step="1" value="0" style="flex: 1;">
         <span class="val" id="slider_out">0 ud</span>
       </div>
       
       <!-- Descuento blancos -->
       <div class="sub-block">
-        <div class="sec-title" style="margin-bottom:8px">Descuento de blancos por tramos</div>
+        <div class="sec-title" style="margin-bottom:16px; margin-top: 0;">💰 Descuento de blancos por tramos</div>
         <div class="grid3">
           <div class="field"><label>Perfil base</label><select id="perfil_blanco"><option value="toleshop">Toleshop estándar</option><option value="suave">Descuento suave</option><option value="sin_descuento">Sin descuento</option><option value="personalizado">Personalizado</option></select></div>
           <div class="field"><label>Descuento manual (%)</label><input type="number" id="dto_blanco_manual" value="0" step="0.1" min="0" max="25"></div>
@@ -64,7 +751,7 @@
         </div>
         <div class="check-row">
           <label><input type="checkbox" id="usar_dto_blanco_auto" checked> Usar descuento automático</label>
-          <label><input type="checkbox" id="usar_dto_blanco_manual"> Sobrescribir con manual (máx 25%)</label>
+          <label><input type="checkbox" id="usar_dto_blanco_manual"> Sobrescribir manual (máx 25%)</label>
         </div>
         <table class="tramos-table" id="tramos_table_1">
           <thead><tr><th>Desde</th><th>Hasta</th><th>%</th></tr></thead>
@@ -76,28 +763,28 @@
             <tr><td><input type="number" id="tb5_min" value="100" step="1" min="1"></td><td><input type="number" id="tb5_max" value="999999" step="1" min="1"></td><td><input type="number" id="tb5_dto" value="20" step="0.1" min="0" max="100"></td></tr>
           </tbody>
         </table>
-        <div class="mini-note">La calculadora toma el precio tarifa sin IVA, aplica el descuento del tramo del blanco y con ese subtotal sin IVA decide si el envío es gratis.</div>
       </div>
       
       <div class="grid2">
-        <div class="field"><label>Packaging (€/ud)</label><input type="number" id="pack_coste" value="0" step="0.01" min="0"></div>
-        <div class="field"><label>Otros costes fijos (€ total pedido)</label><input type="number" id="otros_fijos" value="0" step="0.5" min="0"></div>
-      </div>
-      <div class="blancos-resumen">
-        <div class="pb-title">Coste blancos</div>
-        <div class="brow"><span class="bl">Precio tarifa / ud sin IVA</span><span class="bv" id="res_blanco_tarifa_ud">—</span></div>
-        <div class="brow"><span class="bl">Descuento tramo aplicado</span><span class="bv" id="res_blanco_dto">—</span></div>
-        <div class="brow"><span class="bl">Precio final / ud sin IVA</span><span class="bv" id="res_blanco_final_sin">—</span></div>
-        <div class="brow"><span class="bl">Ahorro total blancos sin IVA</span><span class="bv" id="res_blanco_ahorro">—</span></div>
-        <div class="brow"><span class="bl">Coste / ud con IVA</span><span class="bv" id="res_blanco_ud">—</span></div>
-        <div class="brow"><span class="bl">Cantidad</span><span class="bv" id="res_blanco_cant">—</span></div>
-        <div class="brow"><span class="bl">Subtotal blancos sin IVA</span><span class="bv" id="res_blanco_subtotal_sin">—</span></div>
-        <div class="brow"><span class="bl">Subtotal blancos con IVA</span><span class="bv" id="res_blanco_subtotal">—</span></div>
-        <div class="brow"><span class="bl">Envío blancos con IVA</span><span class="bv" id="res_blanco_envio">—</span></div>
-        <div class="brow" style="padding-top:6px"><span class="bl" style="font-weight:700;">Total blancos con IVA</span><span class="bv accent" id="res_blanco_total">—</span></div>
+        <div class="field"><label>🎁 Packaging (€/ud)</label><input type="number" id="pack_coste" value="0" step="0.01" min="0"></div>
+        <div class="field"><label>📋 Otros costes fijos (€ total pedido)</label><input type="number" id="otros_fijos" value="0" step="0.5" min="0"></div>
       </div>
 
-      <div style="margin-top:16px;"><div class="sec-title">Personalización ①</div></div>
+      <div class="blancos-resumen">
+        <div style="width: 100%;">
+          <div class="pb-title">📊 Coste blancos</div>
+          <div class="brow"><span class="bl">Precio tarifa / ud sin IVA</span><span class="bv" id="res_blanco_tarifa_ud">—</span></div>
+          <div class="brow"><span class="bl">Descuento tramo</span><span class="bv" id="res_blanco_dto">—</span></div>
+          <div class="brow"><span class="bl">Precio final / ud sin IVA</span><span class="bv" id="res_blanco_final_sin">—</span></div>
+          <div class="brow"><span class="bl">Coste / ud con IVA</span><span class="bv" id="res_blanco_ud">—</span></div>
+          <div class="brow"><span class="bl">Cantidad</span><span class="bv" id="res_blanco_cant">—</span></div>
+          <div class="brow"><span class="bl">Subtotal blancos con IVA</span><span class="bv" id="res_blanco_subtotal">—</span></div>
+          <div class="brow"><span class="bl">Envío blancos con IVA</span><span class="bv" id="res_blanco_envio">—</span></div>
+          <div class="btotal"><span>Total blancos con IVA</span><span class="bv accent" id="res_blanco_total">—</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;"><div class="sec-title" style="margin-bottom: 16px;">🎨 Personalización ①</div></div>
       <div class="field"><label>Técnica</label><select id="tecnica"><option value="ninguna">Sin personalizar</option><option value="dtf_textil" selected>DTF Textil</option><option value="dtf_oro">DTF Oro</option><option value="sublimacion">Sublimación</option><option value="vinilo">Vinilo (plotter)</option><option value="dtf_uv">DTF UV</option><option value="bordado">Bordado</option><option value="laser">Láser / grabado</option></select></div>
       
       <div id="bloque_area" class="sub-block">
@@ -111,157 +798,98 @@
           <div id="bloque_vinilo_tipo" class="field" style="display:none"><label>Tipo vinilo</label><select id="vinilo_tipo"><option value="htv">HTV textil (€15/m²)</option><option value="adhesivo">Adhesivo (€18/m²)</option><option value="transfer">Transfer tape (€8/m²)</option></select></div>
         </div>
       </div>
-      
-      <div id="bloque_bordado" class="sub-block" style="display:none">
-        <div class="grid4">
-          <div class="field"><label>Puntadas diseño</label><input type="number" id="puntadas" value="5000" step="100" min="100"></div>
-          <div class="field"><label>Nº colores</label><input type="number" id="bord_colores" value="1" step="1" min="1"></div>
-          <div class="field"><label>Posiciones / ud</label><input type="number" id="bord_pos" value="1" step="1" min="1"></div>
-          <div class="field"><label>¿Primer pedido?</label><select id="bord_picaje"><option value="1">Sí</option><option value="0">No</option></select></div>
-        </div>
-        <div class="grid4">
-          <div class="field"><label>Coste por puntada (€)</label><input type="number" id="bord_coste_puntada" value="0.0015" step="0.0001" min="0"></div>
-          <div class="field"><label>Manipulación / posición (€)</label><input type="number" id="bord_manipulacion" value="1.25" step="0.01" min="0"></div>
-          <div class="field"><label>Picaje fijo (€)</label><input type="number" id="bord_picaje_coste" value="10" step="0.5" min="0"></div>
-          <div class="field"><label>Extra color adicional (€)</label><input type="number" id="bord_extra_color" value="0.15" step="0.01" min="0"></div>
-        </div>
-      </div>
-      
-      <div id="bloque_laser" class="sub-block" style="display:none">
-        <div class="grid4">
-          <div class="field"><label>Tipo de trabajo</label><select id="laser_tipo"><option value="grabado_boligrafo">Grabado logo bolígrafo</option><option value="grabado_libreta">Grabado libreta</option><option value="grabado_tabla">Grabado tabla</option><option value="grabado_metal">Grabado metal</option><option value="corte_simple">Corte simple</option><option value="grabado_superficie">Grabado superficie grande</option><option value="grabado_premium">Premium complejo</option><option value="manual">Manual</option></select></div>
-          <div class="field"><label>Minutos máquina / ud</label><input type="number" id="laser_maq" value="2" step="0.1" min="0"></div>
-          <div class="field"><label>Minutos manipulación / ud</label><input type="number" id="laser_man" value="4" step="0.1" min="0"></div>
-          <div class="field"><label>Consumible extra / ud (€)</label><input type="number" id="laser_extra_ud" value="0" step="0.01" min="0"></div>
-        </div>
-        <div class="grid2">
-          <div class="field"><label>Coste máquina por hora (€)</label><input type="number" id="laser_coste_hora" value="0.63" step="0.01" min="0"></div>
-          <div class="field"><label>Coste hora personal (€)</label><input type="number" id="laser_coste_mo" value="15.00" step="0.1" min="0"></div>
-        </div>
-      </div>
     </div>
 
-    <!-- ========== SEGUNDO ARTÍCULO (OPCIONAL) ========== -->
-    <div style="margin: 20px 0 10px;">
-      <label style="display:flex; align-items:center; gap:10px; font-weight:600;">
+    <!-- SEGUNDO ARTÍCULO -->
+    <div style="margin: 24px 0;">
+      <label style="display:flex; align-items:center; gap:10px; font-weight:600; cursor: pointer; padding: 12px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05)); border-radius: 8px; border: 2px solid rgba(99, 102, 241, 0.2); transition: var(--transition);" onmouseover="this.style.borderColor='var(--primary-light)';" onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.2)';">
         <input type="checkbox" id="habilitar_articulo2"> ✚ Añadir otro artículo con personalización independiente
       </label>
     </div>
     <div id="articulo2_container" style="display:none;">
       <div class="card">
-        <div class="sec-title">Artículo base ②</div>
+        <div class="sec-title">📦 Artículo base ②</div>
         <div class="grid2">
           <div class="field"><label>Precio coste artículo proveedor (€/ud sin IVA)</label><input type="number" id="precio_blanco2" value="0" step="0.01" min="0"></div>
           <div class="field"><label>Cantidad (ud)</label><input type="number" id="cantidad2" value="0" step="1" min="0" max="1500"></div>
         </div>
         <div class="slider-row">
           <label>Cantidad:</label>
-          <input type="range" id="slider_cant2" min="0" max="1500" step="1" value="0">
+          <input type="range" id="slider_cant2" min="0" max="1500" step="1" value="0" style="flex: 1;">
           <span class="val" id="slider_out2">0 ud</span>
         </div>
         <div class="sub-block">
-          <div class="sec-title">Descuento de blancos (mismos tramos que ①)</div>
-          <div class="check-row">
-            <label><input type="checkbox" id="usar_mismos_tramos2" checked> Usar mismos tramos que artículo ①</label>
-          </div>
-          <!-- Los tramos personalizados no se implementan por simplicidad, siempre usa los mismos -->
+          <div class="sec-title" style="margin-bottom: 16px;">💰 Descuento de blancos (mismos tramos que ①)</div>
         </div>
         <div class="grid2">
-          <div class="field"><label>Packaging (€/ud)</label><input type="number" id="pack_coste2" value="0" step="0.01" min="0"></div>
-          <div class="field"><label>Otros costes fijos (€ total pedido)</label><input type="number" id="otros_fijos2" value="0" step="0.5" min="0"></div>
-        </div>
-        <div class="blancos-resumen">
-          <div class="pb-title">Coste blancos ②</div>
-          <div class="brow"><span class="bl">Coste / ud con IVA</span><span class="bv" id="res_blanco_ud2">—</span></div>
-          <div class="brow"><span class="bl">Subtotal blancos con IVA</span><span class="bv" id="res_blanco_subtotal2">—</span></div>
-          <div class="brow"><span class="bl">Total blancos con IVA</span><span class="bv accent" id="res_blanco_total2">—</span></div>
+          <div class="field"><label>🎁 Packaging (€/ud)</label><input type="number" id="pack_coste2" value="0" step="0.01" min="0"></div>
+          <div class="field"><label>📋 Otros costes fijos (€ total pedido)</label><input type="number" id="otros_fijos2" value="0" step="0.5" min="0"></div>
         </div>
 
-        <div style="margin-top:16px;"><div class="sec-title">Personalización ②</div></div>
+        <div style="margin-top:24px;"><div class="sec-title" style="margin-bottom: 16px;">🎨 Personalización ②</div></div>
         <div class="field"><label>Técnica</label><select id="tecnica2"><option value="ninguna">Sin personalizar</option><option value="dtf_textil">DTF Textil</option><option value="dtf_oro">DTF Oro</option><option value="sublimacion">Sublimación</option><option value="vinilo">Vinilo (plotter)</option><option value="dtf_uv">DTF UV</option><option value="bordado">Bordado</option><option value="laser">Láser / grabado</option></select></div>
-        
-        <div id="bloque_area2" class="sub-block">
-          <div class="grid3">
-            <div class="field"><label>Ancho diseño (cm)</label><input type="number" id="dis_ancho2" value="0" step="0.5" min="0"></div>
-            <div class="field"><label>Alto diseño (cm)</label><input type="number" id="dis_alto2" value="0" step="0.5" min="0"></div>
-            <div class="field"><label>Posiciones / ud</label><input type="number" id="posiciones2" value="0" step="1" min="0"></div>
-          </div>
-          <div class="grid2">
-            <div class="field"><label>Proveedor</label><select id="proveedor_sel2"></select></div>
-            <div id="bloque_vinilo_tipo2" class="field" style="display:none"><label>Tipo vinilo</label><select id="vinilo_tipo2"><option value="htv">HTV textil (€15/m²)</option><option value="adhesivo">Adhesivo (€18/m²)</option><option value="transfer">Transfer tape (€8/m²)</option></select></div>
-          </div>
-        </div>
-        <!-- Para no complicar, omitimos bloques bordado/laser2. Si se necesitan se pueden añadir después -->
       </div>
     </div>
 
     <!-- RESULTADOS GLOBALES -->
     <div id="resultados" class="results">
-      <div class="aviso" id="aviso_dto">Descuento sobre artículo base limitado para mantener el margen mínimo configurado.</div>
-      <div class="tramo-badge" id="tramo_badge">Tramo 1–20 ud · 0% dto sobre artículo base</div>
+      <div class="aviso" id="aviso_dto">📌 Descuento sobre artículo base limitado para mantener el margen mínimo configurado.</div>
+      <div class="tramo-badge" id="tramo_badge">📊 Tramo 1–20 ud · 0% dto sobre artículo base</div>
 
       <div class="metrics">
-        <div class="metric"><div class="ml">Coste total / ud (promedio)</div><div class="mv" id="r_coste_ud">—</div></div>
-        <div class="metric"><div class="ml">Total blancos (pedido)</div><div class="mv teal" id="r_total_blancos">—</div></div>
-        <div class="metric"><div class="ml">PVP final sin IVA / ud</div><div class="mv green" id="r_pvp_dto_sin">—</div></div>
-        <div class="metric"><div class="ml">PVP final con IVA / ud</div><div class="mv green" id="r_pvp_dto_con">—</div></div>
-        <div class="metric"><div class="ml">Beneficio total pedido</div><div class="mv green" id="r_ben_total">—</div></div>
-        <div class="metric"><div class="ml">Total pedido con IVA</div><div class="mv big" id="r_total_iva">—</div></div>
+        <div class="metric"><div class="ml">💰 Coste total / ud (promedio)</div><div class="mv" id="r_coste_ud">—</div></div>
+        <div class="metric"><div class="ml">📦 Total blancos (pedido)</div><div class="mv teal" id="r_total_blancos">—</div></div>
+        <div class="metric"><div class="ml">💵 PVP final sin IVA / ud</div><div class="mv green" id="r_pvp_dto_sin">—</div></div>
+        <div class="metric"><div class="ml">🏷️ PVP final con IVA / ud</div><div class="mv green" id="r_pvp_dto_con">—</div></div>
+        <div class="metric"><div class="ml">🎯 Beneficio total pedido</div><div class="mv green" id="r_ben_total">—</div></div>
+        <div class="metric"><div class="ml">💳 Total pedido con IVA</div><div class="mv big" id="r_total_iva">—</div></div>
       </div>
 
-      <div style="margin-bottom:10px">
-        <div class="sec-title" style="margin-bottom:8px">Construcción del precio de venta sin IVA</div>
+      <div style="margin-bottom:16px">
+        <div class="sec-title" style="margin-bottom:16px">📈 Construcción del precio de venta sin IVA</div>
         <div id="detalle_construccion"></div>
         <div class="btotal"><span>PVP final sin IVA / ud</span><span class="bv" id="b_pvp_final_sin">—</span></div>
       </div>
 
-      <div style="margin-bottom:10px">
+      <div style="margin-bottom:16px; background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
         <div class="brow"><span class="bl">IVA 21%</span><span class="bv" id="b_iva">—</span></div>
         <div class="brow"><span class="bl">PVP final con IVA / ud</span><span class="bv accent" id="b_pvp_final_con">—</span></div>
         <div class="brow"><span class="bl">Beneficio / ud</span><span class="bv accent" id="b_ben_ud">—</span></div>
-        <div class="brow"><span class="bl">Beneficio total pedido</span><span class="bv accent" id="b_ben_total">—</span></div>
-        <div class="brow"><span class="bl">Ingresos sin IVA (pedido)</span><span class="bv" id="b_ingresos_sin">—</span></div>
-        <div class="btotal-iva"><span>Total pedido con IVA</span><span class="bv" id="b_total_iva">—</span></div>
-      </div>
-
-      <div class="pliegos-box" id="pliegos_box" style="display:none">
-        <!-- Se llena dinámicamente -->
+        <div class="btotal-iva"><span>Total pedido con IVA</span><span class="bv accent" id="b_total_iva">—</span></div>
       </div>
 
       <div class="bar-wrap">
-        <div class="bar-label"><span>Margen real sobre venta</span><span id="bar_pct">—</span></div>
+        <div class="bar-label"><span>📊 Margen real sobre venta</span><span id="bar_pct">—</span></div>
         <div class="bar-bg">
           <div class="bar-fill" id="margin_bar" style="width:0%"></div>
           <div class="bar-min-line" id="bar_min_line" style="left:60%"><div class="bar-min-label" id="bar_min_label">mín 60%</div></div>
         </div>
       </div>
 
-      <div class="pliego-preview" id="pliego_preview" style="display:none">
-        <!-- Vista previa SVG -->
-      </div>
-
       <!-- Email y Notion -->
       <div class="email-box" id="email_box">
-        <div class="pb-title">Presupuesto cliente y guardado en Notion</div>
+        <div class="pb-title">💼 Presupuesto cliente y Notion</div>
         <div class="grid2">
           <div class="field"><label>Número de presupuesto</label><input type="text" id="numero_presupuesto" placeholder="PRESU-26/0001"></div>
           <div class="field"><label>Fecha</label><input type="date" id="fecha_presupuesto"></div>
         </div>
-        <div class="grid3" style="margin-top:10px">
+        <div class="grid3" style="margin-top:16px">
           <div class="field"><label>Cliente</label><input type="text" id="email_cliente" placeholder="Ej. Clínica Sonrisa"></div>
           <div class="field"><label>Artículo</label><input type="text" id="email_producto" placeholder="Ej. Camiseta técnica"></div>
           <div class="field"><label>Email cliente</label><input type="email" id="email_destino" placeholder="cliente@empresa.com"></div>
         </div>
-        <div class="field" style="margin-top:10px">
+        <div class="field" style="margin-top:16px">
           <label>Condiciones del presupuesto</label>
-          <textarea class="input-textarea" id="condiciones_presupuesto">Presupuesto válido durante 30 días. Producción sujeta a confirmación de diseño y disponibilidad. Para iniciar el pedido se solicitará un anticipo del 50%. Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica especial.</textarea>
+          <textarea class="input-textarea" id="condiciones_presupuesto" style="min-height: 100px;">Presupuesto válido durante 30 días. Producción sujeta a confirmación de diseño y disponibilidad. Para iniciar el pedido se solicitará un anticipo del 50%. Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica especial.</textarea>
         </div>
         <div class="actions-row">
           <button type="button" class="btn-primary big" id="btn_email_presupuesto">📩 Enviar presupuesto al cliente</button>
           <button type="button" class="btn-secondary" id="btn_guardar_notion">🗂️ Guardar presupuesto en Notion</button>
         </div>
-        <div class="status-note" id="save_status">El botón de cliente abre tu correo. El botón de Notion envía los datos al webhook de Make.</div>
+        <div class="status-note" id="save_status">ℹ️ El botón de cliente abre tu correo. El botón de Notion envía los datos al webhook de Make.</div>
       </div>
     </div>
-    <p class="footer-note">Archivo único listo para GitHub o Vercel.</p>
+    <p class="footer-note">✨ Archivo único listo para GitHub o Vercel • Diseño moderno y responsivo</p>
   </div>
+</body>
+</html>

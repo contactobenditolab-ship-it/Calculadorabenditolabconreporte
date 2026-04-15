@@ -1078,6 +1078,8 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       let show_pliegos = false, envio_prov_total = 0, envio_prov_total_sin_iva = 0, prov_dims = '—', tramo_label_display = '—';
       let detalle = null;
 
+      let pw = 0, ph = 0, dh = 0, dv = 0, total_imp = 0, area_dis_m2 = 0;
+
       if (tecnica_key === 'bordado') {
         const puntadas = parseInt(document.getElementById('puntadas').value, 10) || 5000;
         const bord_colores = parseInt(document.getElementById('bord_colores').value, 10) || 1;
@@ -1137,15 +1139,17 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         show_pliegos = true;
       } else if (tecnica_key !== 'ninguna') {
         const m2_rate = tecnica_key === 'vinilo' ? (VINILO_M2[vinilo_tipo] || 15) : 0;
-        const pw = prov.ancho_cm, ph = prov.alto_cm;
+        pw = prov.ancho_cm;
+        ph = prov.alto_cm;
+
         if (pw > 0 && ph > 0 && persActiva) {
-          const dh = Math.floor((pw - 2 * MC + MC) / (dis_ancho + MC));
-          const dv = Math.floor((ph - 2 * MC + MC) / (dis_alto + MC));
+          dh = Math.floor((pw - 2 * MC + MC) / (dis_ancho + MC));
+          dv = Math.floor((ph - 2 * MC + MC) / (dis_alto + MC));
           dis_pliego = Math.max(1, dh * dv);
-          const total_imp = cantidad * posiciones;
+          total_imp = cantidad * posiciones;
           num_pliegos = Math.ceil(total_imp / dis_pliego);
           area_pliego_m2 = (pw * ph) / 10000;
-          const area_dis_m2 = (dis_ancho * dis_alto) / 10000;
+          area_dis_m2 = (dis_ancho * dis_alto) / 10000;
           area_usada_m2 = Math.min(area_dis_m2 * total_imp, area_pliego_m2 * num_pliegos);
           prov_dims = pw + ' × ' + ph + ' cm';
 
@@ -1153,15 +1157,17 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
             const t = get321Precio(num_pliegos);
             coste_pliego_val = t.precio;
             tramo_label_display = t.label;
+            coste_total_mat_sin_iva = coste_pliego_val * num_pliegos;
           } else if (tecnica_key === 'vinilo') {
-            coste_pliego_val = m2_rate * area_pliego_m2;
-            tramo_label_display = 'Tarifa fija';
+            coste_total_mat_sin_iva = area_usada_m2 * m2_rate;
+            coste_pliego_val = num_pliegos > 0 ? (coste_total_mat_sin_iva / num_pliegos) : 0;
+            tramo_label_display = 'Tarifa por área usada';
           } else {
             coste_pliego_val = prov.coste_pliego;
             tramo_label_display = 'Tarifa estándar';
+            coste_total_mat_sin_iva = coste_pliego_val * num_pliegos;
           }
 
-          coste_total_mat_sin_iva = coste_pliego_val * num_pliegos;
           coste_total_mat = coste_total_mat_sin_iva * IVA_COMPRA;
           iva_mat_proveedor = coste_total_mat - coste_total_mat_sin_iva;
           pers_ud = coste_total_mat / cantidad;
@@ -1328,7 +1334,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       setText('bar_min_label', 'mín ' + mp + '%');
     }
 
-    function updateTecnicaUI() {
+function updateTecnicaUI() {
       const t = document.getElementById('tecnica').value;
       populateProveedorSelect();
       document.getElementById('bloque_area').style.display = (t !== 'ninguna' && t !== 'bordado' && t !== 'laser') ? 'block' : 'none';

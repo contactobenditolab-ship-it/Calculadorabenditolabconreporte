@@ -1182,7 +1182,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const precio_blanco_con_iva = precio_blanco_final_sin_iva * IVA_COMPRA;
       const subtotal_blancos_sin_iva = precio_blanco_final_sin_iva * cantidad;
       const ahorro_blancos_sin_iva = (precio_blanco - precio_blanco_final_sin_iva) * cantidad;
-      const envio_blanco_sin_iva = subtotal_blancos_sin_iva >= 100 ? 0 : 5.95;
+      const envio_blanco_sin_iva = (precio_blanco === 0 || cantidad === 0) ? 0 : (subtotal_blancos_sin_iva >= 100 ? 0 : 5.95);
       const envio_blanco_total = envio_blanco_sin_iva * IVA_COMPRA;
       const subtotal_blancos = precio_blanco_con_iva * cantidad;
       const total_blancos = subtotal_blancos + envio_blanco_total;

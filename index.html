@@ -1476,16 +1476,17 @@ if (addArticuloBtn) {
     calc();
   });
 
-    const addPersonalizacionBtn = document.getElementById('btn_add_personalizacion');
-    if (addPersonalizacionBtn) {
-      addPersonalizacionBtn.addEventListener('click', () => {
-        createPersonalizacionExtraRow();
-        calc();
-      });
-    }
+ const addPersonalizacionBtn = document.getElementById('btn_add_personalizacion');
+if (addPersonalizacionBtn) {
+  addPersonalizacionBtn.addEventListener('click', () => {
+    createPersonalizacionExtraRow();
+    calc();
+  });
+}
 
     const emailBtn = document.getElementById('btn_email_presupuesto');
     if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
+  
     const saveBtn = document.getElementById('btn_guardar_notion');
     if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
 

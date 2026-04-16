@@ -491,7 +491,23 @@
           <div class="field"><label>Minutos manipulación / ud</label><input type="number" id="laser_man" value="4" step="0.1" min="0"></div>
           <div class="field"><label>Consumible extra / ud (€)</label><input type="number" id="laser_extra_ud" value="0" step="0.01" min="0"></div>
         </div>
-           <
+             <div class="grid2">
+          <div class="field"><label>Coste máquina por hora (€)</label><input type="number" id="laser_coste_hora" value="0.63" step="0.01" min="0"></div>
+          <div class="field"><label>Coste hora personal (€)</label><input type="number" id="laser_coste_mo" value="15.00" step="0.1" min="0"></div>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <div class="sec-title" style="margin-bottom:8px">Personalizaciones adicionales</div>
+        <div id="personalizaciones_extra_container"></div>
+        <div class="actions-row" style="margin-top:10px">
+          <button type="button" class="btn-secondary" id="btn_add_personalizacion">+ Añadir personalización</button>
+        </div>
+        <div class="mini-note">Cada personalización adicional suma su propio coste y su propio envío de proveedor si corresponde.</div>
+      </div>
+    </div>
+
+    <div id="resultados" class="results">
       <div class="aviso" id="aviso_dto">Descuento sobre artículo base limitado para mantener el margen mínimo configurado.</div>
       <div class="tramo-badge" id="tramo_badge">Tramo 1–20 ud · 0% dto sobre artículo base</div>
 
@@ -617,11 +633,6 @@ Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica esp
 El precio indicado incluye únicamente lo detallado en este presupuesto.</textarea>
           <div class="hint">Estas condiciones se incluyen en el email al cliente y también se mandan al webhook de Make.</div>
         </div>
-        <div class="field" style="margin-top:10px">
-  <label>Notas internas</label>
-  <textarea class="input-textarea" id="notas_internas" placeholder="Ej. Tallas: 5 M, 8 L, 2 XL. Cliente pide revisar color. Entrega antes del viernes. Estas notas son solo internas y no se envían al cliente."></textarea>
-  <div class="hint">Estas notas son solo para uso interno y no se incluyen en el email al cliente.</div>
-</div>
         <div class="actions-row">
           <button type="button" class="btn-primary big" id="btn_email_presupuesto">📩 Enviar presupuesto al cliente</button>
           <button type="button" class="btn-secondary" id="btn_guardar_notion">🗂️ Guardar presupuesto</button>
@@ -1047,24 +1058,15 @@ function createPersonalizacionExtraRow(values = {}) {
         <div class="field"><label>Minutos manipulación / ud</label><input type="number" data-field="laser_man" value="${values.laser_man ?? 4}" step="0.1" min="0"></div>
         <div class="field"><label>Consumible extra / ud (€)</label><input type="number" data-field="laser_extra_ud" value="${values.laser_extra_ud ?? 0}" step="0.01" min="0"></div>
       </div>
-      
-        <div class="grid2">
-          <div class="field"><label>Coste máquina por hora (€)</label><input type="number" id="laser_coste_hora" value="0.63" step="0.01" min="0"></div>
-          <div class="field"><label>Coste hora personal (€)</label><input type="number" id="laser_coste_mo" value="15.00" step="0.1" min="0"></div>
-        </div>
-      </div>
-
-      <div class="sub-block">
-        <div class="sec-title" style="margin-bottom:8px">Personalizaciones adicionales</div>
-        <div id="personalizaciones_extra_container"></div>
-        <div class="actions-row" style="margin-top:10px">
-          <button type="button" class="btn-secondary" id="btn_add_personalizacion">+ Añadir personalización</button>
-        </div>
-        <div class="mini-note">Cada personalización adicional suma su propio coste y su propio envío de proveedor si corresponde.</div>
+      <div class="grid2">
+        <div class="field"><label>Coste máquina por hora (€)</label><input type="number" data-field="laser_coste_hora" value="${values.laser_coste_hora ?? 0.63}" step="0.01" min="0"></div>
+        <div class="field"><label>Coste hora personal (€)</label><input type="number" data-field="laser_coste_mo" value="${values.laser_coste_mo ?? 15}" step="0.1" min="0"></div>
       </div>
     </div>
 
-    <div id="resultados" class="results">
+    <div class="actions-row" style="margin-top:8px">
+      <button type="button" class="btn-secondary btn-remove-personalizacion">Eliminar personalización</button>
+    </div>
   `;
 
   container.appendChild(row);
@@ -1329,8 +1331,7 @@ const extras = buildExtrasLines();
       const areaLibre = parseEuroTextToNumber((document.getElementById('pv_area_libre')?.textContent || '0').replace('m²', ''));
       const aprovechamiento = parseEuroTextToNumber((document.getElementById('pv_aprov_real')?.textContent || '0').replace('%', ''));
       const fecha = document.getElementById('fecha_presupuesto')?.value || fechaLocalISO();
-      const idPres = document.getElementById('numero_presupuesto')?.value.trim() || generarNumeroPresupuesto();
-      notas_internas: document.getElementById('notas_internas')?.value.trim() || '',
+const idPres = document.getElementById('numero_presupuesto')?.value.trim() || generarNumeroPresupuesto();
       const nombre = `${cliente || 'Sin cliente'} · ${producto || 'Sin producto'} · ${fecha}`;
       let picaje = 0;
       if (tecnica === 'bordado') {

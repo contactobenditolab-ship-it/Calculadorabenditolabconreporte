@@ -287,7 +287,7 @@
           </div>
           <div class="field">
             <label>Tramo aplicado</label>
-            <div class="pill-soft" id="tramo_blanco_badge">1–9 ud · 0%</div>
+            <div class="pill-soft" id="tramo_blanco_badge">1–20 ud · 0%</div>
           </div>
         </div>
         <div class="check-row">
@@ -305,26 +305,26 @@
           <tbody>
             <tr>
               <td><input type="number" id="tb1_min" value="1" step="1" min="1"></td>
-              <td><input type="number" id="tb1_max" value="9" step="1" min="1"></td>
+              <td><input type="number" id="tb1_max" value="20" step="1" min="1"></td>
               <td><input type="number" id="tb1_dto" value="0" step="0.1" min="0" max="100"></td>
             </tr>
             <tr>
-              <td><input type="number" id="tb2_min" value="10" step="1" min="1"></td>
-              <td><input type="number" id="tb2_max" value="24" step="1" min="1"></td>
+              <td><input type="number" id="tb2_min" value="21" step="1" min="1"></td>
+              <td><input type="number" id="tb2_max" value="50" step="1" min="1"></td>
               <td><input type="number" id="tb2_dto" value="5" step="0.1" min="0" max="100"></td>
             </tr>
             <tr>
-              <td><input type="number" id="tb3_min" value="25" step="1" min="1"></td>
-              <td><input type="number" id="tb3_max" value="49" step="1" min="1"></td>
+              <td><input type="number" id="tb3_min" value="51" step="1" min="1"></td>
+              <td><input type="number" id="tb3_max" value="150" step="1" min="1"></td>
               <td><input type="number" id="tb3_dto" value="10" step="0.1" min="0" max="100"></td>
             </tr>
             <tr>
-              <td><input type="number" id="tb4_min" value="50" step="1" min="1"></td>
-              <td><input type="number" id="tb4_max" value="99" step="1" min="1"></td>
+              <td><input type="number" id="tb4_min" value="151" step="1" min="1"></td>
+              <td><input type="number" id="tb4_max" value="250" step="1" min="1"></td>
               <td><input type="number" id="tb4_dto" value="15" step="0.1" min="0" max="100"></td>
             </tr>
             <tr>
-              <td><input type="number" id="tb5_min" value="100" step="1" min="1"></td>
+              <td><input type="number" id="tb5_min" value="251" step="1" min="1"></td>
               <td><input type="number" id="tb5_max" value="999999" step="1" min="1"></td>
               <td><input type="number" id="tb5_dto" value="20" step="0.1" min="0" max="100"></td>
             </tr>
@@ -377,8 +377,8 @@
 
       <div id="bloque_area" class="sub-block">
         <div class="grid3">
-          <div class="field"><label>Ancho diseño (cm)</label><input type="number" id="dis_ancho" value="10" step="0.5" min="0"></div>
-          <div class="field"><label>Alto diseño (cm)</label><input type="number" id="dis_alto" value="10" step="0.5" min="0"></div>
+          <div class="field"><label>Ancho diseño (cm)</label><input type="number" id="dis_ancho" value="0" step="0.5" min="0"></div>
+          <div class="field"><label>Alto diseño (cm)</label><input type="number" id="dis_alto" value="0" step="0.5" min="0"></div>
           <div class="field"><label>Posiciones / ud</label><input type="number" id="posiciones" value="1" step="1" min="0"></div>
         </div>
         <div class="grid2">
@@ -532,7 +532,7 @@
       </div>
 
       <div class="email-box" id="email_box">
-        <div class="pb-title">Presupuesto cliente y guardado en Notion</div>
+        <div class="pb-title">Enviar y guardar presupuesto</div>
         <div class="grid3">
           <div class="field">
             <label>Cliente</label>
@@ -552,20 +552,21 @@
           <textarea class="input-textarea" id="condiciones_presupuesto">Presupuesto válido durante 30 días.
 Producción sujeta a confirmación de diseño y disponibilidad.
 Para iniciar el pedido se solicitará un anticipo del 50%.
+IBAN: ES65 1465 0100 9920 3826 5191 O Bizum : 647-444-308 Ref: Nº de Pedido
 Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica especial.
 El precio indicado incluye únicamente lo detallado en este presupuesto.</textarea>
           <div class="hint">Estas condiciones se incluyen en el email al cliente y también se mandan al webhook de Make.</div>
         </div>
         <div class="actions-row">
           <button type="button" class="btn-primary big" id="btn_email_presupuesto">📩 Enviar presupuesto al cliente</button>
-          <button type="button" class="btn-secondary" id="btn_guardar_notion">🗂️ Guardar presupuesto en Notion</button>
+          <button type="button" class="btn-secondary" id="btn_guardar_notion">🗂️ Guardar presupuesto</button>
         </div>
         <div class="status-note" id="save_status">El botón de cliente abre tu correo con el presupuesto limpio. El botón de Notion hace un POST al webhook de Make con todo el presupuesto.</div>
       </div>
       </div>
     </div>
 
-    <p class="footer-note">Archivo único listo para GitHub o Vercel. Lo normal, vamos: una cosa útil por fin.</p>
+    <p class="footer-note">Calculadora hecha por Bendito lab para quitarse dolores de cabeza</p>
   </div>
 
   <script>
@@ -616,27 +617,26 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     };
     const TRAMOS_VENTA = [
       { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
-      { min: 21, max: 49, dto: 0.02, label: '21–49 ud' },
-      { min: 50, max: 99, dto: 0.06, label: '50–99 ud' },
-      { min: 100, max: 149, dto: 0.12, label: '100–149 ud' },
-      { min: 150, max: 199, dto: 0.15, label: '150–199 ud' },
-      { min: 200, max: Infinity, dto: 0.20, label: '200+ ud' }
+      { min: 21, max: 50, dto: 0.05, label: '21–50 ud' },
+      { min: 51, max: 150, dto: 0.10, label: '51–150 ud' },
+      { min: 151, max: 250, dto: 0.15, label: '151–250 ud' },
+      { min: 251, max: Infinity, dto: 0.20, label: '251+ ud' }
     ];
 
     const PERFILES_BLANCOS = {
       toleshop: [
-        { min: 1, max: 9, dto: 0.00, label: '1–9 ud' },
-        { min: 10, max: 24, dto: 0.05, label: '10–24 ud' },
-        { min: 25, max: 49, dto: 0.10, label: '25–49 ud' },
-        { min: 50, max: 99, dto: 0.15, label: '50–99 ud' },
-        { min: 100, max: Infinity, dto: 0.20, label: '100+ ud' }
+           { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
+      { min: 21, max: 50, dto: 0.05, label: '21–50 ud' },
+      { min: 51, max: 150, dto: 0.10, label: '51–150 ud' },
+      { min: 151, max: 250, dto: 0.15, label: '151–250 ud' },
+      { min: 251, max: Infinity, dto: 0.20, label: '251+ ud' }
       ],
-      suave: [
-        { min: 1, max: 9, dto: 0.00, label: '1–9 ud' },
-        { min: 10, max: 24, dto: 0.03, label: '10–24 ud' },
-        { min: 25, max: 49, dto: 0.06, label: '25–49 ud' },
-        { min: 50, max: 99, dto: 0.10, label: '50–99 ud' },
-        { min: 100, max: Infinity, dto: 0.15, label: '100+ ud' }
+      Temporada alta: [
+           { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
+      { min: 21, max: 50, dto: 0.03, label: '21–50 ud' },
+      { min: 51, max: 150, dto: 0.5, label: '51–150 ud' },
+      { min: 151, max: 250, dto: 0.7, label: '151–250 ud' },
+      { min: 251, max: Infinity, dto: 0.10, label: '251+ ud' }
       ],
       sin_descuento: [
         { min: 1, max: Infinity, dto: 0.00, label: 'Todas las cantidades' }
@@ -815,7 +815,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       const bodyLines = [
         `Hola ${cliente || ''},`.trim(),
         '',
-        'Te envío el presupuesto solicitado:',
+        'https://notion-emojis.s3-us-west-2.amazonaws.com/prod/svg-twitter/1f389.svg¡Tu prespuesto ya está aqui!https://notion-emojis.s3-us-west-2.amazonaws.com/prod/svg-twitter/1f389.svg :',
         '',
         `Artículo: ${producto || '—'}`,
         `Cantidad: ${cantidad} uds`,
@@ -835,7 +835,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         const l = line.trim();
         if (l) bodyLines.push(`- ${l.replace(/^[-•]\s*/, '')}`);
       });
-      bodyLines.push('', 'Un saludo,', 'Silvia', 'Bendito Lab');
+      bodyLines.push('', 'Si tienes cualquier duda ¡Aquí estoy! Un abrazo,', 'Silvia', 'Bendito Lab');
 
       return { destino, asunto, body: bodyLines.join('\n') };
     }
@@ -910,7 +910,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
 
     async function saveBudgetToMake() {
       const statusEl = document.getElementById('save_status');
-      if (!MAKE_WEBHOOK_URL || MAKE_WEBHOOK_URL === 'PEGA_AQUI_TU_WEBHOOK_DE_MAKE') {
+      if (!MAKE_WEBHOOK_URL || MAKE_WEBHOOK_URL === 'https://hook.eu1.make.com/j9d8p9smrn9wrhun492pslecee8i1ihk') {
         alert('Primero pega la URL real del webhook de Make en el código.');
         return;
       }
@@ -923,7 +923,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
           body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        statusEl.textContent = 'Presupuesto enviado correctamente al webhook de Make.';
+        statusEl.textContent = 'Presupuesto guardado correctamente al webhook, Revisa NOTION.';
       } catch (err) {
         console.error(err);
         statusEl.textContent = 'No se pudo enviar el presupuesto a Make. Revisa la URL del webhook y Vercel.';

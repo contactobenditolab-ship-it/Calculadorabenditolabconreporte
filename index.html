@@ -4,342 +4,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora B2B - Bendito Lab</title>
- <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  <style>
+    /* VARIABLES DE COLOR ESTILO LIMPIO */
+    :root {
+      --primary: #000000;
+      --bg-body: #ffffff;
+      --bg-card: #ffffff;
+      --border-color: #e5e7eb;
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      --radius: 12px;
+    }
 
-  :root {
-    --primary: #4f46e5;
-    --primary-dark: #3730a3;
-    --primary-light: #818cf8;
-    --secondary: #6366f1;
-    --accent: #ec4899;
-    --success: #059669;
-    --success-light: #ecfdf5;
-    --warning: #d97706;
-    --danger: #dc2626;
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc; /* Gris muy tenue para diferenciar áreas */
-    --bg-tertiary: #f1f5f9;
-    --border: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-tertiary: #94a3b8;
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    --transition: all 0.2s ease-in-out;
-  }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #ffffff; /* Fondo de pantalla blanco */
-    background-image: none;    /* Eliminamos el degradado púrpura */
-    min-height: 100vh;
-    color: var(--text-primary);
-    padding: 20px;
-  }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 20px;
+    }
 
-  .wrap {
-    max-width: 1000px; /* Un poco más estrecha para que se vea más elegante */
-    margin: 0 auto;
-  }
+    .wrap { max-width: 600px; margin: 0 auto; }
 
-  /* HEADER */
-  .brand-header {
-    background: #ffffff;
-    border-radius: 0;
-    padding: 20px 0 40px 0;
-    margin-bottom: 20px;
-    box-shadow: none;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    border-bottom: 1px solid var(--border); /* Solo una línea divisoria */
-  }
+    /* LOGO Y HEADER */
+    .header { text-align: center; margin-bottom: 30px; padding-top: 20px; }
+    .header img { max-width: 250px; margin-bottom: 15px; }
+    .header h1 { font-size: 20px; font-weight: 700; margin-bottom: 5px; }
+    .header p { color: var(--text-sub); font-size: 14px; }
 
-  .brand-copy h1 {
-    font-size: 28px;
-    color: var(--text-primary);
-    -webkit-text-fill-color: initial; /* Quitamos el degradado del texto */
-    background: none;
-  }
+    /* ESTILO DE TARJETAS (CARDS) */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
 
-  /* TARJETAS */
-  .margen-config, .card, .results {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: var(--shadow-md); /* Sombra muy suave */
-    border: 1px solid var(--border);
-  }
+    .sec-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 20px;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+    }
 
-  .sec-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-  }
+    /* INPUTS Y FORMULARIOS */
+    .field { margin-bottom: 20px; }
+    .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+    
+    input[type="number"], input[type="text"], input[type="email"], select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 15px;
+      background-color: #f9fafb;
+      transition: all 0.2s;
+    }
 
-  /* INPUTS */
-  input[type="number"], select, textarea {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    color: var(--text-primary);
-  }
+    input:focus { outline: none; border-color: var(--accent-blue); background-color: #fff; }
 
-  input[type="number"]:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-  }
+    /* SLIDERS */
+    input[type="range"] {
+      width: 100%;
+      margin: 15px 0;
+      accent-color: var(--accent-blue);
+    }
 
-  /* MÉTRICAS */
-  .metric {
-    background: #ffffff;
-    border: 1px solid var(--border);
-  }
+    /* BLOQUES DE RESULTADOS (COSTE BLANCOS / PERSONALIZACIÓN) */
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+      border-bottom: 1px solid #f3f4f6;
+    }
 
-  .mv {
-    color: var(--text-primary);
-    font-size: 24px;
-  }
+    .result-row:last-child { border-bottom: none; }
+    .result-label { color: var(--text-sub); }
+    .result-value { font-weight: 600; font-family: 'Monaco', monospace; }
 
-  /* BOTONES */
-  .btn-primary {
-    background: var(--text-primary); /* Botón negro para un look moderno */
-    color: white;
-    border-radius: 6px;
-    box-shadow: none;
-  }
+    /* MÉTRICTAS DESTACADAS (LAS DE ABAJO) */
+    .metric-card {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-  .btn-primary:hover {
-    background: #000000;
-    transform: none;
-  }
+    .metric-label { font-size: 14px; color: var(--text-sub); font-weight: 500; }
+    .metric-value { font-size: 16px; font-weight: 700; }
 
-  .sub-block {
-    background: var(--bg-secondary);
-    border-left: 3px solid var(--text-primary);
-  }
+    .value-total { color: var(--accent-green); font-size: 18px; }
 
-  /* BARRA DE MARGEN */
-  .bar-bg {
-    background: var(--bg-tertiary);
-  }
-</style>
+    /* BOTONES */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 14px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-green { background-color: #10b981; color: white; }
+    .btn-whatsapp { background-color: #25d366; color: white; }
+    .btn-outline { background-color: white; border: 1px solid var(--border-color); color: var(--text-main); }
+    .btn-notion { background-color: #000000; color: white; }
+    .btn:hover { opacity: 0.9; }
+
+    /* MARGEN BAR */
+    .bar-container { height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden; margin: 10px 0; position: relative; }
+    .bar-fill { height: 100%; background: var(--accent-green); width: 60%; }
+
+    .badge-info {
+        background-color: #fff7ed;
+        border: 1px solid #ffedd5;
+        color: #9a3412;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+  </style>
 </head>
 <body>
+
   <div class="wrap">
-    <div class="brand-header">
-      <img src="Option 3 (4).png" alt="Bendito Lab" style="max-width:280px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <div class="logo-placeholder" style="display:none;">BENDITO LAB</div>
-      <div class="brand-copy">
-        <h1>Calculadora B2B</h1>
-        <p>Costes, márgenes y PVP para pedidos de Bendito Lab.</p>
-      </div>
+    <div class="header">
+      <img src="https://via.placeholder.com/250x80?text=BENDITO+LAB" alt="Bendito Lab">
+      <h1>Calculadora B2B</h1>
+      <p>Costes, márgenes y PVP para pedidos de Bendito Lab.</p>
     </div>
 
-    <!-- Margen mínimo + ValueTop -->
-    <div class="margen-config">
-      <div class="sec-title">Margen mínimo garantizado</div>
-      <div class="margen-slider-wrap">
-        <span style="font-size:13px;color:var(--text-secondary);">50%</span>
-        <input type="range" id="margen_min" min="50" max="80" step="1" value="60" style="flex: 1; margin: 0 12px;">
-        <span style="font-size:13px;color:var(--text-secondary);">80%</span>
-        <div class="margen-val green" id="margen_val_display" style="font-weight:700; color: var(--success); min-width: 50px; text-align: right;">60%</div>
-      </div>
-      <div class="margen-ticks" style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 11px; color: var(--text-tertiary);">
+    <div class="card">
+      <div class="sec-title">Margen mínimo garantizado <span style="color:var(--accent-green)">60%</span></div>
+      <input type="range" min="50" max="80" value="60">
+      <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-sub)">
         <span>50%</span><span>55%</span><span>60%</span><span>65%</span><span>70%</span><span>75%</span><span>80%</span>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Artículo Base</div>
+      <div class="field">
+        <label>Precio coste artículo proveedor (€/ud sin IVA)</label>
+        <input type="number" value="8.00">
+      </div>
+      <div class="field">
+        <label>Cantidad (ud)</label>
+        <input type="number" value="25">
+        <input type="range" min="1" max="1000" value="25">
+      </div>
+
+      <div style="border: 1px solid #f3f4f6; padding: 15px; border-radius: 8px; background: #fafafa;">
+        <div class="sec-title" style="font-size:11px;">Descuento de blancos por tramos</div>
+        <select style="margin-bottom:15px;"><option>Toleshop estándar</option></select>
+        <div class="result-row"><span class="result-label">Tramo aplicado:</span><span class="result-value">25-49 ud · 10,0%</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Coste Blancos</div>
+      <div class="result-row"><span class="result-label">Precio tarifa / ud sin IVA</span><span class="result-value">8,00 €</span></div>
+      <div class="result-row"><span class="result-label">Descuento tramo aplicado</span><span class="result-value">10,0%</span></div>
+      <div class="result-row"><span class="result-label">Precio final / ud sin IVA</span><span class="result-value">7,20 €</span></div>
+      <div class="result-row" style="border-top: 1px solid #000; padding-top:10px; margin-top:10px;">
+        <span class="result-label" style="color:var(--text-main); font-weight:700;">Total blancos con IVA</span>
+        <span class="result-value" style="color:var(--accent-green);">217,80 €</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">Personalización</div>
+      <div class="field">
+        <label>Técnica</label>
+        <select><option>DTF Textil</option></select>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+        <div class="field"><label>Ancho (cm)</label><input type="number" value="10"></div>
+        <div class="field"><label>Alto (cm)</label><input type="number" value="10"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="badge-info">Descuento sobre artículo base limitado para mantener el margen mínimo configurado.</div>
       
-      <!-- Selector ValueTop -->
-      <div style="margin-top:20px;">
-        <label style="font-size:13px; font-weight:600; display:block; margin-bottom:8px;">🎯 Nivel ValueTop (descuento adicional)</label>
-        <select id="valuetop_nivel" style="width:auto; min-width:240px;">
-          <option value="0">Sin descuento ValueTop</option>
-          <option value="1">Top 1% → 0,5% dto</option>
-          <option value="2">Top 2% → 0,4% dto</option>
-          <option value="3">Top 3% → 0,3% dto</option>
-          <option value="4">Top 4% → 0,25% dto</option>
-          <option value="5">Top 5% → 0,2% dto</option>
-          <option value="6">Top 6% → 0,15% dto</option>
-          <option value="7">Top 7% → 0,1% dto</option>
-          <option value="8">Top 8% → 0,05% dto</option>
-          <option value="9">Top 9% → 0,02% dto</option>
-        </select>
-        <div class="hint">Descuento sobre PVP sin IVA, respetando margen mínimo</div>
-      </div>
-      <div style="font-size:11px;color:var(--text-tertiary);margin-top:12px" id="margen_hint"></div>
-    </div>
-
-    <!-- ARTÍCULO PRINCIPAL -->
-    <div class="card" id="articulo1">
-      <div class="sec-title">📦 Artículo base ①</div>
-      <div class="grid2">
-        <div class="field"><label>Precio coste artículo proveedor (€/ud sin IVA)</label><input type="number" id="precio_blanco" value="0" step="0.01" min="0"></div>
-        <div class="field"><label>Cantidad (ud)</label><input type="number" id="cantidad" value="0" step="1" min="0" max="1500"></div>
-      </div>
-      <div class="slider-row">
-        <label>Cantidad:</label>
-        <input type="range" id="slider_cant" min="0" max="1500" step="1" value="0" style="flex: 1;">
-        <span class="val" id="slider_out">0 ud</span>
-      </div>
-      
-      <!-- Descuento blancos -->
-      <div class="sub-block">
-        <div class="sec-title" style="margin-bottom:16px; margin-top: 0;">💰 Descuento de blancos por tramos</div>
-        <div class="grid3">
-          <div class="field"><label>Perfil base</label><select id="perfil_blanco"><option value="toleshop">Toleshop estándar</option><option value="suave">Descuento suave</option><option value="sin_descuento">Sin descuento</option><option value="personalizado">Personalizado</option></select></div>
-          <div class="field"><label>Descuento manual (%)</label><input type="number" id="dto_blanco_manual" value="0" step="0.1" min="0" max="25"></div>
-          <div class="field"><label>Tramo aplicado</label><div class="pill-soft" id="tramo_blanco_badge">1–9 ud · 0%</div></div>
-        </div>
-        <div class="check-row">
-          <label><input type="checkbox" id="usar_dto_blanco_auto" checked> Usar descuento automático</label>
-          <label><input type="checkbox" id="usar_dto_blanco_manual"> Sobrescribir manual (máx 25%)</label>
-        </div>
-        <table class="tramos-table" id="tramos_table_1">
-          <thead><tr><th>Desde</th><th>Hasta</th><th>%</th></tr></thead>
-          <tbody>
-            <tr><td><input type="number" id="tb1_min" value="1" step="1" min="1"></td><td><input type="number" id="tb1_max" value="9" step="1" min="1"></td><td><input type="number" id="tb1_dto" value="0" step="0.1" min="0" max="100"></td></tr>
-            <tr><td><input type="number" id="tb2_min" value="10" step="1" min="1"></td><td><input type="number" id="tb2_max" value="24" step="1" min="1"></td><td><input type="number" id="tb2_dto" value="5" step="0.1" min="0" max="100"></td></tr>
-            <tr><td><input type="number" id="tb3_min" value="25" step="1" min="1"></td><td><input type="number" id="tb3_max" value="49" step="1" min="1"></td><td><input type="number" id="tb3_dto" value="10" step="0.1" min="0" max="100"></td></tr>
-            <tr><td><input type="number" id="tb4_min" value="50" step="1" min="1"></td><td><input type="number" id="tb4_max" value="99" step="1" min="1"></td><td><input type="number" id="tb4_dto" value="15" step="0.1" min="0" max="100"></td></tr>
-            <tr><td><input type="number" id="tb5_min" value="100" step="1" min="1"></td><td><input type="number" id="tb5_max" value="999999" step="1" min="1"></td><td><input type="number" id="tb5_dto" value="20" step="0.1" min="0" max="100"></td></tr>
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="grid2">
-        <div class="field"><label>🎁 Packaging (€/ud)</label><input type="number" id="pack_coste" value="0" step="0.01" min="0"></div>
-        <div class="field"><label>📋 Otros costes fijos (€ total pedido)</label><input type="number" id="otros_fijos" value="0" step="0.5" min="0"></div>
-      </div>
-
-      <div class="blancos-resumen">
-        <div style="width: 100%;">
-          <div class="pb-title">📊 Coste blancos</div>
-          <div class="brow"><span class="bl">Precio tarifa / ud sin IVA</span><span class="bv" id="res_blanco_tarifa_ud">—</span></div>
-          <div class="brow"><span class="bl">Descuento tramo</span><span class="bv" id="res_blanco_dto">—</span></div>
-          <div class="brow"><span class="bl">Precio final / ud sin IVA</span><span class="bv" id="res_blanco_final_sin">—</span></div>
-          <div class="brow"><span class="bl">Coste / ud con IVA</span><span class="bv" id="res_blanco_ud">—</span></div>
-          <div class="brow"><span class="bl">Cantidad</span><span class="bv" id="res_blanco_cant">—</span></div>
-          <div class="brow"><span class="bl">Subtotal blancos con IVA</span><span class="bv" id="res_blanco_subtotal">—</span></div>
-          <div class="brow"><span class="bl">Envío blancos con IVA</span><span class="bv" id="res_blanco_envio">—</span></div>
-          <div class="btotal"><span>Total blancos con IVA</span><span class="bv accent" id="res_blanco_total">—</span></div>
-        </div>
-      </div>
-
-      <div style="margin-top:24px;"><div class="sec-title" style="margin-bottom: 16px;">🎨 Personalización ①</div></div>
-      <div class="field"><label>Técnica</label><select id="tecnica"><option value="ninguna">Sin personalizar</option><option value="dtf_textil" selected>DTF Textil</option><option value="dtf_oro">DTF Oro</option><option value="sublimacion">Sublimación</option><option value="vinilo">Vinilo (plotter)</option><option value="dtf_uv">DTF UV</option><option value="bordado">Bordado</option><option value="laser">Láser / grabado</option></select></div>
-      
-      <div id="bloque_area" class="sub-block">
-        <div class="grid3">
-          <div class="field"><label>Ancho diseño (cm)</label><input type="number" id="dis_ancho" value="0" step="0.5" min="0"></div>
-          <div class="field"><label>Alto diseño (cm)</label><input type="number" id="dis_alto" value="0" step="0.5" min="0"></div>
-          <div class="field"><label>Posiciones / ud</label><input type="number" id="posiciones" value="0" step="1" min="0"></div>
-        </div>
-        <div class="grid2">
-          <div class="field"><label>Proveedor</label><select id="proveedor_sel"></select></div>
-          <div id="bloque_vinilo_tipo" class="field" style="display:none"><label>Tipo vinilo</label><select id="vinilo_tipo"><option value="htv">HTV textil (€15/m²)</option><option value="adhesivo">Adhesivo (€18/m²)</option><option value="transfer">Transfer tape (€8/m²)</option></select></div>
-        </div>
+      <div class="metric-card"><span class="metric-label">Coste total / ud</span><span class="metric-value">9,39 €</span></div>
+      <div class="metric-card"><span class="metric-label">PVP final sin IVA / ud</span><span class="metric-value">23,47 €</span></div>
+      <div class="metric-card"><span class="metric-label">PVP final con IVA / ud</span><span class="metric-value">28,40 €</span></div>
+      <div class="metric-card" style="background:#f0fdf4; border-color:#dcfce7;">
+        <span class="metric-label">Total pedido con IVA</span>
+        <span class="metric-value value-total">710,09 €</span>
       </div>
     </div>
 
-    <!-- SEGUNDO ARTÍCULO -->
-    <div style="margin: 24px 0;">
-      <label style="display:flex; align-items:center; gap:10px; font-weight:600; cursor: pointer; padding: 12px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05)); border-radius: 8px; border: 2px solid rgba(99, 102, 241, 0.2); transition: var(--transition);" onmouseover="this.style.borderColor='var(--primary-light)';" onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.2)';">
-        <input type="checkbox" id="habilitar_articulo2"> ✚ Añadir otro artículo con personalización independiente
-      </label>
-    </div>
-    <div id="articulo2_container" style="display:none;">
-      <div class="card">
-        <div class="sec-title">📦 Artículo base ②</div>
-        <div class="grid2">
-          <div class="field"><label>Precio coste artículo proveedor (€/ud sin IVA)</label><input type="number" id="precio_blanco2" value="0" step="0.01" min="0"></div>
-          <div class="field"><label>Cantidad (ud)</label><input type="number" id="cantidad2" value="0" step="1" min="0" max="1500"></div>
-        </div>
-        <div class="slider-row">
-          <label>Cantidad:</label>
-          <input type="range" id="slider_cant2" min="0" max="1500" step="1" value="0" style="flex: 1;">
-          <span class="val" id="slider_out2">0 ud</span>
-        </div>
-        <div class="sub-block">
-          <div class="sec-title" style="margin-bottom: 16px;">💰 Descuento de blancos (mismos tramos que ①)</div>
-        </div>
-        <div class="grid2">
-          <div class="field"><label>🎁 Packaging (€/ud)</label><input type="number" id="pack_coste2" value="0" step="0.01" min="0"></div>
-          <div class="field"><label>📋 Otros costes fijos (€ total pedido)</label><input type="number" id="otros_fijos2" value="0" step="0.5" min="0"></div>
-        </div>
-
-        <div style="margin-top:24px;"><div class="sec-title" style="margin-bottom: 16px;">🎨 Personalización ②</div></div>
-        <div class="field"><label>Técnica</label><select id="tecnica2"><option value="ninguna">Sin personalizar</option><option value="dtf_textil">DTF Textil</option><option value="dtf_oro">DTF Oro</option><option value="sublimacion">Sublimación</option><option value="vinilo">Vinilo (plotter)</option><option value="dtf_uv">DTF UV</option><option value="bordado">Bordado</option><option value="laser">Láser / grabado</option></select></div>
-      </div>
+    <div style="margin-bottom:50px;">
+      <button class="btn btn-green">📩 Enviar presupuesto al cliente</button>
+      <button class="btn btn-whatsapp">💬 Enviar por WhatsApp</button>
+      <button class="btn btn-outline">📄 Ver presupuesto / Imprimir (PDF)</button>
+      <button class="btn btn-notion">💾 Guardar presupuesto en Notion</button>
     </div>
 
-    <!-- RESULTADOS GLOBALES -->
-    <div id="resultados" class="results">
-      <div class="aviso" id="aviso_dto">📌 Descuento sobre artículo base limitado para mantener el margen mínimo configurado.</div>
-      <div class="tramo-badge" id="tramo_badge">📊 Tramo 1–20 ud · 0% dto sobre artículo base</div>
-
-      <div class="metrics">
-        <div class="metric"><div class="ml">💰 Coste total / ud (promedio)</div><div class="mv" id="r_coste_ud">—</div></div>
-        <div class="metric"><div class="ml">📦 Total blancos (pedido)</div><div class="mv teal" id="r_total_blancos">—</div></div>
-        <div class="metric"><div class="ml">💵 PVP final sin IVA / ud</div><div class="mv green" id="r_pvp_dto_sin">—</div></div>
-        <div class="metric"><div class="ml">🏷️ PVP final con IVA / ud</div><div class="mv green" id="r_pvp_dto_con">—</div></div>
-        <div class="metric"><div class="ml">🎯 Beneficio total pedido</div><div class="mv green" id="r_ben_total">—</div></div>
-        <div class="metric"><div class="ml">💳 Total pedido con IVA</div><div class="mv big" id="r_total_iva">—</div></div>
-      </div>
-
-      <div style="margin-bottom:16px">
-        <div class="sec-title" style="margin-bottom:16px">📈 Construcción del precio de venta sin IVA</div>
-        <div id="detalle_construccion"></div>
-        <div class="btotal"><span>PVP final sin IVA / ud</span><span class="bv" id="b_pvp_final_sin">—</span></div>
-      </div>
-
-      <div style="margin-bottom:16px; background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
-        <div class="brow"><span class="bl">IVA 21%</span><span class="bv" id="b_iva">—</span></div>
-        <div class="brow"><span class="bl">PVP final con IVA / ud</span><span class="bv accent" id="b_pvp_final_con">—</span></div>
-        <div class="brow"><span class="bl">Beneficio / ud</span><span class="bv accent" id="b_ben_ud">—</span></div>
-        <div class="btotal-iva"><span>Total pedido con IVA</span><span class="bv accent" id="b_total_iva">—</span></div>
-      </div>
-
-      <div class="bar-wrap">
-        <div class="bar-label"><span>📊 Margen real sobre venta</span><span id="bar_pct">—</span></div>
-        <div class="bar-bg">
-          <div class="bar-fill" id="margin_bar" style="width:0%"></div>
-          <div class="bar-min-line" id="bar_min_line" style="left:60%"><div class="bar-min-label" id="bar_min_label">mín 60%</div></div>
-        </div>
-      </div>
-
-      <!-- Email y Notion -->
-      <div class="email-box" id="email_box">
-        <div class="pb-title">💼 Presupuesto cliente y Notion</div>
-        <div class="grid2">
-          <div class="field"><label>Número de presupuesto</label><input type="text" id="numero_presupuesto" placeholder="PRESU-26/0001"></div>
-          <div class="field"><label>Fecha</label><input type="date" id="fecha_presupuesto"></div>
-        </div>
-        <div class="grid3" style="margin-top:16px">
-          <div class="field"><label>Cliente</label><input type="text" id="email_cliente" placeholder="Ej. Clínica Sonrisa"></div>
-          <div class="field"><label>Artículo</label><input type="text" id="email_producto" placeholder="Ej. Camiseta técnica"></div>
-          <div class="field"><label>Email cliente</label><input type="email" id="email_destino" placeholder="cliente@empresa.com"></div>
-        </div>
-        <div class="field" style="margin-top:16px">
-          <label>Condiciones del presupuesto</label>
-          <textarea class="input-textarea" id="condiciones_presupuesto" style="min-height: 100px;">Presupuesto válido durante 30 días. Producción sujeta a confirmación de diseño y disponibilidad. Para iniciar el pedido se solicitará un anticipo del 50%. Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica especial.</textarea>
-        </div>
-        <div class="actions-row">
-          <button type="button" class="btn-primary big" id="btn_email_presupuesto">📩 Enviar presupuesto al cliente</button>
-          <button type="button" class="btn-secondary" id="btn_guardar_notion">🗂️ Guardar presupuesto en Notion</button>
-        </div>
-        <div class="status-note" id="save_status">ℹ️ El botón de cliente abre tu correo. El botón de Notion envía los datos al webhook de Make.</div>
-      </div>
-    </div>
-    <p class="footer-note">✨ Hecho por Bendito Lab para quitarse dolores de cabeza</p>
   </div>
+
 </body>
 </html>

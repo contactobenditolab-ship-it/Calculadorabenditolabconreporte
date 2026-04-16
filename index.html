@@ -330,7 +330,7 @@
             <label>Perfil base</label>
             <select id="perfil_blanco">
               <option value="toleshop">Toleshop estándar</option>
-              <option value="T.Alta">Descuento T.Alta</option>
+              <option value="suave">Descuento suave</option>
               <option value="sin_descuento">Sin descuento</option>
               <option value="personalizado">Personalizado</option>
             </select>
@@ -670,7 +670,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
       { min: 251, max: Infinity, dto: 0.20, label: '251+ ud' }
     ];
 
- const PERFILES_BLANCOS = {
+const PERFILES_BLANCOS = {
   toleshop: [
     { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
     { min: 21, max: 50, dto: 0.05, label: '21–50 ud' },
@@ -678,7 +678,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
     { min: 151, max: 250, dto: 0.15, label: '151–250 ud' },
     { min: 251, max: Infinity, dto: 0.20, label: '251+ ud' }
   ],
-<option value="T.Alta">Descuento T.Alta</option>
+  suave: [
     { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
     { min: 21, max: 50, dto: 0.03, label: '21–50 ud' },
     { min: 51, max: 150, dto: 0.05, label: '51–150 ud' },

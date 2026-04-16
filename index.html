@@ -656,7 +656,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
   <script>
     const IVA_COMPRA = 1.21;
     const IVA_VENTA = 0.21;
-    const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/j9d8p9smrn9wrhun492pslecee8i1ihk';
+   const res = await fetch(MAKE_WEBHOOK_URL, {
     const f2 = n => (Number(n || 0)).toFixed(2).replace('.', ',') + ' €';
     const pct = n => (Number(n || 0)).toFixed(1).replace('.', ',') + ' %';
     const VINILO_M2 = { htv: 15, adhesivo: 18, transfer: 8 };
@@ -789,10 +789,7 @@ const PERFILES_BLANCOS = {
       const el = document.getElementById(id);
       if(el) el.textContent = value; 
     }
-    function setText(id, value) { 
-      const el = document.getElementById(id);
-      if(el) el.textContent = value; 
-    }
+    
 function pad2(n) {
   return String(n).padStart(2, '0');
 }
@@ -1171,9 +1168,6 @@ function createArticuloExtraRow(values = {}) {
     row.remove();
     calc();
   });
-}
-    function fmtM2(v) {
-      return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
     }
 
     function renderPliegoPreview({ pw, ph, dis_ancho, dis_alto, MC, dh, dv, total_imp }) {

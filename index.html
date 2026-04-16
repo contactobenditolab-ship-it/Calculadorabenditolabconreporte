@@ -1103,10 +1103,6 @@ function createPersonalizacionExtraRow(values = {}) {
     calc();
   });
 }
-
-    function fmtM2(v) {
-      return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
-    }
     
 function getArticulosExtras() {
   return Array.from(document.querySelectorAll('.articulo-extra')).map(row => ({

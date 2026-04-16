@@ -613,6 +613,16 @@
             <input type="email" id="email_destino" placeholder="cliente@empresa.com">
           </div>
         </div>
+        <div class="grid2" style="margin-top:10px">
+  <div class="field">
+    <label>Número de pedido</label>
+    <input type="text" id="numero_presupuesto" placeholder="PRESU-26/20260416123045">
+  </div>
+  <div class="field">
+    <label>Fecha</label>
+    <input type="date" id="fecha_presupuesto">
+  </div>
+</div>
         <div class="field" style="margin-top:10px">
           <label>Condiciones del presupuesto</label>
           <textarea class="input-textarea" id="condiciones_presupuesto">Presupuesto válido durante 30 días.
@@ -774,7 +784,34 @@ const PERFILES_BLANCOS = {
       const el = document.getElementById(id);
       if(el) el.textContent = value; 
     }
+function pad2(n) {
+  return String(n).padStart(2, '0');
+}
 
+function fechaLocalISO() {
+  const ahora = new Date();
+  return `${ahora.getFullYear()}-${pad2(ahora.getMonth() + 1)}-${pad2(ahora.getDate())}`;
+}
+
+function generarNumeroPresupuesto() {
+  const ahora = new Date();
+  const sello = `${ahora.getFullYear()}${pad2(ahora.getMonth() + 1)}${pad2(ahora.getDate())}${pad2(ahora.getHours())}${pad2(ahora.getMinutes())}${pad2(ahora.getSeconds())}`;
+  return `PRESU-26/${sello}`;
+}
+
+function inicializarNumeroYFechaPresupuesto() {
+  const numeroEl = document.getElementById('numero_presupuesto');
+  const fechaEl = document.getElementById('fecha_presupuesto');
+
+  if (numeroEl && !numeroEl.value.trim()) {
+    numeroEl.value = generarNumeroPresupuesto();
+  }
+
+  if (fechaEl && !fechaEl.value) {
+    fechaEl.value = fechaLocalISO();
+  }
+}
+    
 function populateProveedorSelectRow(row) {
   const tecnica = row.querySelector('[data-field="tecnica"]').value;
   const sp = row.querySelector('[data-field="proveedor_sel"]');
@@ -1228,20 +1265,24 @@ function createArticuloExtraRow(values = {}) {
     }
 
     function buildClientBudgetEmail() {
-      const cliente = document.getElementById('email_cliente').value.trim();
-      const producto = document.getElementById('email_producto').value.trim();
-      const destino = document.getElementById('email_destino').value.trim();
-      const cantidad = String(getCantidadTotalPedido());
-      const precioUnidad = document.getElementById('r_pvp_dto_con').textContent.trim();
-      const total = document.getElementById('r_total_iva').textContent.trim();
-      const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
-      const extras = buildExtrasLines();
+    const cliente = document.getElementById('email_cliente').value.trim();
+const producto = document.getElementById('email_producto').value.trim();
+const destino = document.getElementById('email_destino').value.trim();
+const numeroPresupuesto = document.getElementById('numero_presupuesto')?.value.trim() || generarNumeroPresupuesto();
+const fechaPresupuesto = document.getElementById('fecha_presupuesto')?.value || fechaLocalISO();
+const cantidad = String(getCantidadTotalPedido());
+const precioUnidad = document.getElementById('r_pvp_dto_con').textContent.trim();
+const total = document.getElementById('r_total_iva').textContent.trim();
+const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
+const extras = buildExtrasLines();
 
-      const asunto = `Presupuesto Bendito Lab${cliente ? ' · ' + cliente : ''}${producto ? ' · ' + producto : ''}`;
+      const asunto = `&#127881;${numeroPresupuesto} · Bendito Lab${cliente ? ' · ' + cliente : ''}${producto ? ' · ' + producto : ''}`;
       const bodyLines = [
         `Hola ${cliente || ''},`.trim(),
         '',
-        '¡Tu presupuesto ya está aquí! :',
+        '&#10024;¡Tu presupuesto ya está aquí!&#10024; :',
+        `Número de pedido: ${numeroPresupuesto}`,
+        `Fecha: ${fechaPresupuesto}`,
         '',
         `Artículo: ${producto || '—'}`,
         `Cantidad: ${cantidad} uds`,
@@ -1271,7 +1312,6 @@ function createArticuloExtraRow(values = {}) {
       const producto = document.getElementById('email_producto').value.trim();
       const emailDestino = document.getElementById('email_destino').value.trim();
       const cantidad = getCantidadTotalPedido();
-      const fecha = new Date().toISOString().slice(0, 10);
       const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
       const { body } = buildClientBudgetEmail();
       const tecnica = document.getElementById('tecnica').value;
@@ -1288,7 +1328,8 @@ function createArticuloExtraRow(values = {}) {
       const pliegos = parseFloat((document.getElementById('p_num')?.textContent || '0').replace(/[^0-9.]/g, '')) || 0;
       const areaLibre = parseEuroTextToNumber((document.getElementById('pv_area_libre')?.textContent || '0').replace('m²', ''));
       const aprovechamiento = parseEuroTextToNumber((document.getElementById('pv_aprov_real')?.textContent || '0').replace('%', ''));
-      const hoy = new Date(); const yy = String(hoy.getFullYear()).slice(-2); const consecutivo = String(Date.now()).slice(-6); const idPres = `PRESU-${yy}/${consecutivo}`;
+      const fecha = document.getElementById('fecha_presupuesto')?.value || fechaLocalISO();
+const idPres = document.getElementById('numero_presupuesto')?.value.trim() || generarNumeroPresupuesto();
       const nombre = `${cliente || 'Sin cliente'} · ${producto || 'Sin producto'} · ${fecha}`;
       let picaje = 0;
       if (tecnica === 'bordado') {
@@ -1782,12 +1823,31 @@ if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
 const saveBtn = document.getElementById('btn_guardar_notion');
 if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
 
-    // Arranque inicial
-    setText('slider_out', cantI.value + ' ud');
-    applyPerfilBlanco(false);
-    populateProveedorSelect();
-    applyLaserPreset();
-    updateTecnicaUI();
+const numeroPresupuestoEl = document.getElementById('numero_presupuesto');
+if (numeroPresupuestoEl) {
+  numeroPresupuestoEl.addEventListener('blur', () => {
+    if (!numeroPresupuestoEl.value.trim()) {
+      numeroPresupuestoEl.value = generarNumeroPresupuesto();
+    }
+  });
+}
+
+const fechaPresupuestoEl = document.getElementById('fecha_presupuesto');
+if (fechaPresupuestoEl) {
+  fechaPresupuestoEl.addEventListener('blur', () => {
+    if (!fechaPresupuestoEl.value) {
+      fechaPresupuestoEl.value = fechaLocalISO();
+    }
+  });
+}
+    
+// Arranque inicial
+inicializarNumeroYFechaPresupuesto();
+setText('slider_out', cantI.value + ' ud');
+applyPerfilBlanco(false);
+populateProveedorSelect();
+applyLaserPreset();
+updateTecnicaUI();
   </script>
 </body>
 </html>

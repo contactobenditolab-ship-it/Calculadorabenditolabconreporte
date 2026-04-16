@@ -678,7 +678,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
         { min: 151, max: 250, dto: 0.15, label: '151–250 ud' },
         { min: 251, max: Infinity, dto: 0.20, label: '251+ ud' }
       ],
-      suave: [
+      Temporada alta: [
         { min: 1, max: 20, dto: 0.00, label: '1–20 ud' },
         { min: 21, max: 50, dto: 0.03, label: '21–50 ud' },
         { min: 51, max: 150, dto: 0.05, label: '51–150 ud' },
@@ -1150,8 +1150,8 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
             coste_pliego_val = t.precio;
             tramo_label_display = t.label;
           } else if (tecnica_key === 'vinilo') {
-            coste_pliego_val = m2_rate * area_pliego_m2;
-            tramo_label_display = 'Tarifa fija';
+            coste_pliego_val = prov.coste_pliego;
+            tramo_label_display = 'Tarifa estándar';
           } else {
             coste_pliego_val = prov.coste_pliego;
             tramo_label_display = 'Tarifa estándar';

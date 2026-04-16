@@ -396,6 +396,14 @@
           <input type="number" id="otros_fijos" value="0" step="0.5" min="0">
         </div>
       </div>
+      <div class="sub-block">
+  <div class="sec-title" style="margin-bottom:8px">Artículos base adicionales</div>
+  <div id="articulos_extra_container"></div>
+  <div class="actions-row" style="margin-top:10px">
+    <button type="button" class="btn-secondary" id="btn_add_articulo">+ Añadir artículo base</button>
+  </div>
+  <div class="mini-note">Cada artículo adicional suma su propio precio, cantidad, packaging y otros costes. La calculadora usa la cantidad total del pedido.</div>
+</div>
       <div class="blancos-resumen">
         <div class="pb-title">Coste blancos</div>
         <div class="brow"><span class="bl">Precio tarifa / ud sin IVA</span><span class="bv" id="res_blanco_tarifa_ud">—</span></div>
@@ -753,7 +761,61 @@ const PERFILES_BLANCOS = {
       const el = document.getElementById(id);
       if(el) el.textContent = value; 
     }
+function getArticulosExtras() {
+  return Array.from(document.querySelectorAll('.articulo-extra')).map(row => ({
+    precio_blanco: parseFloat(row.querySelector('[data-field="precio_blanco"]').value) || 0,
+    cantidad: Math.max(0, parseInt(row.querySelector('[data-field="cantidad"]').value, 10) || 0),
+    pack_ud: parseFloat(row.querySelector('[data-field="pack_coste"]').value) || 0,
+    otros_fijos: parseFloat(row.querySelector('[data-field="otros_fijos"]').value) || 0
+  })).filter(item =>
+    item.cantidad > 0 || item.precio_blanco > 0 || item.pack_ud > 0 || item.otros_fijos > 0
+  );
+}
 
+function getCantidadTotalPedido() {
+  const cantidadPrincipal = Math.max(1, parseInt(document.getElementById('cantidad').value, 10) || 0);
+  return cantidadPrincipal + getArticulosExtras().reduce((acc, item) => acc + item.cantidad, 0);
+}
+
+function createArticuloExtraRow(values = {}) {
+  const container = document.getElementById('articulos_extra_container');
+  const row = document.createElement('div');
+  row.className = 'articulo-extra sub-block';
+  row.innerHTML = `
+    <div class="grid4" style="margin-bottom:0">
+      <div class="field">
+        <label>Precio coste artículo proveedor (€/ud sin IVA)</label>
+        <input type="number" data-field="precio_blanco" value="${values.precio_blanco ?? 0}" step="0.01" min="0">
+      </div>
+      <div class="field">
+        <label>Cantidad (ud)</label>
+        <input type="number" data-field="cantidad" value="${values.cantidad ?? 0}" step="1" min="0">
+      </div>
+      <div class="field">
+        <label>Packaging (€/ud)</label>
+        <input type="number" data-field="pack_coste" value="${values.pack_ud ?? 0}" step="0.01" min="0">
+      </div>
+      <div class="field">
+        <label>Otros costes fijos (€ total pedido)</label>
+        <input type="number" data-field="otros_fijos" value="${values.otros_fijos ?? 0}" step="0.5" min="0">
+      </div>
+    </div>
+    <div class="actions-row" style="margin-top:6px">
+      <button type="button" class="btn-secondary btn-remove-articulo">Eliminar artículo</button>
+    </div>
+  `;
+  container.appendChild(row);
+
+  row.querySelectorAll('input').forEach(el => {
+    el.addEventListener('input', calc);
+    el.addEventListener('change', calc);
+  });
+
+  row.querySelector('.btn-remove-articulo').addEventListener('click', () => {
+    row.remove();
+    calc();
+  });
+}
     function fmtM2(v) {
       return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
     }
@@ -843,7 +905,7 @@ const PERFILES_BLANCOS = {
       const picaje = parseEuroTextToNumber(document.getElementById('p_coste_total_mat')?.textContent || '0');
       const packagingUd = parseEuroTextToNumber(document.getElementById('b_pack_ud')?.textContent || '0');
       const otrosUd = parseEuroTextToNumber(document.getElementById('b_otros_ud')?.textContent || '0');
-      const cantidad = parseFloat(document.getElementById('cantidad').value || '0') || 0;
+      const cantidad = getCantidadTotalPedido();
       const packaging = packagingUd * cantidad;
       const otros = otrosUd * cantidad;
 
@@ -861,7 +923,7 @@ const PERFILES_BLANCOS = {
       const cliente = document.getElementById('email_cliente').value.trim();
       const producto = document.getElementById('email_producto').value.trim();
       const destino = document.getElementById('email_destino').value.trim();
-      const cantidad = document.getElementById('cantidad').value || '0';
+      const cantidad = String(getCantidadTotalPedido());
       const precioUnidad = document.getElementById('r_pvp_dto_con').textContent.trim();
       const total = document.getElementById('r_total_iva').textContent.trim();
       const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
@@ -900,7 +962,7 @@ const PERFILES_BLANCOS = {
       const cliente = document.getElementById('email_cliente').value.trim();
       const producto = document.getElementById('email_producto').value.trim();
       const emailDestino = document.getElementById('email_destino').value.trim();
-      const cantidad = Number(document.getElementById('cantidad').value || 0);
+      const cantidad = getCantidadTotalPedido();
       const fecha = new Date().toISOString().slice(0, 10);
       const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
       const { body } = buildClientBudgetEmail();
@@ -1052,10 +1114,27 @@ const PERFILES_BLANCOS = {
     }
 
     function calc() {
-      const cantidad = Math.max(1, parseInt(document.getElementById('cantidad').value, 10) || 0);
-      const precio_blanco = parseFloat(document.getElementById('precio_blanco').value) || 0;
-      const pack_ud = parseFloat(document.getElementById('pack_coste').value) || 0;
-      const otros_fijos = parseFloat(document.getElementById('otros_fijos').value) || 0;
+const cantidad_principal = Math.max(1, parseInt(document.getElementById('cantidad').value, 10) || 0);
+const precio_blanco_principal = parseFloat(document.getElementById('precio_blanco').value) || 0;
+const pack_ud_principal = parseFloat(document.getElementById('pack_coste').value) || 0;
+const otros_fijos_principal = parseFloat(document.getElementById('otros_fijos').value) || 0;
+
+const articulos_extra = getArticulosExtras();
+const articulos_base = [
+  {
+    precio_blanco: precio_blanco_principal,
+    cantidad: cantidad_principal,
+    pack_ud: pack_ud_principal,
+    otros_fijos: otros_fijos_principal
+  },
+  ...articulos_extra
+].filter(item => item.cantidad > 0);
+
+const cantidad = Math.max(1, articulos_base.reduce((acc, item) => acc + item.cantidad, 0));
+const tarifa_blancos_sin_iva_total = articulos_base.reduce((acc, item) => acc + (item.precio_blanco * item.cantidad), 0);
+const pack_total = articulos_base.reduce((acc, item) => acc + ((item.pack_ud || 0) * item.cantidad), 0);
+const pack_ud = pack_total / cantidad;
+const otros_fijos = articulos_base.reduce((acc, item) => acc + (item.otros_fijos || 0), 0);
       const tecnica_key = document.getElementById('tecnica').value;
       const margen_min = getMargenMin();
       const divisor = 1 - margen_min;
@@ -1178,13 +1257,17 @@ const PERFILES_BLANCOS = {
       const tramosBlancos = getTramosBlancosFromUI();
       const tramoBlanco = getTramoBlanco(cantidad, tramosBlancos);
       const dtoBlancoAplicado = Math.min(1, usarDtoBlancoManual ? dtoBlancoManual : (usarDtoBlancoAuto ? (tramoBlanco.dto || 0) : 0));
-      const precio_blanco_final_sin_iva = precio_blanco * (1 - dtoBlancoAplicado);
+      const subtotal_blancos_sin_iva = articulos_base.reduce((acc, item) => {
+  return acc + ((item.precio_blanco * (1 - dtoBlancoAplicado)) * item.cantidad);
+}, 0);
+
+      const precio_blanco = cantidad > 0 ? (tarifa_blancos_sin_iva_total / cantidad) : 0;
+      const precio_blanco_final_sin_iva = cantidad > 0 ? (subtotal_blancos_sin_iva / cantidad) : 0;
       const precio_blanco_con_iva = precio_blanco_final_sin_iva * IVA_COMPRA;
-      const subtotal_blancos_sin_iva = precio_blanco_final_sin_iva * cantidad;
-      const ahorro_blancos_sin_iva = (precio_blanco - precio_blanco_final_sin_iva) * cantidad;
-      const envio_blanco_sin_iva = (precio_blanco === 0 || cantidad === 0) ? 0 : (subtotal_blancos_sin_iva >= 100 ? 0 : 5.95);
+      const ahorro_blancos_sin_iva = tarifa_blancos_sin_iva_total - subtotal_blancos_sin_iva;
+      const envio_blanco_sin_iva = (subtotal_blancos_sin_iva <= 0 || cantidad === 0) ? 0 : (subtotal_blancos_sin_iva >= 100 ? 0 : 5.95);
       const envio_blanco_total = envio_blanco_sin_iva * IVA_COMPRA;
-      const subtotal_blancos = precio_blanco_con_iva * cantidad;
+      const subtotal_blancos = subtotal_blancos_sin_iva * IVA_COMPRA;
       const total_blancos = subtotal_blancos + envio_blanco_total;
       const envio_blanco_ud = envio_blanco_total / cantidad;
       const envio_prov_ud = envio_prov_total / cantidad;
@@ -1358,10 +1441,18 @@ const PERFILES_BLANCOS = {
       }
     });
 
-    const emailBtn = document.getElementById('btn_email_presupuesto');
-    if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
-    const saveBtn = document.getElementById('btn_guardar_notion');
-    if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
+const addArticuloBtn = document.getElementById('btn_add_articulo');
+if (addArticuloBtn) {
+  addArticuloBtn.addEventListener('click', () => {
+    createArticuloExtraRow();
+    calc();
+  });
+}
+
+const emailBtn = document.getElementById('btn_email_presupuesto');
+if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
+const saveBtn = document.getElementById('btn_guardar_notion');
+if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
 
     // Arranque inicial
     setText('slider_out', cantI.value + ' ud');

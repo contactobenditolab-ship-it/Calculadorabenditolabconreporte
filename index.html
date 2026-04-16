@@ -491,11 +491,13 @@
           <div class="field"><label>Minutos manipulación / ud</label><input type="number" id="laser_man" value="4" step="0.1" min="0"></div>
           <div class="field"><label>Consumible extra / ud (€)</label><input type="number" id="laser_extra_ud" value="0" step="0.01" min="0"></div>
         </div>
-        <div class="grid2">
+             <div class="grid2">
           <div class="field"><label>Coste máquina por hora (€)</label><input type="number" id="laser_coste_hora" value="0.63" step="0.01" min="0"></div>
           <div class="field"><label>Coste hora personal (€)</label><input type="number" id="laser_coste_mo" value="15.00" step="0.1" min="0"></div>
         </div>
-     <div class="sub-block">
+      </div>
+
+      <div class="sub-block">
         <div class="sec-title" style="margin-bottom:8px">Personalizaciones adicionales</div>
         <div id="personalizaciones_extra_container"></div>
         <div class="actions-row" style="margin-top:10px">
@@ -503,6 +505,7 @@
         </div>
         <div class="mini-note">Cada personalización adicional suma su propio coste y su propio envío de proveedor si corresponde.</div>
       </div>
+    </div>
 
     <div id="resultados" class="results">
       <div class="aviso" id="aviso_dto">Descuento sobre artículo base limitado para mantener el margen mínimo configurado.</div>
@@ -772,7 +775,295 @@ const PERFILES_BLANCOS = {
       if(el) el.textContent = value; 
     }
 
-    // PEGA AQUÍ TODO EL BLOQUE NUEVO DE FUNCIONES DE PERSONALIZACIONES EXTRA
+function populateProveedorSelectRow(row) {
+  const tecnica = row.querySelector('[data-field="tecnica"]').value;
+  const sp = row.querySelector('[data-field="proveedor_sel"]');
+  const current = sp.value;
+  const proveedores = TECNICAS[tecnica]?.proveedores || [];
+  sp.innerHTML = '';
+  proveedores.forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = PROV_CONFIG[key].nombre;
+    sp.appendChild(opt);
+  });
+  if (proveedores.includes(current)) sp.value = current;
+}
+
+function applyLaserPresetRow(row) {
+  const key = row.querySelector('[data-field="laser_tipo"]').value;
+  const preset = LASER_PRESETS[key];
+  if (!preset) return;
+  row.querySelector('[data-field="laser_maq"]').value = preset.maq;
+  row.querySelector('[data-field="laser_man"]').value = preset.man;
+}
+
+function updatePersonalizacionExtraRowUI(row) {
+  const t = row.querySelector('[data-field="tecnica"]').value;
+
+  row.querySelectorAll('.row-bloque-area').forEach(el => {
+    el.style.display = (t !== 'ninguna' && t !== 'bordado' && t !== 'laser') ? '' : 'none';
+  });
+
+  row.querySelectorAll('.row-bloque-bordado').forEach(el => {
+    el.style.display = (t === 'bordado') ? '' : 'none';
+  });
+
+  row.querySelectorAll('.row-bloque-laser').forEach(el => {
+    el.style.display = (t === 'laser') ? '' : 'none';
+  });
+
+  row.querySelectorAll('.row-bloque-vinilo').forEach(el => {
+    el.style.display = (t === 'vinilo') ? '' : 'none';
+  });
+
+  populateProveedorSelectRow(row);
+
+  if (t === 'laser') applyLaserPresetRow(row);
+}
+
+function getPersonalizacionExtraValues(row, cantidadDefault = 0) {
+  return {
+    tecnica: row.querySelector('[data-field="tecnica"]').value,
+    cantidad: Math.max(0, parseInt(row.querySelector('[data-field="cantidad"]').value, 10) || 0),
+    dis_ancho: parseFloat(row.querySelector('[data-field="dis_ancho"]').value) || 0,
+    dis_alto: parseFloat(row.querySelector('[data-field="dis_alto"]').value) || 0,
+    posiciones: parseInt(row.querySelector('[data-field="posiciones"]').value, 10) || 0,
+    proveedor_sel: row.querySelector('[data-field="proveedor_sel"]').value || 'ninguno',
+    vinilo_tipo: row.querySelector('[data-field="vinilo_tipo"]').value,
+
+    puntadas: parseInt(row.querySelector('[data-field="puntadas"]').value, 10) || 5000,
+    bord_colores: parseInt(row.querySelector('[data-field="bord_colores"]').value, 10) || 1,
+    bord_pos: parseInt(row.querySelector('[data-field="bord_pos"]').value, 10) || 1,
+    bord_picaje: parseInt(row.querySelector('[data-field="bord_picaje"]').value, 10) || 0,
+    bord_coste_puntada: parseFloat(row.querySelector('[data-field="bord_coste_puntada"]').value) || 0.0015,
+    bord_manipulacion: parseFloat(row.querySelector('[data-field="bord_manipulacion"]').value) || 1.25,
+    bord_picaje_coste: parseFloat(row.querySelector('[data-field="bord_picaje_coste"]').value) || 10,
+    bord_extra_color: parseFloat(row.querySelector('[data-field="bord_extra_color"]').value) || 0.15,
+
+    laser_tipo: row.querySelector('[data-field="laser_tipo"]').value,
+    laser_maq: parseFloat(row.querySelector('[data-field="laser_maq"]').value) || 0,
+    laser_man: parseFloat(row.querySelector('[data-field="laser_man"]').value) || 0,
+    laser_extra_ud: parseFloat(row.querySelector('[data-field="laser_extra_ud"]').value) || 0,
+    laser_coste_hora: parseFloat(row.querySelector('[data-field="laser_coste_hora"]').value) || 0.63,
+    laser_coste_mo: parseFloat(row.querySelector('[data-field="laser_coste_mo"]').value) || 15,
+
+    cantidad_default: cantidadDefault
+  };
+}
+
+function calcularPersonalizacionExtra(data, cantidadDefault = 0) {
+  const tecnica_key = data.tecnica || 'ninguna';
+  const cantidad_item = Math.max(0, data.cantidad || cantidadDefault || 0);
+  const MC = 0.2;
+
+  if (tecnica_key === 'ninguna' || cantidad_item <= 0) {
+    return { coste_total_con_iva: 0, envio_total_con_iva: 0 };
+  }
+
+  if (tecnica_key === 'bordado') {
+    const coste_puntadas_ud = data.puntadas * data.bord_coste_puntada * data.bord_pos;
+    const extra_colores_ud = Math.max(0, data.bord_colores - 1) * data.bord_extra_color * data.bord_pos;
+    const coste_manipulacion_ud = data.bord_manipulacion * data.bord_pos;
+    const coste_picaje_ud = data.bord_picaje ? (data.bord_picaje_coste / cantidad_item) : 0;
+    const pers_ud_local = (coste_puntadas_ud + extra_colores_ud + coste_manipulacion_ud + coste_picaje_ud) * IVA_COMPRA;
+
+    return {
+      coste_total_con_iva: pers_ud_local * cantidad_item,
+      envio_total_con_iva: 0
+    };
+  }
+
+  if (tecnica_key === 'laser') {
+    const coste_maquina_ud = (data.laser_maq / 60) * data.laser_coste_hora;
+    const coste_mano_obra_ud = (data.laser_man / 60) * data.laser_coste_mo;
+    const pers_ud_local = (coste_maquina_ud + coste_mano_obra_ud + data.laser_extra_ud) * IVA_COMPRA;
+
+    return {
+      coste_total_con_iva: pers_ud_local * cantidad_item,
+      envio_total_con_iva: 0
+    };
+  }
+
+  const prov = PROV_CONFIG[data.proveedor_sel] || PROV_CONFIG['ninguno'];
+  const pw = prov.ancho_cm;
+  const ph = prov.alto_cm;
+  const dis_ancho = data.dis_ancho || 0;
+  const dis_alto = data.dis_alto || 0;
+  const posiciones = data.posiciones || 0;
+  const persActiva = dis_ancho > 0 && dis_alto > 0 && posiciones > 0;
+
+  if (!(pw > 0 && ph > 0 && persActiva)) {
+    return { coste_total_con_iva: 0, envio_total_con_iva: 0 };
+  }
+
+  const dh = Math.floor((pw - 2 * MC + MC) / (dis_ancho + MC));
+  const dv = Math.floor((ph - 2 * MC + MC) / (dis_alto + MC));
+  const dis_pliego = Math.max(1, dh * dv);
+  const total_imp = cantidad_item * posiciones;
+  const num_pliegos = Math.ceil(total_imp / dis_pliego);
+
+  let coste_pliego_val = 0;
+
+  if (data.proveedor_sel === '321dtf' && tecnica_key === 'dtf_textil') {
+    const t = get321Precio(num_pliegos);
+    coste_pliego_val = t.precio;
+  } else {
+    coste_pliego_val = prov.coste_pliego;
+  }
+
+  const coste_total_mat_sin_iva = coste_pliego_val * num_pliegos;
+  const coste_total_mat = coste_total_mat_sin_iva * IVA_COMPRA;
+
+  let envio_prov_total_sin_iva = 0;
+  if (prov.envio_gratis_desde === null) envio_prov_total_sin_iva = prov.envio;
+  else if (coste_total_mat_sin_iva >= prov.envio_gratis_desde) envio_prov_total_sin_iva = 0;
+  else envio_prov_total_sin_iva = prov.envio_gratis_desde === 0 ? 0 : prov.envio;
+
+  const envio_prov_total = envio_prov_total_sin_iva * IVA_COMPRA;
+
+  return {
+    coste_total_con_iva: coste_total_mat,
+    envio_total_con_iva: envio_prov_total
+  };
+}
+
+function getPersonalizacionesExtras(cantidadDefault = 0) {
+  return Array.from(document.querySelectorAll('.personalizacion-extra')).map(row => {
+    const data = getPersonalizacionExtraValues(row, cantidadDefault);
+    return calcularPersonalizacionExtra(data, cantidadDefault);
+  });
+}
+
+function createPersonalizacionExtraRow(values = {}) {
+  const container = document.getElementById('personalizaciones_extra_container');
+  const row = document.createElement('div');
+  row.className = 'personalizacion-extra sub-block';
+  row.innerHTML = `
+    <div class="grid4">
+      <div class="field">
+        <label>Técnica</label>
+        <select data-field="tecnica">
+          <option value="ninguna">Sin personalizar</option>
+          <option value="dtf_textil">DTF Textil</option>
+          <option value="dtf_oro">DTF Oro</option>
+          <option value="sublimacion">Sublimación</option>
+          <option value="vinilo">Vinilo (plotter)</option>
+          <option value="dtf_uv">DTF UV</option>
+          <option value="bordado">Bordado</option>
+          <option value="laser">Láser / grabado</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Cantidad (ud)</label>
+        <input type="number" data-field="cantidad" value="${values.cantidad ?? 0}" step="1" min="0">
+      </div>
+      <div class="field row-bloque-area">
+        <label>Proveedor</label>
+        <select data-field="proveedor_sel"></select>
+      </div>
+      <div class="field row-bloque-area row-bloque-vinilo" style="display:none">
+        <label>Tipo vinilo</label>
+        <select data-field="vinilo_tipo">
+          <option value="htv">HTV textil (€15/m²)</option>
+          <option value="adhesivo">Adhesivo (€18/m²)</option>
+          <option value="transfer">Transfer tape (€8/m²)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row-bloque-area">
+      <div class="grid3">
+        <div class="field"><label>Ancho diseño (cm)</label><input type="number" data-field="dis_ancho" value="${values.dis_ancho ?? 0}" step="0.5" min="0"></div>
+        <div class="field"><label>Alto diseño (cm)</label><input type="number" data-field="dis_alto" value="${values.dis_alto ?? 0}" step="0.5" min="0"></div>
+        <div class="field"><label>Posiciones / ud</label><input type="number" data-field="posiciones" value="${values.posiciones ?? 1}" step="1" min="0"></div>
+      </div>
+    </div>
+
+    <div class="row-bloque-bordado" style="display:none">
+      <div class="grid4">
+        <div class="field"><label>Puntadas diseño</label><input type="number" data-field="puntadas" value="${values.puntadas ?? 5000}" step="100" min="100"></div>
+        <div class="field"><label>Nº colores</label><input type="number" data-field="bord_colores" value="${values.bord_colores ?? 1}" step="1" min="1"></div>
+        <div class="field"><label>Posiciones / ud</label><input type="number" data-field="bord_pos" value="${values.bord_pos ?? 1}" step="1" min="1"></div>
+        <div class="field"><label>¿Primer pedido?</label>
+          <select data-field="bord_picaje">
+            <option value="1">Sí</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid4">
+        <div class="field"><label>Coste por puntada (€)</label><input type="number" data-field="bord_coste_puntada" value="${values.bord_coste_puntada ?? 0.0015}" step="0.0001" min="0"></div>
+        <div class="field"><label>Manipulación / posición (€)</label><input type="number" data-field="bord_manipulacion" value="${values.bord_manipulacion ?? 1.25}" step="0.01" min="0"></div>
+        <div class="field"><label>Picaje fijo (€)</label><input type="number" data-field="bord_picaje_coste" value="${values.bord_picaje_coste ?? 10}" step="0.5" min="0"></div>
+        <div class="field"><label>Extra color adicional (€)</label><input type="number" data-field="bord_extra_color" value="${values.bord_extra_color ?? 0.15}" step="0.01" min="0"></div>
+      </div>
+    </div>
+
+    <div class="row-bloque-laser" style="display:none">
+      <div class="grid4">
+        <div class="field">
+          <label>Tipo de trabajo</label>
+          <select data-field="laser_tipo">
+            <option value="grabado_boligrafo">Grabado logo bolígrafo / llavero</option>
+            <option value="grabado_libreta">Grabado libreta / portada cartón</option>
+            <option value="grabado_tabla">Grabado tabla / corcho pequeño</option>
+            <option value="grabado_metal">Grabado metal / acero vectorial</option>
+            <option value="corte_simple">Corte pieza simple (madera)</option>
+            <option value="grabado_superficie">Grabado superficie grande</option>
+            <option value="grabado_premium">Grabado premium complejo</option>
+            <option value="manual">Manual</option>
+          </select>
+        </div>
+        <div class="field"><label>Minutos máquina / ud</label><input type="number" data-field="laser_maq" value="${values.laser_maq ?? 2}" step="0.1" min="0"></div>
+        <div class="field"><label>Minutos manipulación / ud</label><input type="number" data-field="laser_man" value="${values.laser_man ?? 4}" step="0.1" min="0"></div>
+        <div class="field"><label>Consumible extra / ud (€)</label><input type="number" data-field="laser_extra_ud" value="${values.laser_extra_ud ?? 0}" step="0.01" min="0"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Coste máquina por hora (€)</label><input type="number" data-field="laser_coste_hora" value="${values.laser_coste_hora ?? 0.63}" step="0.01" min="0"></div>
+        <div class="field"><label>Coste hora personal (€)</label><input type="number" data-field="laser_coste_mo" value="${values.laser_coste_mo ?? 15}" step="0.1" min="0"></div>
+      </div>
+    </div>
+
+    <div class="actions-row" style="margin-top:8px">
+      <button type="button" class="btn-secondary btn-remove-personalizacion">Eliminar personalización</button>
+    </div>
+  `;
+
+  container.appendChild(row);
+
+  row.querySelector('[data-field="tecnica"]').value = values.tecnica ?? 'dtf_textil';
+  updatePersonalizacionExtraRowUI(row);
+
+  if (values.proveedor_sel) {
+    const sp = row.querySelector('[data-field="proveedor_sel"]');
+    if ([...sp.options].some(o => o.value === values.proveedor_sel)) sp.value = values.proveedor_sel;
+  }
+
+  if (values.vinilo_tipo) row.querySelector('[data-field="vinilo_tipo"]').value = values.vinilo_tipo;
+  if (values.bord_picaje !== undefined) row.querySelector('[data-field="bord_picaje"]').value = String(values.bord_picaje);
+  if (values.laser_tipo) row.querySelector('[data-field="laser_tipo"]').value = values.laser_tipo;
+
+  row.querySelector('[data-field="tecnica"]').addEventListener('change', () => {
+    updatePersonalizacionExtraRowUI(row);
+    calc();
+  });
+
+  row.querySelector('[data-field="laser_tipo"]').addEventListener('change', () => {
+    applyLaserPresetRow(row);
+    calc();
+  });
+
+  row.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', calc);
+    el.addEventListener('change', calc);
+  });
+
+  row.querySelector('.btn-remove-personalizacion').addEventListener('click', () => {
+    row.remove();
+    calc();
+  });
+}
 
     function fmtM2(v) {
       return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
@@ -1475,8 +1766,9 @@ if (addArticuloBtn) {
     createArticuloExtraRow();
     calc();
   });
+}
 
- const addPersonalizacionBtn = document.getElementById('btn_add_personalizacion');
+const addPersonalizacionBtn = document.getElementById('btn_add_personalizacion');
 if (addPersonalizacionBtn) {
   addPersonalizacionBtn.addEventListener('click', () => {
     createPersonalizacionExtraRow();
@@ -1484,11 +1776,11 @@ if (addPersonalizacionBtn) {
   });
 }
 
-    const emailBtn = document.getElementById('btn_email_presupuesto');
-    if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
-  
-    const saveBtn = document.getElementById('btn_guardar_notion');
-    if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
+const emailBtn = document.getElementById('btn_email_presupuesto');
+if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
+
+const saveBtn = document.getElementById('btn_guardar_notion');
+if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
 
     // Arranque inicial
     setText('slider_out', cantI.value + ' ud');

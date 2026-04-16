@@ -495,7 +495,15 @@
           <div class="field"><label>Coste máquina por hora (€)</label><input type="number" id="laser_coste_hora" value="0.63" step="0.01" min="0"></div>
           <div class="field"><label>Coste hora personal (€)</label><input type="number" id="laser_coste_mo" value="15.00" step="0.1" min="0"></div>
         </div>
+     <div class="sub-block">
+        <div class="sec-title" style="margin-bottom:8px">Personalizaciones adicionales</div>
+        <div id="personalizaciones_extra_container"></div>
+        <div class="actions-row" style="margin-top:10px">
+          <button type="button" class="btn-secondary" id="btn_add_personalizacion">+ Añadir personalización</button>
+        </div>
+        <div class="mini-note">Cada personalización adicional suma su propio coste y su propio envío de proveedor si corresponde.</div>
       </div>
+    
     </div>
 
     <div id="resultados" class="results">
@@ -761,6 +769,17 @@ const PERFILES_BLANCOS = {
       const el = document.getElementById(id);
       if(el) el.textContent = value; 
     }
+    function setText(id, value) { 
+      const el = document.getElementById(id);
+      if(el) el.textContent = value; 
+    }
+
+    // PEGA AQUÍ TODO EL BLOQUE NUEVO DE FUNCIONES DE PERSONALIZACIONES EXTRA
+
+    function fmtM2(v) {
+      return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
+    }
+    
 function getArticulosExtras() {
   return Array.from(document.querySelectorAll('.articulo-extra')).map(row => ({
     precio_blanco: parseFloat(row.querySelector('[data-field="precio_blanco"]').value) || 0,
@@ -1249,6 +1268,17 @@ const otros_fijos = articulos_base.reduce((acc, item) => acc + (item.otros_fijos
           total_proveedor_personalizacion_con_iva = coste_total_mat + envio_prov_total;
           show_pliegos = true;
         }
+      } 
+
+      const extrasPersonalizacion = getPersonalizacionesExtras(cantidad);
+      const extraPersTotal = extrasPersonalizacion.reduce((acc, item) => acc + item.coste_total_con_iva, 0);
+      const extraEnvioProvTotal = extrasPersonalizacion.reduce((acc, item) => acc + item.envio_total_con_iva, 0);
+
+      if (extraPersTotal > 0 || extraEnvioProvTotal > 0) {
+        const persTotalPrincipal = pers_ud * cantidad;
+        pers_ud = (persTotalPrincipal + extraPersTotal) / cantidad;
+        envio_prov_total += extraEnvioProvTotal;
+        total_proveedor_personalizacion_con_iva += extraPersTotal + extraEnvioProvTotal;
       }
 
       const usarDtoBlancoAuto = document.getElementById('usar_dto_blanco_auto').checked;
@@ -1447,12 +1477,19 @@ if (addArticuloBtn) {
     createArticuloExtraRow();
     calc();
   });
-}
 
-const emailBtn = document.getElementById('btn_email_presupuesto');
-if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
-const saveBtn = document.getElementById('btn_guardar_notion');
-if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
+    const addPersonalizacionBtn = document.getElementById('btn_add_personalizacion');
+    if (addPersonalizacionBtn) {
+      addPersonalizacionBtn.addEventListener('click', () => {
+        createPersonalizacionExtraRow();
+        calc();
+      });
+    }
+
+    const emailBtn = document.getElementById('btn_email_presupuesto');
+    if (emailBtn) emailBtn.addEventListener('click', sendBudgetEmail);
+    const saveBtn = document.getElementById('btn_guardar_notion');
+    if (saveBtn) saveBtn.addEventListener('click', saveBudgetToMake);
 
     // Arranque inicial
     setText('slider_out', cantI.value + ' ud');

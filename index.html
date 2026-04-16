@@ -794,9 +794,11 @@ function fechaLocalISO() {
 }
 
 function generarNumeroPresupuesto() {
-  const ahora = new Date();
-  const sello = `${ahora.getFullYear()}${pad2(ahora.getMonth() + 1)}${pad2(ahora.getDate())}${pad2(ahora.getHours())}${pad2(ahora.getMinutes())}${pad2(ahora.getSeconds())}`;
-  return `PRESU-26/${sello}`;
+  const key = 'bendito_lab_presu_26_contador';
+  const ultimo = parseInt(localStorage.getItem(key) || '0', 10);
+  const siguiente = ultimo + 1;
+  localStorage.setItem(key, String(siguiente));
+  return `PRESU-26/${String(siguiente).padStart(3, '0')}`;
 }
 
 function inicializarNumeroYFechaPresupuesto() {

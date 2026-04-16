@@ -633,15 +633,6 @@ Plazo estimado de entrega: 7 a 10 días laborables, salvo volumen o técnica esp
 El precio indicado incluye únicamente lo detallado en este presupuesto.</textarea>
           <div class="hint">Estas condiciones se incluyen en el email al cliente y también se mandan al webhook de Make.</div>
         </div>
-        <div class="field" style="margin-top:10px">
-  <label>Notas internas</label>
-  <textarea
-    class="input-textarea"
-    id="notas_internas"
-    placeholder="Tallas, observaciones, cambios pendientes, comentarios internos..."
-  ></textarea>
-  <div class="hint">Estas notas no se envían al cliente. Solo se mandan al webhook de Make para guardarlas en Notion.</div>
-</div>
         <div class="actions-row">
           <button type="button" class="btn-primary big" id="btn_email_presupuesto">📩 Enviar presupuesto al cliente</button>
           <button type="button" class="btn-secondary" id="btn_guardar_notion">🗂️ Guardar presupuesto</button>
@@ -656,7 +647,7 @@ El precio indicado incluye únicamente lo detallado en este presupuesto.</textar
   <script>
     const IVA_COMPRA = 1.21;
     const IVA_VENTA = 0.21;
-   const res = await fetch(MAKE_WEBHOOK_URL, {
+    const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/j9d8p9smrn9wrhun492pslecee8i1ihk';
     const f2 = n => (Number(n || 0)).toFixed(2).replace('.', ',') + ' €';
     const pct = n => (Number(n || 0)).toFixed(1).replace('.', ',') + ' %';
     const VINILO_M2 = { htv: 15, adhesivo: 18, transfer: 8 };
@@ -784,8 +775,17 @@ const PERFILES_BLANCOS = {
       }
       return TRAMOS_VENTA.length - 1;
     }
-function fmtM2(v) {
-  return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
+    function getMargenMin() { return parseInt(document.getElementById('margen_min').value, 10) / 100; }
+    function setText(id, value) { 
+      const el = document.getElementById(id);
+      if(el) el.textContent = value; 
+    }
+    function setText(id, value) { 
+      const el = document.getElementById(id);
+      if(el) el.textContent = value; 
+    }
+function pad2(n) {
+  return String(n).padStart(2, '0');
 }
 
 function fechaLocalISO() {
@@ -1103,6 +1103,10 @@ function createPersonalizacionExtraRow(values = {}) {
     calc();
   });
 }
+
+    function fmtM2(v) {
+      return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
+    }
     
 function getArticulosExtras() {
   return Array.from(document.querySelectorAll('.articulo-extra')).map(row => ({
@@ -1158,6 +1162,9 @@ function createArticuloExtraRow(values = {}) {
     row.remove();
     calc();
   });
+}
+    function fmtM2(v) {
+      return (Number(v || 0)).toFixed(4).replace('.', ',') + ' m²';
     }
 
     function renderPliegoPreview({ pw, ph, dis_ancho, dis_alto, MC, dh, dv, total_imp }) {
@@ -1308,7 +1315,6 @@ const extras = buildExtrasLines();
       const emailDestino = document.getElementById('email_destino').value.trim();
       const cantidad = getCantidadTotalPedido();
       const condiciones = document.getElementById('condiciones_presupuesto').value.trim();
-      const notasInternas = document.getElementById('notas_internas')?.value.trim() || '';
       const { body } = buildClientBudgetEmail();
       const tecnica = document.getElementById('tecnica').value;
       const proveedor = getCurrentProviderText();
@@ -1333,33 +1339,32 @@ const idPres = document.getElementById('numero_presupuesto')?.value.trim() || ge
       }
 
       return {
-  nombre,
-  id_presupuesto: idPres,
-  fecha_envio: fecha,
-  estado: 'Enviado',
-  cliente,
-  email_destino: emailDestino,
-  producto,
-  cantidad,
-  tecnica,
-  proveedor,
-  precio_unidad_cliente: precioUnidadCliente,
-  pvp_sin_iva: pvpSinIva,
-  pvp_con_iva: pvpConIva,
-  total_presupuesto_cliente: totalPresupuestoCliente,
-  total_pedido_con_iva: totalPedidoConIva,
-  coste_total_ud: costeTotalUd,
-  beneficio_total_pedido: beneficioTotalPedido,
-  packaging,
-  picaje,
-  otros_costes: otrosCostes,
-  pliegos,
-  area_libre: areaLibre,
-  aprovechamiento,
-  condiciones,
-  notas_internas: notasInternas,
-  texto_enviado: body
-};
+        nombre,
+        id_presupuesto: idPres,
+        fecha_envio: fecha,
+        estado: 'Enviado',
+        cliente,
+        email_destino: emailDestino,
+        producto,
+        cantidad,
+        tecnica,
+        proveedor,
+        precio_unidad_cliente: precioUnidadCliente,
+        pvp_sin_iva: pvpSinIva,
+        pvp_con_iva: pvpConIva,
+        total_presupuesto_cliente: totalPresupuestoCliente,
+        total_pedido_con_iva: totalPedidoConIva,
+        coste_total_ud: costeTotalUd,
+        beneficio_total_pedido: beneficioTotalPedido,
+        packaging,
+        picaje,
+        otros_costes: otrosCostes,
+        pliegos,
+        area_libre: areaLibre,
+        aprovechamiento,
+        condiciones,
+        texto_enviado: body
+      };
     }
 
     function sendBudgetEmail() {
@@ -1373,35 +1378,27 @@ const idPres = document.getElementById('numero_presupuesto')?.value.trim() || ge
     }
 
     async function saveBudgetToMake() {
-  const statusEl = document.getElementById('save_status');
-
-  if (!MAKE_WEBHOOK_URL) {
-    alert('Configura la URL del webhook de Make en el código.');
-    return;
-  }
-
-  const payload = buildBudgetPayload();
-
-  try {
-    statusEl.textContent = 'Enviando presupuesto a Make...';
-
-    const res = await fetch(MAKE_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
+      const statusEl = document.getElementById('save_status');
+      if (!MAKE_WEBHOOK_URL) {
+        alert('Configura la URL del webhook de Make en el código.');
+        return;
+      }
+      const payload = buildBudgetPayload();
+      try {
+        statusEl.textContent = 'Enviando presupuesto a Make...';
+        const res = await fetch(MAKE_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        statusEl.textContent = 'Presupuesto guardado correctamente al webhook, Revisa NOTION.';
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = 'No se pudo enviar el presupuesto a Make.';
+        alert('No se pudo enviar el presupuesto al webhook de Make.');
+      }
     }
-
-    statusEl.textContent = 'Presupuesto guardado correctamente al webhook. Revisa Notion.';
-  } catch (err) {
-    console.error(err);
-    statusEl.textContent = 'No se pudo enviar el presupuesto a Make.';
-    alert('No se pudo enviar el presupuesto al webhook de Make.');
-  }
-}
 
     function populateProveedorSelect() {
       const tecnica = document.getElementById('tecnica').value;
